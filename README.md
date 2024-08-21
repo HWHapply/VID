@@ -1,7 +1,7 @@
 # VID
 Virus Infection Detector
 
-![ ](https://img.shields.io/badge/python-3.8-blue) ![ ](https://img.shields.io/badge/license-MIT-green)
+![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green)
 
 ## Citation
 Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder, 25 August 2022, PROTOCOL (Version 1) available at Protocol Exchange [https://doi.org/10.21203/rs.3.pex-1984/v1]
