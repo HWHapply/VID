@@ -75,13 +75,13 @@ class VID(Utils_Model):
                 raise KeyError("Marker file dosen't exist, please double check your marker file directory.")      
         
             # check the if the clinical test column, 'batch' and sample id column included in the metadata table
-            essential_columns = [self.clinical_test, 'batch', self.sample_column]
+            essential_columns = [self.clinical_column, self.sample_column]
             for col in essential_columns:
                 if col not in self.meta_df.columns:
                     raise KeyError(f'{col} not included in metadata, please add the column.')
                 
             # detect the normal control: if a sample only have negative cell, we consider it normal control
-            neg_value_counts = self.meta_df.loc[self.meta_df[self.clinical_test] == 'negative', self.sample_column].value_counts()
+            neg_value_counts = self.meta_df.loc[self.meta_df[self.clinical_column] == 'negative', self.sample_column].value_counts()
             neg_samples = []
             for sid in neg_value_counts.index:
                 if neg_value_counts.loc[sid] == len(self.meta_df[self.meta_df[self.sample_column] == sid]):
@@ -98,7 +98,7 @@ class VID(Utils_Model):
             print('Labeling...')
             self.markers = [gene for gene in self.markers if gene in self.data_df.columns]
             if len(self.markers) != 0:
-                self.meta_df.loc[(self.meta_df[self.clinical_test] == 'positive') &
+                self.meta_df.loc[(self.meta_df[self.clinical_column] == 'positive') &
                                  (self.data_df[self.markers] != 0).any(axis=1), 'label'] = 1
                 self.meta_df.loc[self.meta_df[self.sample_column].isin(neg_samples), 'label'] = 0
                 self.meta_df['label'].fillna(2, inplace=True)
@@ -136,6 +136,8 @@ class VID(Utils_Model):
                 print('Important features loaded.')
             else:
                 print('Feature selecting...')
+                args_fs['estimator']['random_state'] = self.random_state
+                args_fs['boruta']['random_state'] = self.random_state
                 self.boruta_model = self.boruta()
                 self.boruta_model.fit(self.X_train.to_numpy(), self.y_train.to_numpy())
                 self.features = list(self.X_train.columns[self.boruta_model.support_])
@@ -244,7 +246,7 @@ class VID(Utils_Model):
                 cv_results[f'split{i}_test_precision'] = []
                 cv_results[f'split{i}_test_roc_auc'] = []
 
-            # define variables to save the meta features, scaler and batch correctors
+            # define variables to save the meta features, scaler 
             meta_features = np.zeros((self.X_train.shape[0], len(self.base_models)))
             test_meta_features = np.zeros((self.X_test.shape[0], len(self.base_models)))
             models = []
@@ -267,17 +269,22 @@ class VID(Utils_Model):
                 scaler = StandardScaler()
                 X_train_fold = scaler.fit_transform(X_train_fold)
                 X_val_fold = scaler.transform(X_val_fold)
+                X_test = scaler.transform(self.X_test)
                 self.scalers.append(scaler)
 
-                # perform batch correction
-                ho_train = hm.run_harmony(X_train_fold, self.meta_train.loc[index_train, ['batch']], vars_use = ['batch'], max_iter_harmony=100)
-                X_train_fold = pd.DataFrame(ho_train.Z_corr.T, columns=columns, index=index_train)
-                ho_val = hm.run_harmony(X_val_fold, self.meta_train.loc[index_val, ['batch']], vars_use = ['batch'], max_iter_harmony=100)
-                X_val_fold = pd.DataFrame(ho_val.Z_corr.T, columns=columns, index=index_val)
-                X_test = scaler.transform(self.X_test) 
-                ho_test = hm.run_harmony(X_test, self.meta_train.loc[self.X_test.index, ['batch']], vars_use = ['batch'], max_iter_harmony=100)
-                X_test = pd.DataFrame(ho_test.Z_corr.T, columns=columns, index=self.X_test.index)
-                
+                # perform batch correction if batch column is given
+                if self.batch_column:
+                    ho_train = hm.run_harmony(X_train_fold, self.meta_train.loc[index_train, [self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
+                    X_train_fold = pd.DataFrame(ho_train.Z_corr.T, columns=columns, index=index_train)
+                    ho_val = hm.run_harmony(X_val_fold, self.meta_train.loc[index_val, [self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
+                    X_val_fold = pd.DataFrame(ho_val.Z_corr.T, columns=columns, index=index_val)
+                    ho_test = hm.run_harmony(X_test, self.meta_train.loc[self.X_test.index, [self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
+                    X_test = pd.DataFrame(ho_test.Z_corr.T, columns=columns, index=self.X_test.index)
+                else:
+                    X_train_fold = pd.DataFrame(X_train_fold, columns = columns, index = index_train)
+                    X_val_fold = pd.DataFrame(X_val_fold, columns = columns, index = index_val)
+                    X_test = pd.DataFrame(X_test, columns = columns, index = self.X_test.index)
+                    
                 models_curr = []
 
                 for i, model in enumerate(self.base_models):
@@ -430,10 +437,14 @@ class VID(Utils_Model):
         X_test = scaler.transform(self.X_test)
         
         # perform batch correction
-        ho_train = hm.run_harmony(X_train, self.meta_train.loc[self.X_train.index, ['batch']], vars_use = ['batch'], max_iter_harmony=100)
-        X_train = pd.DataFrame(ho_train.Z_corr.T, columns=self.X_train.columns, index=self.X_train.index)
-        ho_test = hm.run_harmony(X_test, self.meta_train.loc[self.X_test.index, ['batch']], vars_use = ['batch'], max_iter_harmony=100)
-        X_test = pd.DataFrame(ho_test.Z_corr.T, columns=self.X_test.columns, index=self.X_test.index)
+        if self.batch_column:
+            ho_train = hm.run_harmony(X_train, self.meta_train.loc[self.X_train.index, [self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
+            X_train = pd.DataFrame(ho_train.Z_corr.T, columns=self.X_train.columns, index=self.X_train.index)
+            ho_test = hm.run_harmony(X_test, self.meta_train.loc[self.X_test.index, [self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
+            X_test = pd.DataFrame(ho_test.Z_corr.T, columns=self.X_test.columns, index=self.X_test.index)
+        else:
+            X_train = pd.DataFrame(X_train, columns=self.X_train.columns, index=self.X_train.index)
+            X_test = pd.DataFrame(X_test, columns=self.X_test.columns, index=self.X_test.index)
 
         # Train and evaluate each model
         for model in self.base_models:
@@ -542,8 +553,11 @@ class VID(Utils_Model):
             scaler = self.scalers[i]
             i += 1
             data_unknown = scaler.transform(self.data_unknown[self.features])
-            ho_unknown = hm.run_harmony(data_unknown, self.meta_unknown[['batch']], vars_use = ['batch'], max_iter_harmony=100)
-            data_unknown = pd.DataFrame(ho_unknown.Z_corr.T, columns=self.features, index=self.data_unknown.index)
+            if self.batch_column:
+                ho_unknown = hm.run_harmony(data_unknown, self.meta_unknown[[self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
+                data_unknown = pd.DataFrame(ho_unknown.Z_corr.T, columns=self.features, index=self.data_unknown.index)
+            else:
+                data_unknown = pd.DataFrame(data_unknown, columns=self.features, index=self.data_unknown.index)
             for i, model in enumerate(model_fold):
                 self.unknown_meta_features[:, i] += model.predict_proba(data_unknown)[:, 1]
         self.unknown_meta_features /= self.skf.get_n_splits()
@@ -557,19 +571,32 @@ class VID(Utils_Model):
         if self.metamodel == 'mlp':
             pred_proba = [proba[0] for proba in pred_proba]
             pred = [pred[0] for pred in pred]
-
-        # concatenate the prediction with meta_data
-        df_pred = pd.DataFrame(np.array([pred_proba, pred]).transpose(), index = self.meta_unknown.index, columns = ['pred_proba', 'pred_label_0.5'])
-        self.meta_unknown = pd.concat([self.meta_unknown, df_pred], axis = 1)
-        
-        # draw histogram of the predicted probabilities
-        self.histogram(self.meta_unknown['pred_proba'], 'unseen')
-
-        # add another colume with the label generated based on user defined threshold
-        if self.threshold:
-            self.meta_unknown[f'pred_label_{self.threshold}'] = self.meta_unknown['pred_proba'].apply(lambda x: 1 if x >= self.threshold else 0)
         print('Meta model prediction finished.')
         
-        # save the metadata of unknown cell
-        self.meta_unknown.to_csv(os.path.join(self.output_dir, 'metadata_unknown.csv'))
+        # concatenate the prediction with meta_data
+        df_pred = pd.DataFrame(np.array([pred_proba, pred]).transpose(), index = self.meta_unknown.index, columns = ['infection_probability', 'infection_status'])
+        self.meta_unknown = pd.concat([self.meta_unknown, df_pred], axis = 1)
+        
+        # combine training and unknown metadata
+        self.meta_train[['infection_probability']] = self.meta_train[['label']].astype(float)
+        self.meta_train[['infection_status']] = self.meta_train[['label']]
+        self.meta_train.replace({'infection_status': {1 : 'true_positive', 0 : 'true_negative'}}, inplace=True)
+        self.meta_unknown.replace({'infection_status': {1 : 'pred_positive', 0 : 'pred_negative'}}, inplace=True)
+        self.meta_df = pd.concat([self.meta_train, self.meta_unknown], axis = 0)
+        
+        # add another colume with the label generated based on user defined threshold
+        if self.threshold:
+            self.meta_unknown[f'infection_status_{self.threshold}'] = self.meta_unknown['infection_probability'].apply(lambda x: 'pred_positive' if x >= self.threshold else 'pred_negative')
+            self.meta_train[f'infection_status_{self.threshold}'] = self.meta_train[['infection_status']]
+        
+        # save the updated metadata table
+        if self.h5ad_dir:
+            self.anndata.obs = self.meta_df
+            self.anndata.write(os.path.join(self.output_dir, os.path.basename(self.h5ad_dir)))
+        else:
+            self.meta_df.to_csv(os.path.join(self.output_dir, os.path.basename(self.meta_dir)))
+        
+        # draw histogram of the predicted probabilities
+        self.histogram(self.meta_unknown['infection_probability'], 'unseen')
+        
     
