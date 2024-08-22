@@ -41,7 +41,7 @@ class Utils_Model:
         """
         cm = confusion_matrix(label, pred)
         
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(10, 6))
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['uninfected', 'infected'])
         
         disp.plot(include_values=True, cmap='Blues', values_format='d', ax=ax)
