@@ -599,4 +599,13 @@ class VID(Utils_Model):
         # draw histogram of the predicted probabilities
         self.histogram(self.meta_unknown['infection_probability'], 'unseen')
         
+        # visualize the distribution of infection status with umap
+        # scaler = StandardScaler()
+        # self.data_array_processed = scaler.fit_transform(self.data_df[self.features])
+        # if self.batch_column:
+        #     ho_all = hm.run_harmony(self.data_array_processed, self.meta_df[[self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
+        #     self.data_df_processed = pd.DataFrame(ho_all.Z_corr.T, columns=self.features, index=self.data_df.index)
+        # else:
+        #     self.data_df_processed = pd.DataFrame(self.data_array_processed, columns=self.features, index=self.data_df.index)
+        # self.umap_plot()
     

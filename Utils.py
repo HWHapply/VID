@@ -5,6 +5,8 @@ from args_dict import args_fs
 from sklearn.ensemble import RandomForestClassifier
 import os
 import xgboost
+import umap
+import seaborn as sns
 
 
 """
@@ -13,6 +15,8 @@ Utils_model:
 2. Confusion Matrix plot
 3. ROC Curve plot
 4. Histogram of predicted probabilities
+5. XGB feature importance bar plot
+6. Umap projection
 """
 
 
@@ -140,3 +144,26 @@ class Utils_Model:
         plt.close()
 
 
+    def umap_plot(self):
+        # Initialize UMAP model
+        reducer = umap.UMAP()
+
+        # Fit and transform the data
+        embedding = reducer.fit_transform(self.data_df_processed)
+
+        # Create a scatter plot of the UMAP embedding
+        plt.figure(figsize=(8, 8))
+        sns.scatterplot(
+            x=embedding[:, 0], y=embedding[:, 1],
+            hue=self.meta_df['infection_status'],
+            palette=sns.color_palette("hsv", len(set(self.meta_df['infection_status']))),
+            legend="full",
+            alpha=0.7
+        )
+        plt.title('UMAP projection')
+        
+        # Save the histogram of predicted probability
+        plt.savefig(os.path.join(self.output_dir, 'Umap_infection_status.png'))  
+
+        # Close the plot to free up memory
+        plt.close()
