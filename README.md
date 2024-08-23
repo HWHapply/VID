@@ -1,10 +1,10 @@
-# VID
-Virus Infection Detector
+# Viral Infection Detector: Ensemble Machine Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers
 
-![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green)
+
+![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green) ![ ](https://img.shields.io/badge/R-4.4.1-blue) ![ ](https://img.shields.io/badge/conda-24.7.1-green)  
 
 ## Citation
-Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder, 25 August 2022, PROTOCOL (Version 1) available at Protocol Exchange [https://doi.org/10.21203/rs.3.pex-1984/v1]
+Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector: Ensemble Machine Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers, dd Month yyyy, PROTOCOL (Version 1) available at Protocol Exchange [paper_DOI]
 
 ## Table of Contents
 * [Installation](#installation)
@@ -16,11 +16,11 @@ Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and va
   * [Stage 2 Model construction](#stage-2-model-construction)
   * [Stage 3 Model validation](#stage-3-model-validation)
   * [Stage 4 Biomarker interpretation](#stage-4-biomarker-interpretation)
-* [Case study](#case-study)
+* [Demo Dataset](#demo-dataset)
   * [16S rRNA gene sequencing data of OSCC patients](#human-microbiome)
   * [Whole metagenomics data of Tara Ocean](#ocean-microbiome)
   * [Transcriptomics data of NASH patients](#human-transcriptome)
-* [FAQs](#faqs)
+* [Advanced Options](#advanced-options)
   * [Part I General questions](#part-i-general-questions)
   * [Part II Data processing](#part-ii-data-processing)
   * [Part III Using xMarkerFinder](#part-iii-using-xmarkerfinder)
@@ -441,7 +441,7 @@ results/all_associations.txt: associations between different omics or dimensions
 results/hallagram.png: the visualization of all_associations.txt with only significant associations highlighted.   
 
 
-## Case study
+## Demo Dataset
 It’s worth highlighting that xMarkerFinder is designed as a standard protocol with a high level of impartiality regarding data type and microbial habitat. In other words, xMarkerFinder’s versatility goes beyond its initial purpose in gut microbiome research, making it suitable for diverse microbial biomes. 
 To provide further clarity, we present three examples showcasing the application of xMarkerFinder across various contexts. 
 #### Human microbiome
@@ -460,7 +460,7 @@ These examples collectively serve as compelling evidence of the extensive scope 
 
 
 
-## FAQs
+## Advanced Options
 ### Part I General questions
 #### 1. When should I use xMarkerFinder?  
 xMarkerFinder is suitable for microbial biomarker identification from cross-cohort datasets. Our previous studies demonstrated its applicability in identifying global microbial diagnostic biomarkers for adenoma and colorectal cancer. Moreover, xMarkerFinder could also be applied to biomarker determination in disease prognosis, treatment stratification, metastasis surveillance, adverse reactions anticipation, etc. Any research dedicated to biomarker identification from multi-population microbial datasets is welcome.
