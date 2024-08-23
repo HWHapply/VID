@@ -7,8 +7,6 @@ def define_arguments():
 	# Create a parser object
 	parser = argparse.ArgumentParser(description='Arguments for Virus Infection Detector:')
 
-	# Define positional argument
-
 	# Define optional argument
 	parser.add_argument('--h5ad_dir', '-hd', default = None, help = 'The directory of input h5ad file.')
 	parser.add_argument('--data_dir', '-dd', default = None, type = str, help = 'The directory of gene expression.')
