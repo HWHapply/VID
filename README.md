@@ -9,8 +9,8 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
 ## Table of Contents
 * [Installation](#installation)
   * [Hardware](#hardware)
-  * [Softwre](#software)
-  * [Software setup](#software-setup)
+  * [Software](#software)
+  * [Environment Setup](#environment-setup)
 * [User tutorial](#user-tutorial)
   * [Stage 1 Differential signature identification](#stage-1-differential-signature-identification)
   * [Stage 2 Model construction](#stage-2-model-construction)
@@ -29,7 +29,23 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
 
 
 ### Hardware
-The protocol can be executed on standard computational hardware, and greater computational resources would allow for faster execution. The development and test of this protocol have been conducted on a MacBook Pro equipped with a 2.4-GHz quad-core eighth-generation Intel Core i5 processor and 16-GB 2133-MHz LPDDR3 memory.
+This model is designed to be executed on standard computational hardware. While the process is feasible on commonly available systems, utilizing more robust computational resources can significantly enhance execution speed and efficiency.
+
+Development and testing were carried out on different OSs:
+#### macOS Sonoma Version 14.6.1:
+- Processor: 8-core Apple M1 chip
+- Memory: 16 GB LPDDR4
+
+#### Ubuntu 22.04:
+- Processor: 
+- Memory:
+
+#### Windows 10:
+- Processor: 
+- Memory:
+  
+For optimal performance, it is recommended to run the model on hardware with similar or superior capabilities.
+
 ### Software
 - R v.3.6.1 or newer (https://www.r-project.org)
 - Python3 v3.7 or newer (https://www.python.org)
@@ -55,7 +71,7 @@ The protocol can be executed on standard computational hardware, and greater com
 - seaborn (https://seaborn.pydata.org/)
 #### Docker image
 Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
-### Software setup
+### Environment setup
 #### Installation of R and R packages
 Installation of R on different platforms can be conducted following the instructions on the official website (https://www.r-project.org/). All R packages used in this protocol can be installed following given commands.
 ```
