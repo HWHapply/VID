@@ -43,47 +43,40 @@ Development and testing were carried out on different OSs:
 #### Windows 10:
 - Processor: 
 - Memory:
-  
-For optimal performance, it is recommended to run the model on hardware with similar or superior capabilities.
 
 ### Software
-- R v.3.6.1 or newer (https://www.r-project.org)
-- Python3 v3.7 or newer (https://www.python.org)
-- HAllA (https://huttenhower.sph.harvard.edu/halla)
-- FastSpar (https://github.com/scwatts/FastSpar)
-- Gephi (https://gephi.org)
+- R v4.4.1 or newer (https://www.r-project.org)
+- Python3 v3.10.14 (https://www.python.org)
+- Conda v14.7.1 (https://github.com/conda)
+
 #### R packages
-- BiocManager (https://github.com/Bioconductor/BiocManager) to ensure the installation of the following packages and their dependencies.
-- MMUPHin (https://huttenhower.sph.harvard.edu/mmuphin)
-- dplyr (https://dplyr.tidyverse.org/)
-- vegan (https://github.com/vegandevs/vegan)
-- XICOR (https://github.com/cran/XICOR)
-- eva (https://github.com/brianbader/eva_package)
-- labdsv (https://github.com/cran/labdsv)
-- Boruta (https://gitlab.com/mbq/Boruta, optional)
+- Seurat (https://satijalab.org/seurat/)
+- SeuratDisk (https://github.com/mojaveazure/seurat-disk)
+
 #### python packages
 - pandas (https://pandas.pydata.org)
 - NumPy (https://numpy.org/)
+- Scipy (https://scipy.org/install/)
 - scikit-learn (https://scikit-learn.org)
-- bioinfokit (https://github.com/reneshbedre/bioinfokit)
-- Bayesian Optimization (https://github.com/fmfn/BayesianOptimization)
+- boruta (https://github.com/scikit-learn-contrib/boruta_py)
+- xgboost (https://xgboost.readthedocs.io/en/stable/install.html)
+- pytorch (https://pytorch.org/get-started/locally/)
+- skorch (https://github.com/skorch-dev/skorch)
+- harmonypy (https://github.com/slowkow/harmonypy)
+- anndata (https://anndata.readthedocs.io/en/latest/)
+- tqdm (https://github.com/tqdm/tqdm)
 - Matplotlib (https://matplotlib.org/)
+- umap (https://umap-learn.readthedocs.io/en/latest/)
 - seaborn (https://seaborn.pydata.org/)
+  
 #### Docker image
 Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
+
 ### Environment setup
-#### Installation of R and R packages
-Installation of R on different platforms can be conducted following the instructions on the official website (https://www.r-project.org/). All R packages used in this protocol can be installed following given commands.
-```
-> install.packages(Package_Name)
-```
-or
-```
-> if (!requireNamespace(“BiocManager”, quietly = TRUE)) 
-> install.packages(“BiocManager”)
-> BiocManager::install(Package_Name)
-```
-#### Installation of python and python packages
+#### Conda installation (version 24.7.1 is recommended)
+Please install conda according to your OS from (https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
+
+#### Setup Environment
 Python can be downloaded and installed from its official website (https://www.python.org/), and all python packages could be installed using pip.
 ```
 $ pip install Package_Name
@@ -108,9 +101,7 @@ $./configure --prefix=/usr/
 $ make
 $ make install
 ```
-#### Installation of Gephi
-Gephi could be freely downloaded and installed from its website (https://gephi.org/). 
-<img width="415" alt="image" src="https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/101422c1-fb1f-4f97-8553-d447264b4d43">
+
 #### Docker image setup
 To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
 
