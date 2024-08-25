@@ -73,34 +73,50 @@ Development and testing were carried out on different OSs:
 Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
 
 ### Environment setup
-#### Conda installation (version 24.7.1 is recommended)
+#### 1. Conda installation (version 24.7.1 is recommended)
 Please install conda according to your OS from (https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
-#### Setup Environment
-Python can be downloaded and installed from its official website (https://www.python.org/), and all python packages could be installed using pip.
+#### 2. Compiling from source code
+Clone the source github repository to local machine:
 ```
-$ pip install Package_Name
+git clone https://github.com/HWHapply/VID.git
 ```
-#### Installation of HAllA
-HAllA can be installed according to its website (https://huttenhower.sph.harvard.edu/halla/) with the following command.
+Change to the work directory:
 ```
-$ pip install halla
+cd VID
 ```
-#### Installation of FastSpar
-FastSpar can be installed following its GitHub repository (https://github.com/scwatts/fastspar).
-Installation through conda:
+
+#### 3. Configure the environment with a setup script:
 ```
-$ conda install -c bioconda -c conda-forge fastspar
+bash Setup.sh
 ```
-Or compiling from source code:
+
+###### If the setup failed, can configure the environment manually with following steps.
+
+Create a conda environment called 'vid_env' for the VID running:
 ```
-$ git clone https://github.com/scwatts/fastspar.git
-$ cd fastspar
-$./autogen.sh
-$./configure --prefix=/usr/
-$ make
-$ make install
+conda create -f vid_env.yml -n vid_env
 ```
+Activate the environment:
+```
+conda activate vid_env
+```
+Dectivate the VID environment(if required):
+```
+conda deactivate vid_env
+```
+Remove the VID environment(if required):
+```
+conda env remove -n vid_env
+```
+Make a new directory as work directory of demo dataset.
+```
+mkdir -p ./demo/data
+```
+Install the demo dataset to the work directory:
+```
+wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1' -O ./demo/data/demo.rds
+``` 
 
 #### Docker image setup
 To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
