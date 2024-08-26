@@ -12,9 +12,8 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
   * [Software](#software)
   * [Environment Setup](#environment-setup)
 * [User tutorial](#user-tutorial)
-  * [Simple Usage](#simple-usage)
-  * [Parameters](#parameters)
-  * [Output](#output)
+  * [Input Preparation](#input-preparation)
+  * [Perform Detection](#perform-detection)
   * [Expert usage](#expert-usage)
 * [Demo Dataset](#demo-dataset)
   * [16S rRNA gene sequencing data of OSCC patients](#human-microbiome)
@@ -128,25 +127,28 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash
 ```
 
 ## User tutorial
-### Simple Usage
-To mitigate challenges induced by different number of sequencing (e.g., library size), microbial count matrices are often normalized by various computational strategies prior to downstream analyses. Here, xMarkerFinder takes the proportional normalization as its default algorithm for determining relative abundances (REL), other normalization methods are also available, including AST, CLR, and TMM. 
+### Input preparation ###
+The first step is to prepare the standard input for VID running. Because the h5ad conversion issue occured in seurat V5, the model takes two formats(seurat object in .h5ad or gene expression csv + metadata csv) as input. We prepared two scripts for the input preparation: 'Input_Preparation_R.ipynb' and 'Input_Preparation_R.R'. The two scripts have the same content, you can select the script with jupyter notebook or Rstudio for input preparation base on your preferance. 
+#### If your seurat object  ####
 ```
-$ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST
+
 ```  
-Users should specify these parameters or enter the default values, subsequent repetitions of which are not listed.   
+- Input files:
+Seurat object: merged microbial count profile of all datasets.  
+- Output files:  
+normalized_abundance.txt: normalized abundance profile of input dataset. Normalized abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.
+
+#### Gene expression ####
 ```
--W the Workplace of this whole protocol  
--p the input microbial count profile
--m the normalization method (REL, AST, CLR, TMM)
--o prefix of output files
+
 ```  
-- Input files:  
-abundance.txt: merged microbial count profile of all datasets.  
+- Input files:
+Seurat object: merged microbial count profile of all datasets.  
 - Output files:  
 normalized_abundance.txt: normalized abundance profile of input dataset. Normalized abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.  
+### Perform detection ###
 
-
-### Parameters ###
+#### Parameters ####
 
 __estimator__ : object
    > A supervised learning estimator, with a 'fit' method that returns the
@@ -181,7 +183,7 @@ __max_iter__ : int, default = 100
 __verbose__ : int, default=0
    > Controls verbosity of output.
 
-### Output ###
+#### Output ####
 
 ### Expert Usage ###
 
