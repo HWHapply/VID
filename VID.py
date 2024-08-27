@@ -141,10 +141,10 @@ class VID(Utils_Model):
                 self.boruta_model = self.boruta()
                 self.boruta_model.fit(self.X_train.to_numpy(), self.y_train.to_numpy())
                 self.features = list(self.X_train.columns[self.boruta_model.support_])
-                with open(os.path.join(self.output_dir, 'important_features.txt'), "w") as file:
-                    for item in self.features:
-                        file.write(item + "\n")
                 print(f'Feature selection finished, {len(self.features)} important gene selected.')
+            with open(os.path.join(self.output_dir, 'important_genes.txt'), "w") as file:
+                for item in self.features:
+                    file.write(item + "\n")
             self.X_train = self.X_train[self.features]
             self.X_test = self.X_test[self.features]
         except Exception as e:
@@ -592,9 +592,9 @@ class VID(Utils_Model):
         # save the updated metadata table
         if self.h5ad_dir:
             self.anndata.obs = self.meta_df
-            self.anndata.write(os.path.join(self.output_dir, os.path.basename(self.h5ad_dir)))
+            self.anndata.write(self.h5ad_dir)
         else:
-            self.meta_df.to_csv(os.path.join(self.output_dir, os.path.basename(self.meta_dir)))
+            self.meta_df.to_csv(self.meta_dir)
         
         # draw histogram of the predicted probabilities
         self.histogram(self.meta_unknown['infection_probability'], 'unseen')
