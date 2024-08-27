@@ -66,16 +66,27 @@ if (!conversion_result$success) {
   meta_data <- seurat_obj@meta.data
   write.csv(meta_data, file = meta_path, row.names = TRUE)
   
+  # Free memory after metadata extraction
+  rm(meta_data)
+  gc()
+  
   # Extract the log-normalized gene expression matrix
   output_file <- file.path(output_dir, "dmatrix.csv")
   num_genes <- 2000
   top_genes <- VariableFeatures(seurat_obj)[1:num_genes]
   log_normalized_data <- GetAssayData(seurat_obj, assay = "RNA", layer = "data")[top_genes, ]
   
+  # Free memory after extracting log-normalized data
+  rm(top_genes)
+  gc()
+  
   # Handle large matrices by saving in chunks if necessary
   tryCatch({
     dmatrix <- as.data.frame(as.matrix(log_normalized_data))
     write.csv(dmatrix, file = output_file, row.names = TRUE)
+    # Free memory after saving
+    rm(dmatrix)
+    gc()
   }, error = function(e) {
     cat("Error during CSV export: ", e$message, "\n")
     # Save in chunks
@@ -84,14 +95,28 @@ if (!conversion_result$success) {
     chunk_df <- as.data.frame(as.matrix(chunk))
     fwrite(chunk_df, file = output_file, row.names = TRUE)
     
+    # Free memory after first chunk
+    rm(chunk, chunk_df)
+    gc()
+    
     for (i in seq(chunk_size + 1, ncol(log_normalized_data), by = chunk_size)) {
       chunk <- log_normalized_data[, i:min(i + chunk_size - 1, ncol(log_normalized_data))]
       chunk_df <- as.data.frame(as.matrix(chunk))
       fwrite(chunk_df, file = output_file, row.names = TRUE, append = TRUE, col.names = FALSE)
+      
+      # Free memory after each chunk
+      rm(chunk, chunk_df)
+      gc()
     }
   })
+  
+  # Free memory after processing log-normalized data
+  rm(log_normalized_data)
+  gc()
 }
 
-cat("Data Preparation completed.\n")
+# Free memory for Seurat object and other large variables
+rm(seurat_obj, h5seurat_dir, h5ad_dir)
+gc()
 
-# If both methods failed, please consider downgrading Seurat to V4.
+cat("Data Preparation completed.\n")
