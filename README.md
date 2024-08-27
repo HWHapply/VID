@@ -11,11 +11,12 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
   * [Hardware](#hardware)
   * [Software](#software)
   * [Environment Setup](#environment-setup)
-* [User tutorial](#user-tutorial)
-  * [Input Preparation](#input-preparation)
-  * [Perform Detection](#perform-detection)
-  * [Expert usage](#expert-usage)
-* [Demo Dataset](#demo-dataset)
+* [User Tutorial](#user-tutorial)
+  * [Simple Usage](#simple-usage)
+  * [Parameters](#parameters)
+  * [Output](#output)
+* [Demo](#demo)
+* [Expert Usage](#expert-usage)
   * [16S rRNA gene sequencing data of OSCC patients](#human-microbiome)
   * [Whole metagenomics data of Tara Ocean](#ocean-microbiome)
   * [Transcriptomics data of NASH patients](#human-transcriptome)
@@ -105,14 +106,6 @@ Remove the VID environment(if required):
 ```
 conda env remove -n vid_env
 ```
-Create the work directory for demo dataset:
-```
-mkdir -p ./demo/data
-```
-Install the demo dataset to the work directory:
-```
-wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1' -O ./demo/data/demo.rds
-``` 
 
 #### Docker image setup
 To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
@@ -127,28 +120,16 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash
 ```
 
 ## User tutorial
-### Input preparation ###
-The first step is to prepare the standard input for VID running. Because the h5ad conversion issue occured in seurat V5, the model takes two formats(seurat object in .h5ad or gene expression csv + metadata csv) as input. We prepared two scripts for the input preparation: 'Input_Preparation_R.ipynb' and 'Input_Preparation_R.R'. The two scripts have the same content, you can select the script with jupyter notebook or Rstudio for input preparation base on your preferance. 
-#### If your seurat object  ####
+### Simple Usage ###
 ```
 
-```  
+``` 
 - Input files:
 Seurat object: merged microbial count profile of all datasets.  
 - Output files:  
 normalized_abundance.txt: normalized abundance profile of input dataset. Normalized abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.
 
-#### Gene expression ####
-```
-
-```  
-- Input files:
-Seurat object: merged microbial count profile of all datasets.  
-- Output files:  
-normalized_abundance.txt: normalized abundance profile of input dataset. Normalized abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.  
-### Perform detection ###
-
-#### Parameters ####
+### Parameters ###
 
 __estimator__ : object
    > A supervised learning estimator, with a 'fit' method that returns the
@@ -183,24 +164,29 @@ __max_iter__ : int, default = 100
 __verbose__ : int, default=0
    > Controls verbosity of output.
 
-#### Output ####
+### Output ###
+20240827_174623
+├── data
+│   └── data.h5ad
+└── output
+    ├── Confusion_Matrix_mlp.png
+    ├── ROC_Curve_mlp.png
+    ├── important_genes.txt
+    ├── pred_proba_hist_mlp_test.png
+    ├── pred_proba_hist_mlp_unseen.png
+    ├── test_scores_weighted.csv
+    ├── val_cv_scores_weighted.csv
+    └── vid_240827_1748.pkl
 
-### Expert Usage ###
+## Demo ##
 
-## Demo Dataset
-It’s worth highlighting that xMarkerFinder is designed as a standard protocol with a high level of impartiality regarding data type and microbial habitat. In other words, xMarkerFinder’s versatility goes beyond its initial purpose in gut microbiome research, making it suitable for diverse microbial biomes. 
-To provide further clarity, we present three examples showcasing the application of xMarkerFinder across various contexts. 
-#### Human microbiome
-Firstly, we used datasets from previous publications containing 16S rRNA gene sequencing data of the oral microbiome of patients with oral squamous cell carcinoma (OSCC) and controls. We applied xMarkerFinder to these oral microbiome datasets and successfully identified consistent microbial signatures associated with OCSS with great diagnostic capabilities.   
-![image](https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/1d917634-e985-4c0a-86c1-4da650e312f3)
 
-#### Ocean microbiome
-Secondly, we employed metagenomic datasets from the Tara Ocean project to characterize important microbiota within the oceanic environment, capable of distinguishing between deep and surface regions.     
-![image](https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/68e1f932-a18e-4eec-88a4-bcf29ec506ad)
+### Seurat Object Version < V5 ###
 
-#### Human transcriptome
-To demonstrate its generalizability in different omics data, we further applied xMarkerFinder to transcriptomic datasets of non-alcoholic steatohepatitis (NASH) patients, using three publicly available NASH cohorts. The resulting classification model reached an impressive AUC value of 0.99, highlighting the robustness and applicability of xMarkerFinder.  
-![image](https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/63cd4531-b0c6-448c-bc73-2f793cc24626)
 
-These examples collectively serve as compelling evidence of the extensive scope of applicability inherent in xMarkerFinder.
+### Seurat Object V5 ###
 
+
+### MLP as Meta model ###
+
+## Expert Usage ##
