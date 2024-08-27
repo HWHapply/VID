@@ -110,3 +110,6 @@ python_args=$(printf "%s " "${optional_args[@]}")
 
 # Run the Python script with the optional arguments
 python run_vid.py $python_args
+
+# Save the predicted infection status to seurat object
+Rscript Save_Result.R "$seuratobj_dir" "$rawdata_dir"

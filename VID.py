@@ -590,11 +590,22 @@ class VID(Utils_Model):
             self.meta_train[f'infection_status_{self.threshold}'] = self.meta_train[['infection_status']]
         
         # save the updated metadata table
-        if self.h5ad_dir:
-            self.anndata.obs = self.meta_df
-            self.anndata.write(self.h5ad_dir)
-        else:
-            self.meta_df.to_csv(self.meta_dir)
+        # if self.h5ad_dir:
+        #     self.anndata.obs = self.meta_df
+        #     self.anndata.write(self.h5ad_dir)
+        # else:
+        #     self.meta_df.to_csv(self.meta_dir)
+        
+        # save the metadata table
+        output_data_dir = os.path.join(os.path.dirname(self.output_dir), 'data')
+        if os.path.isfile(os.path.join(output_data_dir, 'dmatrix.csv')):
+            os.remove(os.path.join(output_data_dir, 'dmatrix.csv'))
+        if os.path.isfile(os.path.join(output_data_dir, 'data.h5ad')):
+            os.remove(os.path.join(output_data_dir, 'data.h5ad'))
+        if not self.meta_dir:
+            self.meta_dir = os.path.join(output_data_dir, 'metadata.csv')
+        self.meta_df.to_csv(self.meta_dir)
+        print('Metatable saved!')
         
         # draw histogram of the predicted probabilities
         self.histogram(self.meta_unknown['infection_probability'], 'unseen')
