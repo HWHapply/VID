@@ -12,10 +12,9 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
   * [Software](#software)
   * [Environment Setup](#environment-setup)
 * [User Tutorial](#user-tutorial)
-  * [Simple Usage](#simple-usage)
+  * [Usage](#usage)
   * [Parameters](#parameters)
-  * [Output](#output)
-* [Demo](#demo)
+  * [Demo](#demo)
 * [Expert Usage](#expert-usage)
   * [16S rRNA gene sequencing data of OSCC patients](#human-microbiome)
   * [Whole metagenomics data of Tara Ocean](#ocean-microbiome)
@@ -50,7 +49,7 @@ Development and testing were carried out on different OSs:
 - Seurat (https://satijalab.org/seurat/)
 - SeuratDisk (https://github.com/mojaveazure/seurat-disk)
 
-#### python packages
+#### Python packages
 - pandas (https://pandas.pydata.org)
 - NumPy (https://numpy.org/)
 - Scipy (https://scipy.org/install/)
@@ -120,14 +119,56 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash
 ```
 
 ## User tutorial
-### Simple Usage ###
+### Usage ###
+Visualize the usage of the code with '--help' flag:
 ```
+./run_vid.sh --help
+```
+You will get the tutorial below without code running:
+```
+Usage: ./run_vid.sh <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] 
+                  [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] 
+                  [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] 
+                  [--verbose VERBOSE] [--help]
+```
+__Input file__: The seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory of input file which is required parameter for code runing.
+```
+$seuratobj_dir/xxx.rds
+```
+__Output files__: The code will automatically create output directory named with the starting timestamp in current work directory:
+```
+YYYYmmdd_HHMMSS 
+├── data
+│   ├── data.rds
+│   └── metadata.csv
+└── output
+    ├── Confusion_Matrix_test.png
+    ├── ROC_Curve_test.png
+    ├── important_genes.txt
+    ├── pred_proba_hist_test.png
+    ├── pred_proba_hist_unseen.png
+    ├── test_scores_weighted.csv
+    ├── val_cv_scores_weighted.csv
+    └── vid_YYmmdd_HHMMSS.pkl
+```
+#### Explanation: ####
 
-``` 
-- Input files:
-Seurat object: merged microbial count profile of all datasets.  
-- Output files:  
-normalized_abundance.txt: normalized abundance profile of input dataset. Normalized abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.
+- **YYYYmmdd_HHMMSS/**: The root directory, named with the current timestamp:
+
+  - **data/**: Contains the input data and metadata table with results saved inside.
+    - ***data.rds***: The input Seurat object file with predicted infection status and probabilities in the meta.data.
+    - ***metadata.csv***: A CSV file containing metadata the same as the samples in `data.rds`.
+
+  - **output/**: Contains the results and outputs from the machine learning tasks.
+    - ***Confusion_Matrix_test.png***: An image file showing the confusion matrix on the test set.
+    - ***ROC_Curve_test.png***: An image file showing the Receiver Operating Characteristic (ROC) curve on the test set.
+    - ***important_genes.txt***: A text file listing the important genes identified by the boruta.
+    - ***pred_proba_hist_test.png***: A histogram showing the distribution of predicted probabilities on the test dataset.
+    - ***pred_proba_hist_unseen.png***: A histogram showing the distribution of predicted probabilities on an unseen dataset.
+    - ***test_scores_weighted.csv***: A table containing the weighted test scores.
+    - ***val_cv_scores_weighted.csv***: A table file containing the weighted cross-validation scores.
+    - ***vid_YYmmdd_HHMMSS.pkl***: The VID object (for expert usage), timestamped with the current date and time.
+
 
 ### Parameters ###
 
@@ -164,29 +205,17 @@ __max_iter__ : int, default = 100
 __verbose__ : int, default=0
    > Controls verbosity of output.
 
-### Output ###
-20240827_174623
-├── data
-│   └── data.h5ad
-└── output
-    ├── Confusion_Matrix_mlp.png
-    ├── ROC_Curve_mlp.png
-    ├── important_genes.txt
-    ├── pred_proba_hist_mlp_test.png
-    ├── pred_proba_hist_mlp_unseen.png
-    ├── test_scores_weighted.csv
-    ├── val_cv_scores_weighted.csv
-    └── vid_240827_1748.pkl
-
-## Demo ##
 
 
-### Seurat Object Version < V5 ###
+### Demo ###
 
 
-### Seurat Object V5 ###
+#### Seurat Object Version < V5 ####
 
 
-### MLP as Meta model ###
+#### Seurat Object V5 ####
+
+
+#### MLP as Meta model ####
 
 ## Expert Usage ##
