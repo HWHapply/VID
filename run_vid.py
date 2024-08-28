@@ -51,7 +51,7 @@ if __name__ == '__main__':
 	vid.fit()
  
 	# save the vid model and training time
-	current_time = datetime.now().strftime("%y%m%d_%H%M")
+	current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 	with open(os.path.join(args_input['output_dir'], f'vid_{current_time}.pkl'), "wb") as file:
 		pickle.dump(vid, file)
 		print('VID model saved!')

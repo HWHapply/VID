@@ -63,7 +63,7 @@ class Utils_Model:
         plt.title(f'Confusion Matrix', fontsize=20)
         
         # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, f'Confusion_Matrix_{self.metamodel}.png'))  
+        plt.savefig(os.path.join(self.output_dir, 'Confusion_Matrix_test.png'))  
         
         # Close the plot to free up memory
         plt.close()
@@ -94,7 +94,7 @@ class Utils_Model:
         plt.legend(loc="lower right")
 
         # Save the plot to a directory
-        plt.savefig(os.path.join(self.output_dir, f'ROC_Curve_{self.metamodel}.png'))  # Replace with your desired directory and filename
+        plt.savefig(os.path.join(self.output_dir, 'ROC_Curve_test.png'))  # Replace with your desired directory and filename
         
         # Close the plot to free up memory
         plt.close()
@@ -115,7 +115,7 @@ class Utils_Model:
         plt.title(f'Distribution of Predicted Probability of {self.metamodel}')
         
         # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, f'pred_proba_hist_{self.metamodel}_{title}.png'))  
+        plt.savefig(os.path.join(self.output_dir, f'pred_proba_hist_{title}.png'))  
         
         # Close the plot to free up memory
         plt.close()

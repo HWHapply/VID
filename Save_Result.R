@@ -43,4 +43,4 @@ if (length(metadata_file) == 1) {
   stop("Error: Unexpected number or type of files in the output directory. Expecting only 'metadata.csv'.")
 }
 
-cat("Result saved to seurat object.\n")
+cat("Result saved to seurat object!\n")

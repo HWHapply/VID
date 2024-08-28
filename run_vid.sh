@@ -26,10 +26,10 @@ optional_args=()
 
 # Function to display usage
 usage() {
-    echo "Usage: $0 <seuratobj_dir> [--h5ad_dir H5AD_DIR] [--data_dir DATA_DIR] [--meta_dir META_DIR] [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR]
-                  [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN]
-                  [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE]
-                  [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]"
+    echo "Usage: $0 <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] 
+                  [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] 
+                  [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] 
+                  [--verbose VERBOSE] [--help]"
     exit 1
 }
 
