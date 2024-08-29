@@ -183,7 +183,7 @@ YYYYmmdd_HHMMSS
 __seuratobj_dir__ : str, requied
    > The directory of the input rds file (seurat object).
 
-__marker_dir__ : str, requied
+__marker_dir__ : str, optional, default = ./markers.txt
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
    > The markers will be applied for the defination of traning set(truely infected and truely uninfected), 
    > while the cells from infected sample with any marker expressed will be considered truely infected.
