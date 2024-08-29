@@ -72,7 +72,13 @@ Above software list provides the minimal requirements for the complete execution
 #### 1. Conda installation (version 24.7.1 is recommended)
 Please install conda according to your OS from (https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
-#### 2. Compiling from source code
+#### 2. Configure the environment with a setup script:
+```
+bash Setup.sh
+```
+#### If the setup failed, can configure the environment manually with following steps:
+
+#### 1. Compiling from source code
 Clone the source github repository to local machine:
 ```
 git clone https://github.com/HWHapply/VID.git
@@ -82,14 +88,7 @@ Change to the work directory:
 cd VID
 ```
 
-#### 3. Configure the environment with a setup script:
-```
-bash Setup.sh
-```
-
-###### If the setup failed, can configure the environment manually with following steps.
-
-Create a conda environment called 'vid_env' for the VID running:
+#### 2. Create a conda environment called 'vid_env' for the VID running:
 ```
 conda create -f vid_env.yml -n vid_env
 ```
@@ -105,6 +104,16 @@ Remove the VID environment(if required):
 ```
 conda env remove -n vid_env
 ```
+#### 3. Download the demo dataset 
+Make work directory for demo:
+```
+mkdir -p ./demo/data
+```
+Download the demo data to the demo directory from dropbox with wget:
+```
+wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1' -O ./demo/data/demo.rds
+```
+You can also download and save data to './demo/data' with [demodata](https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1).
 
 #### Docker image setup
 To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
