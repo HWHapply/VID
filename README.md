@@ -133,7 +133,7 @@ Visualize the usage of the code with '--help' flag:
 ```
 ./run_vid.sh --help
 ```
-You will get the tutorial below without code running:
+You will get the help message below without code running:
 ```
 Usage: ./run_vid.sh <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] 
                   [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] 
@@ -229,7 +229,7 @@ __average__ : str, optional {micro, macro, samples, weighted, binary, None} , de
    > Define the type of averaging performed on the evaluation scores among different class. 
 
 __random_state__ : int, optional , default = 42
-   > It is a seed used to initialize a pseudo-random number generator (PRNG). It ensures that the results of random processes,
+   > The seed used to initialize a pseudo-random number generator (PRNG). It ensures that the results of random processes,
    > such as shuffling data or splitting datasets or model construction, are reproducible.
 
 __n_jobs__ : int, optional, default=-1
