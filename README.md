@@ -232,12 +232,12 @@ __random_state__ : int, optional , default = 42
    > The seed used to initialize a pseudo-random number generator (PRNG). It ensures that the results of random processes,
    > such as shuffling data or splitting datasets or model construction, are reproducible.
 
-__n_jobs__ : int, optional, default=-1
+__n_jobs__ : int, optional, default = -1
    > The number of CPU applied for parallel excecution. All available CPU will be applied if not specify (n_jobs = -1).
    > Running with more CPUs can accelerate the training, but may effects other application and process on the computer.
    > Use this parameter with caution.
 
-__verbose__ : int, default=2
+__verbose__ : int, optional, default = 2
    > Controls verbosity of output.
 
 __help__ : Flag
