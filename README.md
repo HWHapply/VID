@@ -140,11 +140,11 @@ Usage: ./run_vid.sh <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEA
                   [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] 
                   [--verbose VERBOSE] [--help]
 ```
-__Input file__: The seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory of input file which is required parameter for code runing.
+__Input file__: The seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory of input file which is required parameter for code running.
 ```
 $seuratobj_dir/xxx.rds
 ```
-__Output files__: The code will automatically create output directory named with the starting timestamp in current work directory:
+__Output files__: The code will automatically create output directory in current work directory named with the starting timestamp :
 ```
 YYYYmmdd_HHMMSS 
 ├── data
@@ -180,41 +180,68 @@ YYYYmmdd_HHMMSS
 
 
 ### Parameters ###
+__seuratobj_dir__ : str, requied
+   > The directory of the input rds file (seurat object).
 
-__estimator__ : object
-   > A supervised learning estimator, with a 'fit' method that returns the
-   > feature_importances_ attribute. Important features must correspond to
-   > high absolute values in the feature_importances_.
+__marker_dir__ : str, requied
+   > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
+   > The markers will be applied for the defination of traning set(truely infected and truely uninfected), 
+   > while the cells from infected sample with any marker expressed will be considered truely infected.
+   > The markers will also be ***excluded*** from modeling.
 
-__n_estimators__ : int or string, default = 1000
-   > If int sets the number of estimators in the chosen ensemble method.
-   > If 'auto' this is determined automatically based on the size of the
-   > dataset. The other parameters of the used estimators need to be set
-   > with initialisation.
+__feature_dir__ : str, optional, default = None
+   > The directory of a txt file contains a list of important genes, with each gene occupying one line.
+   > If given, ignore feature selection and apply the important genes for modeling, otherwise, the boruta
+   > feature selection will be applied to select important genes.
+  
+__clinical_column__ : str, optional, default = clinical_column
+   > The column indicates the sample-level clinical diagnosis of infection, the column should
+   > included in the metadata of the input seurat object. 'positive' and 'negative' are two valid values in
+   > this column. This column will be applied for training set defination together with 'marker_dir'.
+   > Please prepare the column with valid values in metadata and pass the column name when running the code.
 
-__perc__ : int, default = 100
-   > Instead of the max we use the percentile defined by the user, to pick
-   > our threshold for comparison between shadow and real features. The max
-   > tends to be too stringent. This provides a finer control over this. The
-   > lower perc is the more false positives will be picked as relevant but
-   > also the less relevant features will be left out. The usual trade-off.
-   > The default is essentially the vanilla Boruta corresponding to the max.
+__batch_column__ : str, optional, default = batch
+   > The column indicates the batch label which will be applied in batch correction with harmony.
 
-__alpha__ : float, default = 0.05
-   > Level at which the corrected p-values will get rejected in both correction
-   steps.
+__sample_column__ : str, optional, default = orig.ident
+   > The column indicates the sample id. The column will be applied for training set defination.
+   > Only the cell from uninfected sample without any virus markers expressed are considered to be truely uninfected.
 
-__two_step__ : Boolean, default = True
-  > If you want to use the original implementation of Boruta with Bonferroni
-  > correction only set this to False.
+__test_ratio__ : float, optional, default = 0.3
+   > The ratio of test set. The testing set is splitted from the training data (infection status confirmed cells) before
+   > model training. The test set will be applied as unseen data for model evaluation.
 
-__max_iter__ : int, default = 100
-   > The number of maximum iterations to perform.
+__num_split__ : int, optional, default = 5
+   > The number of splitting for base model training and hyperparameter tuning of meta model.
 
-__verbose__ : int, default=0
+__metamodel__ : str, optional {xgb, mlp}, default = xgb
+   > The classifier applied as meta model. If 'xgb' passed, extreme gradient boosting classifier will be applied. If 'mlp'
+   > passed, the multi-layer perceptron will be applied.
+
+__threshold__ : float, optional {recommended range: 0.6 ~ 0.9}, default = None
+   > The threshold for the decision function of final prediction. It can be understand as confidence of prediction: with higher threshold, 
+   > the detected infection will be more reliable, but it may leads to misdetection of potential infected cells if the threshold is too high.
+   > With this parameter specified, additional column with predicted infection status defined by this threshold will be added in meta data.
+   > The default 'infection_status' in final meta data is defined with threshold = 0.5, the additional colunm defined by this threshold 
+   > will be named as 'infection_status_{threshold}' which won't overwrite the the default. 
+
+__average__ : str, optional {micro, macro, samples, weighted, binary, None} , default = weighted 
+   > Define the type of averaging performed on the evaluation scores among different class. 
+
+__random_state__ : int, optional , default = 42
+   > It is a seed used to initialize a pseudo-random number generator (PRNG). It ensures that the results of random processes,
+   > such as shuffling data or splitting datasets or model construction, are reproducible.
+
+__n_jobs__ : int, optional, default=-1
+   > The number of CPU applied for parallel excecution. All available CPU will be applied if not specify (n_jobs = -1).
+   > Running with more CPUs can accelerate the training, but may effects other application and process on the computer.
+   > Use this parameter with caution.
+
+__verbose__ : int, default=2
    > Controls verbosity of output.
 
-
+__help__ : Flag
+   >  Show the help message and exit.
 
 ### Demo ###
 
