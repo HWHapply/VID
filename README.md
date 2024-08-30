@@ -115,7 +115,6 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash
 
 ## User tutorial
 ### Usage ###
-__Simple_usage__:
 Simply run VID in terminal with command below:
 ```
 ./run_vid.sh seuratobj_dir/xxx.rds
