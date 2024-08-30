@@ -15,7 +15,7 @@ def define_arguments():
 	parser.add_argument('--marker_dir', '-mkd', default = './markers.txt', type = str, help = 'The markers stores in a txt file(one gene per row).')
 	parser.add_argument('--feature_dir', '-fd', default = None, type = str, help = 'The directory of txt file stores the important features(gene).')
 	parser.add_argument('--clinical_column', '-cc', default= 'clinical_column', type = str, help = 'The column indicates the infection status in clinical assessment.(Sample level)')
-	parser.add_argument('--batch_column', '-bc', default= None, type = str, help = 'The column indicates the batch label that will be used for batch correction(harmony).')
+	parser.add_argument('--batch_column', '-bc', default= 'batch', type = str, help = 'The column indicates the batch label that will be used for batch correction(harmony).')
 	parser.add_argument('--sample_column', '-sc', default = 'orig.ident', type = str, help = 'The column indicates the sample id.')
 	parser.add_argument('--test_ratio', '-tr', default = 0.3, type = float, help = 'The ratio of validating set.')
 	parser.add_argument('--num_split', '-ns', default = 5, type = int, help = 'The number of splitting for base model training and hyperparameter tuning for meta model.')
