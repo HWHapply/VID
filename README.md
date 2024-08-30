@@ -68,13 +68,7 @@ Above software list provides the minimal requirements for the complete execution
 #### 1. Conda installation (version 24.7.1 is recommended)
 Please install conda according to your OS from (https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
-#### 2. Configure the environment with a setup script:
-```
-bash Setup.sh
-```
-#### If the setup failed, can configure the environment manually with following steps:
-
-#### 1. Compiling from source code
+#### 2. Compiling from source code
 Clone the source github repository to local machine:
 ```
 git clone https://github.com/HWHapply/VID.git
@@ -84,7 +78,7 @@ Change to the work directory:
 cd VID
 ```
 
-#### 2. Create a conda environment called 'vid_env' for the VID running:
+#### 3. Create a conda environment called 'vid_env' for the VID running:
 ```
 conda create -f vid_env.yml -n vid_env
 ```
