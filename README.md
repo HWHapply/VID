@@ -104,16 +104,6 @@ Remove the VID environment(if required):
 ```
 conda env remove -n vid_env
 ```
-#### 3. Download the demo dataset 
-Make work directory for demo:
-```
-mkdir -p ./demo/data
-```
-Download the demo data to the demo directory from dropbox with wget:
-```
-wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1' -O ./demo/data/demo.rds
-```
-You can also download and save data to './demo/data' with [demodata](https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1).
 
 #### Docker image setup
 To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
@@ -158,15 +148,15 @@ The ideal metadata looks like the table below:
 | celln_uid |  ... | negative | batch_1|
 
 - clinical_column (required): The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
-- orig.ident (required): The unique identifier for cell's original sample, included in the metadata by default.
+- orig.ident (required): The unique identifier for the sample where cell comes from, included in the metadata by default.
 - batch (optional): This column indicates the batch of cell belongs to, the batch can be sample ID or experiment ID or research ID, etc. The batch correction won't be applied if not specified.
 
 You can also specify the corresponding names of those columns in your dataset when running VID:
 ```
 ./run_vid.sh seuratobj_dir/xxx.rds
-             --clinial_column your_clinical_column_name
-             --sample_column your_sample_id_column_name
-             --batch_column your_batch_column_name
+             --clinial_column your_clinical_colname
+             --sample_column your_sample_id_colname
+             --batch_column your_batch_colname
 ```
 #### 2. Virus marker list ####
 A txt file contains the list of virus biomarkers, should be included in current work directory:
@@ -176,9 +166,9 @@ A txt file contains the list of virus biomarkers, should be included in current 
 You can also specify the directory when running VID:
 ```
 ./run_vid.sh seuratobj_dir/xxx.rds
-             --clinial_column your_clinical_column_name
-             --sample_column your_sample_id_column_name
-             --batch_column your_batch_column_name
+             --clinial_column your_clinical_colname
+             --sample_column your_sample_id_colname
+             --batch_column your_batch_colname
              --marker_dir your_marker_file_directory
 ```
 ### __Output files__: <br>
@@ -296,7 +286,15 @@ __help__ : Flag
 
 
 #### Seurat Object Version < V5 ####
-
+Make work directory for demo:
+```
+mkdir -p ./demo/data
+```
+Download the demo data to the demo directory from dropbox with wget:
+```
+wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1' -O ./demo/data/demo.rds
+```
+You can also download and save data to './demo/data' with [demodata](https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1).
 
 #### Seurat Object V5 ####
 
