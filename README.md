@@ -27,18 +27,14 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
 ### Hardware
 This model is designed to be executed on standard computational hardware. While the process is feasible on commonly available systems, utilizing more robust computational resources can significantly enhance execution speed and efficiency.
 
-Development and testing were carried out on different OSs:
-#### macOS Sonoma Version 14.6.1:
-- Processor: 8-core Apple M1 chip
-- Memory: 16 GB LPDDR4
+Development and testing were carried out on different machines:
 
-#### Ubuntu 22.04:
-- Processor: 
-- Memory:
+| Machine | CPU | Memory | OS | 
+|--------|-----|--------------|---|
+| Macbook Pro | 8-core Apple M1 chip | 16G | macOS Sonoma Version 14.6.1 |
+| Linux WorkStation | 16-core Intel Xeon E5-2620 v4 braodwell-EP * 2  | 96G | Ubuntu 22.04 | 
+| ThinkPad | ... | 16G | Windows 10 |
 
-#### Windows 10:
-- Processor: 
-- Memory:
 
 ### Software
 - R v4.4.1 or newer (https://www.r-project.org)
