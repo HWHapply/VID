@@ -13,7 +13,7 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
   * [Environment Setup](#environment-setup)
 * [User Tutorial](#user-tutorial)
   * [Usage](#usage)
-  * [Parameters](#parameters)
+  * [Docker Run](#docker-run)
   * [Demo](#demo)
 * [Expert Usage](#expert-usage)
   * [16S rRNA gene sequencing data of OSCC patients](#human-microbiome)
@@ -278,6 +278,8 @@ __verbose__ : int, optional, default = 2
 
 __help__ : Flag
    >  Show the help message and exit.
+
+### Docker Run ###
 
 ### Demo ###
 
