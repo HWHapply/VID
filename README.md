@@ -143,9 +143,9 @@ The ideal metadata looks like the table below:
 | celln_uid |  ... | negative | 
 
 - clinical_column: The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
-- orig.ident: The unique identifier for the sample where cell comes from, included in the metadata by default.
+- orig.ident: The unique identifier for the cell origin (sample), included in the metadata by default.
 
-You can also specify the corresponding names of those columns in your dataset when running VID:
+You can also specify the corresponding names of those columns in your dataset with parameters 'clinical_column' and 'sample_column':
 ```
 ./run_vid.sh seuratobj_dir/xxx.rds
              --clinial_column your_clinical_colname
@@ -158,7 +158,7 @@ A txt file contains the list of virus biomarkers, should be included in current 
 ```
 ./markers.txt
 ```
-You can also specify the directory when running VID:
+Alternatively, specify your own virus marker file directory wtih parameter 'marker_dir':
 ```
 ./run_vid.sh seuratobj_dir/xxx.rds
              --clinial_column your_clinical_colname
