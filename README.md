@@ -129,22 +129,60 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash
 
 ## User tutorial
 ### Usage ###
-Visualize the usage of the code with '--help' flag:
+__Simple_usage__:
+Simply run VID in terminal with command below:
 ```
-./run_vid.sh --help
+./run_vid.sh seuratobj_dir/xxx.rds
 ```
-You will get the help message below without code running:
+Please ensure that the input file conforms to the standard input format below. 
+### __Input file__:  <br>
+There are two input files that are required for VID running: <br>
+#### 1. Seurat object ####
+The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory. 
 ```
-Usage: ./run_vid.sh <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] 
-                  [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] 
-                  [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] 
-                  [--verbose VERBOSE] [--help]
+seuratobj_dir/xxx.rds
 ```
-__Input file__: The seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory of input file which is required parameter for code running.
+Some columns should be included in metadata of the seurat object, visualize the metadata with code below:
 ```
-$seuratobj_dir/xxx.rds
+# Run the code below in Rstudio or Jupyter:
+library(seurat)
+seurat_obj <- ReadRDS('seuratobj_dir/xxx.rds')
+seurat_obj@@meta.data
 ```
-__Output files__: The code will automatically create output directory in current work directory named with the starting timestamp :
+The ideal metadata looks like the table below:
+| orig.ident | ... | clinical_column | batch | 
+|--------|-----|--------------|---|
+| cell1_uid | ... | positive | batch_1 |
+| cell2_uid | ... |negative| batch_2 | 
+| ... | ... | ... | ... |
+| celln_uid |  ... | negative | batch_1|
+
+- clinical_column (required): The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
+- orig.ident (required): The unique identifier for cell's original sample, included in the metadata by default.
+- batch (optional): This column indicates the batch of cell belongs to, the batch can be sample ID or experiment ID or research ID, etc. The batch correction won't be applied if not specified.
+
+You can also specify the corresponding names of those columns in your dataset when running VID:
+```
+./run_vid.sh seuratobj_dir/xxx.rds
+             --clinial_column your_clinical_column_name
+             --sample_column your_sample_id_column_name
+             --batch_column your_batch_column_name
+```
+#### 2. Virus marker list ####
+A txt file contains the list of virus biomarkers, should be included in current work directory:
+```
+./markers.txt
+```
+You can also specify the directory when running VID:
+```
+./run_vid.sh seuratobj_dir/xxx.rds
+             --clinial_column your_clinical_column_name
+             --sample_column your_sample_id_column_name
+             --batch_column your_batch_column_name
+             --marker_dir your_marker_file_directory
+```
+### __Output files__: <br>
+The code will automatically create output directory in current work directory named with the starting timestamp :
 ```
 YYYYmmdd_HHMMSS 
 ├── data
@@ -178,6 +216,17 @@ YYYYmmdd_HHMMSS
     - ***val_cv_scores_weighted.csv***: A table file containing the weighted cross-validation scores.
     - ***vid_YYmmdd_HHMMSS.pkl***: The VID object (for expert usage), timestamped with the current date and time.
 
+Visualize the usage of the code with '--help' flag:
+```
+./run_vid.sh --help
+```
+You will get the help message below without code running:
+```
+Usage: ./run_vid.sh <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] 
+                  [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] 
+                  [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] 
+                  [--verbose VERBOSE] [--help]
+```
 
 ### Parameters ###
 __seuratobj_dir__ : str, requied
