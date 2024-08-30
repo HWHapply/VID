@@ -122,7 +122,7 @@ Simply run VID in terminal with command below:
 Please ensure that the input file conforms to the standard input format below. 
 ### __Input file__:  <br>
 There are two input files that are required for VID running: <br>
-#### 1. Seurat object ####
+#### 1. Seurat object (rds) ####
 The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory. 
 ```
 seuratobj_dir/xxx.rds
@@ -135,27 +135,25 @@ seurat_obj <- ReadRDS('seuratobj_dir/xxx.rds')
 seurat_obj@@meta.data
 ```
 The ideal metadata looks like the table below:
-| orig.ident | ... | clinical_column | batch | 
-|--------|-----|--------------|---|
-| cell1_uid | ... | positive | batch_1 |
-| cell2_uid | ... |negative| batch_2 | 
+| orig.ident | ... | clinical_column |
+|--------|-----|--------------|
+| cell1_uid | ... | positive | 
+| cell2_uid | ... |negative| 
 | ... | ... | ... | ... |
-| celln_uid |  ... | negative | batch_1|
+| celln_uid |  ... | negative | 
 
 - clinical_column: The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
 - orig.ident: The unique identifier for the sample where cell comes from, included in the metadata by default.
-- batch: This column indicates the batch of cell belongs to, the batch can be sample ID or experiment ID or research ID, etc. 
 
 You can also specify the corresponding names of those columns in your dataset when running VID:
 ```
 ./run_vid.sh seuratobj_dir/xxx.rds
              --clinial_column your_clinical_colname
              --sample_column your_sample_id_colname
-             --batch_column your_batch_colname
 ```
 Specify the 'batch_column' as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
 
-#### 2. Virus marker list ####
+#### 2. Virus markers (txt) ####
 A txt file contains the list of virus biomarkers, should be included in current work directory:
 ```
 ./markers.txt
@@ -165,7 +163,6 @@ You can also specify the directory when running VID:
 ./run_vid.sh seuratobj_dir/xxx.rds
              --clinial_column your_clinical_colname
              --sample_column your_sample_id_colname
-             --batch_column your_batch_colname
              --marker_dir your_marker_file_directory
 ```
 ### __Output files__: <br>
