@@ -282,8 +282,7 @@ __help__ : Flag
 
 ### Demo ###
 
-
-#### Seurat Object Version < V5 ####
+#### Seurat Object V5 ####
 Make work directory for demo:
 ```
 mkdir -p ./demo/data
@@ -294,7 +293,16 @@ wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg
 ```
 You can also download and save data to './demo/data' with [demodata](https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1).
 
-#### Seurat Object V5 ####
+#### Seurat Object Version < V5 ####
+Make work directory for demo:
+```
+mkdir -p ./demo2/data
+```
+Download the demo data to the demo directory from dropbox with wget:
+```
+wget --no-check-certificate 'https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0' -O ./demo/data/demo.rds
+```
+You can also download and save data to './demo2/data' with [demodata2](https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0).
 
 
 #### MLP as Meta model ####
