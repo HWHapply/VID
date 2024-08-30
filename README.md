@@ -147,9 +147,9 @@ The ideal metadata looks like the table below:
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | batch_1|
 
-- clinical_column (required): The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
-- orig.ident (required): The unique identifier for the sample where cell comes from, included in the metadata by default.
-- batch (optional): This column indicates the batch of cell belongs to, the batch can be sample ID or experiment ID or research ID, etc. The batch correction won't be applied if not specified.
+- clinical_column: The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
+- orig.ident: The unique identifier for the sample where cell comes from, included in the metadata by default.
+- batch: This column indicates the batch of cell belongs to, the batch can be sample ID or experiment ID or research ID, etc. 
 
 You can also specify the corresponding names of those columns in your dataset when running VID:
 ```
@@ -158,6 +158,8 @@ You can also specify the corresponding names of those columns in your dataset wh
              --sample_column your_sample_id_colname
              --batch_column your_batch_colname
 ```
+Specify the 'batch_column' as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
+
 #### 2. Virus marker list ####
 A txt file contains the list of virus biomarkers, should be included in current work directory:
 ```
