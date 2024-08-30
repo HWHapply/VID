@@ -300,7 +300,7 @@ mkdir -p ./demo2/data
 ```
 Download the demo data to the demo directory from dropbox with wget:
 ```
-wget --no-check-certificate 'https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0' -O ./demo/data/demo.rds
+wget --no-check-certificate 'https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0' -O ./demo2/data/demo2.rds
 ```
 You can also download and save data to './demo2/data' with [demodata2](https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0).
 
