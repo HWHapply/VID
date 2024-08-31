@@ -292,7 +292,7 @@ __help__ : Flag
 
 
 #### NPC-EBV-Lymphocytes ####
-Make a work directory:
+Make a work directory for demo:
 ```
 mkdir -p ./demo/data
 ```
@@ -312,7 +312,7 @@ run_vid ./demo/data/demo.rds \
 ```
 
 #### NPC-EBV-Epithelial ####
-Make work directory for demo:
+Make a work directory for demo2:
 ```
 mkdir -p ./demo2/data
 ```
