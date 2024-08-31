@@ -13,8 +13,9 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
   * [Environment Setup](#environment-setup)
 * [User Tutorial](#user-tutorial)
   * [Usage](#usage)
-  * [Docker Run](#docker-run)
   * [Demo](#demo)
+  * [Docker Run](#docker-run)
+
 * [Expert Usage](#expert-usage)
   * [16S rRNA gene sequencing data of OSCC patients](#human-microbiome)
   * [Whole metagenomics data of Tara Ocean](#ocean-microbiome)
@@ -86,14 +87,38 @@ Activate the environment:
 ```
 conda activate vid_env
 ```
-Dectivate the VID environment(if required):
+Dectivate the VID environment (not required):
 ```
 conda deactivate vid_env
 ```
-Remove the VID environment(if required):
+Remove the VID environment (not required):
 ```
 conda env remove -n vid_env
 ```
+
+#### 4. Make the VID globally accessible:
+Make the scripts executable:
+```
+chmod +x ./*
+```
+Create the solf link 'run_vid' of source script:
+```
+ln -s ./run_vid.sh /usr/local/bin/run_vid
+```
+Execute with 'sudo' command if the 'Permission deny' error occurred. 
+
+#### 5. Validate the environment setup:
+```
+run_vid --help
+```
+You will get the help message below if the environment setup is successful:
+```
+usage: run_vid.py [-h] [--h5ad_dir H5AD_DIR] [--data_dir DATA_DIR] [--meta_dir META_DIR] [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR]
+                  [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN]
+                  [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE]
+                  [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
+```
+
 
 #### Docker image setup
 To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
@@ -111,10 +136,10 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash
 ### Usage ###
 Simply run VID in terminal with command below:
 ```
-./run_vid.sh seuratobj_dir/xxx.rds
+run_vid seuratobj_dir/xxx.rds
 ```
 Please ensure that the input file conforms to the standard input format below. 
-### __Input file__:  <br>
+### __Input files__:  <br>
 There are two input files that are required for VID running: <br>
 #### 1. Seurat object (rds) ####
 The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory. 
@@ -141,9 +166,9 @@ The ideal metadata looks like the table below:
 
 You can also specify the corresponding names of those columns in your dataset with parameters 'clinical_column' and 'sample_column':
 ```
-./run_vid.sh seuratobj_dir/xxx.rds
-             --clinial_column your_clinical_colname
-             --sample_column your_sample_id_colname
+run_vid seuratobj_dir/xxx.rds \
+        --clinical_column your_clinical_colname \
+        --sample_column your_sample_id_colname
 ```
 Specify the 'batch_column' as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
 
@@ -154,10 +179,10 @@ A txt file contains the list of virus biomarkers, should be included in current 
 ```
 Alternatively, specify your own virus marker file directory wtih parameter 'marker_dir':
 ```
-./run_vid.sh seuratobj_dir/xxx.rds
-             --clinial_column your_clinical_colname
-             --sample_column your_sample_id_colname
-             --marker_dir your_marker_file_directory
+run_vid seuratobj_dir/xxx.rds \
+        --clinical_column your_clinical_colname \
+        --sample_column your_sample_id_colname \
+        --marker_dir your_marker_file_directory
 ```
 ### __Output files__: <br>
 The code will automatically create output directory in current work directory named with the starting timestamp :
@@ -194,21 +219,12 @@ YYYYmmdd_HHMMSS
     - ***val_cv_scores_weighted.csv***: A table file containing the weighted cross-validation scores.
     - ***vid_YYmmdd_HHMMSS.pkl***: The VID object (for expert usage), timestamped with the current date and time.
 
-Visualize the usage of the code with '--help' flag:
-```
-./run_vid.sh --help
-```
-You will get the help message below without code running:
-```
-Usage: ./run_vid.sh <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] 
-                  [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] 
-                  [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] 
-                  [--verbose VERBOSE] [--help]
-```
-
 ### Parameters ###
 __seuratobj_dir__ : str, requied
    > The directory of the input rds file (seurat object).
+
+__output_dir__ : str, optional, default = './'
+   > The output directory, set as current work directory by default.
 
 __marker_dir__ : str, optional, default = ./markers.txt
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
@@ -270,12 +286,11 @@ __verbose__ : int, optional, default = 2
 __help__ : Flag
    >  Show the help message and exit.
 
-### Docker Run ###
-
 ### Demo ###
 
-#### Seurat Object V5 ####
-Make work directory for demo:
+
+#### NPC-EBV-Lymphocytes ####
+Make a work directory:
 ```
 mkdir -p ./demo/data
 ```
@@ -285,7 +300,16 @@ wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg
 ```
 You can also download and save data to './demo/data' with [demodata](https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1).
 
-#### Seurat Object Version < V5 ####
+Running VID:
+```
+run_vid ./demo/data/demo.rds \
+        --output_dir ./demo \
+        --marker_dir ./demo/data/EBV_markers.txt \
+        --clinical_column ebv_status \
+        --metamodel xgb 
+```
+
+#### NPC-EBV-Epithelial ####
 Make work directory for demo:
 ```
 mkdir -p ./demo2/data
@@ -296,7 +320,15 @@ wget --no-check-certificate 'https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb0
 ```
 You can also download and save data to './demo2/data' with [demodata2](https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0).
 
+Running VID:
+```
+run_vid ./demo2/data/demo2.rds \
+        --output_dir ./demo2 \ 
+        --marker_dir ./demo2/data/EBV_markers.txt \
+        --clinical_column ebv_status \
+        --metamodel mlp
+```
 
-#### MLP as Meta model ####
+### Docker Run ###
 
 ## Expert Usage ##
