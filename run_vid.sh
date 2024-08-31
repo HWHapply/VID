@@ -1,4 +1,12 @@
 #!/bin/bash
+SOURCE_DIR="$(dirname "$(realpath "$0")")"
+PREPARE_DATASET="$SOURCE_DIR/Input_Preparation_R.R"
+RUN_VID="$SOURCE_DIR/run_vid.py"
+SAVE_RESULT="$SOURCE_DIR/Save_Result.R"
+# echo "$SOURCE_DIR"
+# echo "$PREPARE_DATASET"
+# echo "$RUN_VID"
+# echo "$SAVE_RESULT"
 
 # Define the list of optional arguments
 optional_args_list=(
@@ -26,10 +34,10 @@ optional_args=()
 
 # Function to display usage
 usage() {
-    echo "Usage: $0 <seuratobj_dir> [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] 
-                  [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] 
-                  [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] 
-                  [--verbose VERBOSE] [--help]"
+    echo "Usage: $0 <seuratobj_dir> [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] 
+                  [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] 
+                  [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] 
+                  [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]"
     exit 1
 }
 
@@ -46,6 +54,9 @@ while [[ "$#" -gt 0 ]]; do
                 # Argument is in the list of known optional arguments
                 if [[ -n "$2" && ! "$2" =~ ^- ]]; then
                     optional_args+=("$1 $2")
+                    if [[ "$1" == "--output_dir" ]]; then
+                        output_dir="$2"
+                    fi
                     shift
                 else
                     echo "Error: Value for $1 is missing"
@@ -77,13 +88,36 @@ fi
 
 # Create a folder named as the current time
 timestamp=$(date +"%Y%m%d_%H%M%S")
-rawdata_dir="./${timestamp}/data"
-output_dir="./${timestamp}/output"
+
+# Check if --output_dir was provided and set rawdata_dir and output_dir accordingly
+if [[ -z "$output_dir" ]]; then
+    rawdata_dir="./${timestamp}/data"
+    output_dir="./${timestamp}/output"
+else
+    rawdata_dir="${output_dir}/${timestamp}/data"
+    output_dir="${output_dir}/${timestamp}/output"
+fi
+
 mkdir -p "$rawdata_dir"
 mkdir -p "$output_dir"
 
+# Handle --output_dir in optional_args
+output_dir_set=false
+for i in "${!optional_args[@]}"; do
+    if [[ "${optional_args[$i]}" =~ "--output_dir" ]]; then
+        optional_args[$i]="--output_dir $output_dir"
+        output_dir_set=true
+        break
+    fi
+done
+
+# If --output_dir wasn't found and replaced, add it to optional_args
+if [[ $output_dir_set == false ]]; then
+    optional_args+=("--output_dir $output_dir")
+fi
+
 # Run the R script with the positional argument and the output directory
-rscript Input_Preparation_R.R "$seuratobj_dir" "$rawdata_dir"
+Rscript "$PREPARE_DATASET" "$seuratobj_dir" "$rawdata_dir"
 
 # Collect files in the output directory
 h5ad_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "data.h5ad")
@@ -100,16 +134,11 @@ else
     exit 1
 fi
 
-# Add --output_dir to optional_args if it's not already present
-if [[ ! " ${optional_args[@]} " =~ " --output_dir " ]]; then
-    optional_args+=("--output_dir $output_dir")
-fi
-
 # Prepare arguments for the Python script
 python_args=$(printf "%s " "${optional_args[@]}")
 
 # Run the Python script with the optional arguments
-python run_vid.py $python_args
+python "$RUN_VID" $python_args
 
 # Save the predicted infection status to seurat object
-Rscript Save_Result.R "$seuratobj_dir" "$rawdata_dir"
+Rscript "$SAVE_RESULT" "$seuratobj_dir" "$rawdata_dir"
