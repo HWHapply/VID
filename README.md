@@ -108,6 +108,7 @@ ln -s ./run_vid.sh /usr/local/bin/run_vid
 Execute with 'sudo' command if the 'Permission deny' error occurred. 
 
 #### 5. Validate the environment setup:
+Run the command below under any directory:
 ```
 run_vid --help
 ```
