@@ -87,11 +87,12 @@ Activate the environment:
 ```
 conda activate vid_env
 ```
-Dectivate the VID environment (not required):
+###### Remove the conda environment with commands below: 
+Dectivate the VID environment:
 ```
 conda deactivate vid_env
 ```
-Remove the VID environment (not required):
+Remove the VID environment:
 ```
 conda env remove -n vid_env
 ```
