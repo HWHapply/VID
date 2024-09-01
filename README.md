@@ -327,7 +327,7 @@ Running VID:
 run_vid ./demo2/data/demo2.rds \
         --output_dir ./demo2 \ 
         --marker_dir ./demo2/data/EBV_markers.txt \
-        --clinical_column ebv_status \
+        --clinical_column EBV_state \
         --metamodel mlp
 ```
 
