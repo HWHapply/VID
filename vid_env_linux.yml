@@ -1,4 +1,4 @@
-name: test
+name: vid_env
 channels:
   - conda-forge
   - defaults
@@ -472,4 +472,5 @@ dependencies:
       - webcolors==24.8.0
       - webencodings==0.5.1
       - websocket-client==1.8.0
-prefix: /home/baon1/anaconda3/envs/test
+      - xgboost-cpu==2.1.1
+prefix: /home/baon1/anaconda3/envs/vid_env
