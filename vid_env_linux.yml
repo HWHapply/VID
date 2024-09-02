@@ -24,7 +24,6 @@ dependencies:
   - cairo=1.18.0=hbb29018_2
   - colorama=0.4.6=pyhd8ed1ab_0
   - contourpy=1.2.1=py310hd41b1e2_0
-  - cuda-version=11.8=h70ddcb2_3
   - curl=8.9.1=h18eb788_0
   - cycler=0.12.1=pyhd8ed1ab_0
   - dbus=1.13.6=h5008d03_3
