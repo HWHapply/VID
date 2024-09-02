@@ -7,6 +7,10 @@ import os
 import xgboost
 import umap
 import seaborn as sns
+import numpy as np
+np.int = np.int32
+np.float = np.float64
+np.bool = np.bool_
 
 
 """
