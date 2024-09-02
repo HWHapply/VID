@@ -5,7 +5,6 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
-  - _py-xgboost-mutex=2.0=gpu_0
   - _r-mutex=1.0.1=anacondar_1
   - _sysroot_linux-64_curr_repodata_hack=3=h69a702a_16
   - alsa-lib=1.2.12=h4ab18f5_0
