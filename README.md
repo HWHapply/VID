@@ -104,7 +104,7 @@ chmod +x ./*
 ```
 Create the solf link 'run_vid' of source script:
 ```
-ln -s ./run_vid.sh /usr/local/bin/run_vid
+sudo ln -s $(realpath ./run_vid.sh) /usr/local/bin/run_vid
 ```
 Execute with 'sudo' command if the 'Permission deny' error occurred. 
 
@@ -299,6 +299,7 @@ mkdir -p ./demo/data
 Download the demo data to the demo directory from dropbox with wget:
 ```
 wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1' -O ./demo/data/demo.rds
+wget --no-check-certificate 'https://www.dropbox.com/scl/fi/w4hhojmrnprcvj5emqljj/EBV_markers.txt?rlkey=rsa5lfha6rs8feivzmt5xpe9g&st=v13yukg0&dl=0' -O ./demo/data/EBV_markers.txt
 ```
 You can also download and save data to './demo/data' with [demodata](https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1).
 
