@@ -171,8 +171,8 @@ The ideal metadata looks like the table below:
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | 
 
-- clinical_column: The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
-- orig.ident: The unique identifier for the cell origin (sample), included in the metadata by default.
+- clinical_column ('clinical_column' by default): The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
+- sample_column ('orig.ident' by default): orig.ident: The unique identifier for the cell origin (sample), included in the metadata by default.
 
 You can also specify the corresponding names of those columns in your dataset with parameters 'clinical_column' and 'sample_column':
 ```
