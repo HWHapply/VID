@@ -135,7 +135,6 @@ dependencies:
   - libwebp-base=1.4.0=hd590300_0
   - libxcb=1.16=hb9d3cd8_1
   - libxcrypt=4.4.36=hd590300_1
-  - libxgboost=2.1.1=cuda118_h09a87be_2
   - libxkbcommon=1.7.0=h2c5496b_1
   - libxml2=2.12.7=h4c95cb1_3
   - libzlib=1.3.1=h4ab18f5_1
@@ -175,7 +174,6 @@ dependencies:
   - ply=3.11=pyhd8ed1ab_2
   - pthread-stubs=0.4=h36c2ea0_1001
   - pulseaudio-client=17.0=hb77b528_0
-  - py-xgboost=2.1.1=cuda118_pyhd9256c4_2
   - pynndescent=0.5.13=pyhff2d567_0
   - pyparsing=3.1.4=pyhd8ed1ab_0
   - pyqt=5.15.9=py310h04931ad_5
