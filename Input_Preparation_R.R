@@ -1,9 +1,3 @@
-"
-Prepare the input for VID
-Two options for VID input:
-  A. h5ad file (.h5ad)
-  B. gene expression table (.csv) + metadata table (.csv)
-"
 # Set CRAN mirror to avoid interactive prompts
 options(repos = c(CRAN = "https://cloud.r-project.org/"))
 
