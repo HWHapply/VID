@@ -80,8 +80,9 @@ cd VID
 ```
 
 #### 3. Create a conda environment called 'vid_env' for the VID running:
+Choose the configuration file (vid_env_xxx.yml) to create the environment based on your OS:
 ```
-conda create -f vid_env.yml -n vid_env
+conda create -f vid_env_{your_OS}.yml -n vid_env
 ```
 Activate the environment:
 ```
@@ -123,16 +124,23 @@ usage: run_vid.py [-h] [--h5ad_dir H5AD_DIR] [--data_dir DATA_DIR] [--meta_dir M
 
 
 #### Docker image setup
-To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
+To simplify the setup process, we provide a Docker image that eliminates the need for manual equipment configuration. Please follow the steps below to use the Docker image:
+- Install Docker:
+Download and install Docker based on your operating system by following the instructions provided here: [Docker Installation Guide](https://docs.docker.com/engine/install/).
+- Pull the Docker Image:
+Retrieve the VID Docker image from Docker Hub using the following command:
+```
+docker pull hwhapply/vid:latest
+```
+- Verify the Image:
+Confirm that the image has been successfully pulled by listing the available Docker images:
+```
+docker images
+```
+You should see 'hwhapply/vid:latest' listed under the REPOSITORY column.
+- Execute Scripts within the Docker Container:
+All subsequent scripts and procedures should be executed within a Docker container created from the hwhapply/vid image. The tutorial is in the next section.
 
-```
-$ docker pull tjcadd2022/xmarkerfinder:1.0.16
-$ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash  
-```
-```
--it Run containers in an interactive mode, allowing users to execute commands and access files within the docker container.  
--v Mounts a volume between present working directory in your local machine to the /work directory in the docker container.  
-```
 
 ## User tutorial
 ### Usage ###
@@ -289,7 +297,6 @@ __help__ : Flag
    >  Show the help message and exit.
 
 ### Demo ###
-
 
 #### NPC-EBV-Lymphocytes ####
 Make a work directory for demo:
