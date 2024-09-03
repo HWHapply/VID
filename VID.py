@@ -258,6 +258,10 @@ class VID(Utils_Model):
             # Temporary dictionary to hold the metrics for each model and split
             temp_results = {i: {'accuracy': [], 'balanced_accuracy': [], 'recall': [], 'f1': [], 'precision': [], 'roc_auc': []} for i in range(len(self.base_models))}
 
+            # prepare trained base model for transfer learning
+            if self.vidmodel_dir:
+                model_idx = 0
+            
             for fold_idx, (train_index, val_index) in enumerate(outer_pbar):
                 X_train_fold, X_val_fold = self.X_train.iloc[train_index, :], self.X_train.iloc[val_index, :]
                 y_train_fold, y_val_fold = self.y_train.iloc[train_index], self.y_train.iloc[val_index]
@@ -287,7 +291,12 @@ class VID(Utils_Model):
                     
                 models_curr = []
 
-                for i, model in enumerate(self.base_models):
+                if self.vidmodel_dir:
+                    base_models = self.base_models_trained[model_idx]
+                else:
+                    base_models = self.base_models
+                
+                for i, model in enumerate(base_models):
                     # base model training on preprocessed dataset
                     model.fit(X_train_fold, y_train_fold)
                     val_probabilities = model.predict_proba(X_val_fold)[:, 1]  # Get probability of the positive class
@@ -321,7 +330,8 @@ class VID(Utils_Model):
                     cv_results[f'split{fold_idx}_test_roc_auc'].append(roc_auc)
 
                 models.append(models_curr)
-
+                model_idx += 1
+                
             # Average predictions for the test set 
             self.meta_features = meta_features
             self.test_meta_features = test_meta_features / self.skf.get_n_splits()
@@ -364,9 +374,16 @@ class VID(Utils_Model):
                 self.test_meta_features = pd.DataFrame(self.test_meta_features, columns = ['rf', 'svc', 'knn', 'nb', 'lgr'])
 
 
+            # prepare pre_trained meta model for transfer learning
+            if self.vidmodel_dir:
+                meta_model = self.grid_result.best_estimator_
+            else:
+                meta_model = self.meta_model
+                
+
             # Train the meta-model using the meta-features
             if self.metamodel == 'mlp':
-                grid = GridSearchCV(estimator=self.meta_model,
+                grid = GridSearchCV(estimator=meta_model,
                                     param_grid=self.param_grid,
                                     cv=self.skf,
                                     scoring=self.scoring,
@@ -375,7 +392,7 @@ class VID(Utils_Model):
                                     n_jobs = self.n_jobs
                                     )
             else:
-                grid = RandomizedSearchCV(estimator=self.meta_model,
+                grid = RandomizedSearchCV(estimator=meta_model,
                                           param_distributions=self.param_grid,
                                           cv=self.skf,
                                           scoring=self.scoring,

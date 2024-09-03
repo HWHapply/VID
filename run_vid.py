@@ -12,6 +12,7 @@ def define_arguments():
 	parser.add_argument('--data_dir', '-dd', default = None, type = str, help = 'The directory of gene expression.')
 	parser.add_argument('--meta_dir', '-md', default = None, type = str, help = 'The directory of metadata.')
 	parser.add_argument('--output_dir', '-od', default = './output', type = str, help = 'The output directory.')
+	parser.add_argument('--vidmodel_dir', '-vmd', default = None, type = str, help = 'The directory of the vid object to applied for transfer learning.')
 	parser.add_argument('--marker_dir', '-mkd', default = './markers.txt', type = str, help = 'The markers stores in a txt file(one gene per row).')
 	parser.add_argument('--feature_dir', '-fd', default = None, type = str, help = 'The directory of txt file stores the important features(gene).')
 	parser.add_argument('--clinical_column', '-cc', default = 'clinical_column', type = str, help = 'The column indicates the infection status in clinical assessment.(Sample level)')
@@ -47,8 +48,16 @@ if __name__ == '__main__':
 			args_input[arg] = value
 	except Exception as e:
 		raise ValueError("Shutting down due to argument definition error") from e
-	vid = VID(args_input)
-	vid.fit()
+
+	if 'vidmodel_dir' in args_input:
+		with open(args_input['vidmodel_dir'], 'rb') as file:
+			vid = pickle.load(file)
+		print("VID model passed, perform transfer learning...")
+		vid.__init__(args_input)
+		vid.fit()
+	else:
+		vid = VID(args_input)
+		vid.fit()
  
 	# save the vid model and training time
 	current_time = datetime.now().strftime("%Y%m%d_%H%M%S")

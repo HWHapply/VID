@@ -14,6 +14,7 @@ optional_args_list=(
     "data_dir" 
     "meta_dir"
     "output_dir"
+    "vidmodel_dir"
     "marker_dir"
     "feature_dir" 
     "clinical_column"
@@ -37,7 +38,8 @@ usage() {
     echo "Usage: $0 <seuratobj_dir> [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] 
                   [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] 
                   [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] 
-                  [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]"
+                  [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]
+                  [--vidmodel_dir VIDMODEL_DIR]"
     exit 1
 }
 

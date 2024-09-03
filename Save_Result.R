@@ -12,6 +12,7 @@ if (length(args) < 2) {
 rawdata_dir <- args[1]  # Directory of the Seurat .rds file
 output_dir <- args[2]   # Output directory to check for files
 
+cat("Saving result to seurat object...")
 # Detect files in the output directory
 files <- list.files(output_dir, full.names = TRUE)
 
