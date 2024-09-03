@@ -378,39 +378,38 @@ The VID parameter you can specify are listed below:
 Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
 ```
 docker run \
-       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
-       -v ./demo:/wkdir/output \
-       -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
-       vid \
-       --clinical_column ebv_status \
-       --metamodel xgb
+-v ./demo/data/demo.rds:/wkdir/input/data.rds \
+-v ./demo:/wkdir/output \
+-v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
+vid \
+--clinical_column ebv_status \
+--metamodel xgb
 ```
 You can also provide the important feature list:
 ```
 docker run \
-       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
-       -v ./demo:/wkdir/output \
-       -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
-       -v ./demo/data/important_features.txt:/wkdir/input/features.txt \ 
-       vid \
-       --clinical_column ebv_status \
-       --metamodel mlp
-```
-Alternatively, perform transfer learning:
-```
-docker run \
-       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
-       -v ./demo:/wkdir/output \
-       -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
-       -v ./demo/data/important_features.txt:/wkdir/input/features.txt \
-       -v ./demo/data/vid_demo.pkl:/wkdir/input/vid.pkl \
-       vid \
-       --clinical_column ebv_status \
-       --metamodel mlp
+-v ./demo/data/demo.rds:/wkdir/input/data.rds \
+-v ./demo:/wkdir/output \
+-v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
+-v ./demo/data/important_features.txt:/wkdir/input/features.txt \ 
+vid \
+--clinical_column ebv_status \
+--metamodel mlp
 ```
 The outputs will be saved in the output directory you specified, the output will be saved in `./demo/YYmmdd_HHMMSS` in this example, the structure of docker running output has no different with conda running.
 
 ### Expert Usage ###
-An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in 'output' directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset. Can refer to [expert_usage.ipynb]() for details.
-
+An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in 'output' directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset.
+Perform transfer learning with docker image:
+```
+docker run \
+-v ./demo/data/demo.rds:/wkdir/input/data.rds \
+-v ./demo:/wkdir/output \
+-v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
+-v ./demo/data/important_features.txt:/wkdir/input/features.txt \
+-v ./demo/data/vid_demo.pkl:/wkdir/input/vid.pkl \
+vid \
+--clinical_column ebv_status \
+--metamodel mlp
+```
 
