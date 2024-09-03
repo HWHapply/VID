@@ -111,10 +111,11 @@ run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
 ```
-usage: run_vid.py [-h] [--h5ad_dir H5AD_DIR] [--data_dir DATA_DIR] [--meta_dir META_DIR] [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR]
-                  [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN]
-                  [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE]
-                  [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
+Usage: /usr/local/bin/run_vid <seuratobj_dir> [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] 
+                  [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] 
+                  [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] 
+                  [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]
+                  [--vidmodel_dir VIDMODEL_DIR]
 ```
 
 
@@ -291,6 +292,11 @@ __verbose__ : int, optional, default = 2
 __help__ : Flag
    >  Show the help message and exit.
 
+__vidmodel_dir__ : str, optional, default = None
+   >  The directory of VID object, perform transfer learning by passing the directory of `vid_YYmmdd_HHMMSS.pkl` from previous output.
+   >  The pretained models from the vid object passed will be applied for transfer learning, the output structure is
+   >  the same as standard running. Please be cautious that meta model specified should be consistent with the previous running.
+
 ### Demo ###
 
 #### NPC-EBV-Lymphocytes ####
@@ -372,7 +378,7 @@ The VID parameter you can specify are listed below:
 Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
 ```
 docker run \
-       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
+       -v ./demo/data/demo.rds:/wkdir/data/data.rds \
        -v ./demo:/wkdir/output \
        -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
        vid \
@@ -382,10 +388,22 @@ docker run \
 You can also provide the important feature list:
 ```
 docker run \
-       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
+       -v ./demo/data/demo.rds:/wkdir/data/data.rds \
        -v ./demo:/wkdir/output \
        -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
        -v ./demo/data/important_features.txt:/wkdir/data/features.txt \ 
+       vid \
+       --clinical_column ebv_status \
+       --metamodel mlp
+```
+Alternatively, perform transfer learning:
+```
+docker run \
+       -v ./demo/data/demo.rds:/wkdir/data/data.rds \
+       -v ./demo:/wkdir/output \
+       -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
+       -v ./demo/data/important_features.txt:/wkdir/data/features.txt \
+       -v ./demo/data/vid_demo.pkl:/wkdir/data/vid.pkl \
        vid \
        --clinical_column ebv_status \
        --metamodel mlp
