@@ -372,15 +372,15 @@ The VID parameter you can specify are listed below:
 ```
 [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN]
 [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD]
-[--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
+[--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] 
 ```
 #### demo
 Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
 ```
 docker run \
-       -v ./demo/data/demo.rds:/wkdir/data/data.rds \
+       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
        -v ./demo:/wkdir/output \
-       -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
+       -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
        vid \
        --clinical_column ebv_status \
        --metamodel xgb
@@ -388,10 +388,10 @@ docker run \
 You can also provide the important feature list:
 ```
 docker run \
-       -v ./demo/data/demo.rds:/wkdir/data/data.rds \
+       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
        -v ./demo:/wkdir/output \
-       -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
-       -v ./demo/data/important_features.txt:/wkdir/data/features.txt \ 
+       -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
+       -v ./demo/data/important_features.txt:/wkdir/input/features.txt \ 
        vid \
        --clinical_column ebv_status \
        --metamodel mlp
@@ -399,11 +399,11 @@ docker run \
 Alternatively, perform transfer learning:
 ```
 docker run \
-       -v ./demo/data/demo.rds:/wkdir/data/data.rds \
+       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
        -v ./demo:/wkdir/output \
-       -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
-       -v ./demo/data/important_features.txt:/wkdir/data/features.txt \
-       -v ./demo/data/vid_demo.pkl:/wkdir/data/vid.pkl \
+       -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
+       -v ./demo/data/important_features.txt:/wkdir/input/features.txt \
+       -v ./demo/data/vid_demo.pkl:/wkdir/input/vid.pkl \
        vid \
        --clinical_column ebv_status \
        --metamodel mlp
