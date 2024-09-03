@@ -63,7 +63,7 @@ Development and testing were carried out on different machines:
 - seaborn (https://seaborn.pydata.org/)
   
 #### Docker image
-Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
+Above software list displays the minimal requirements for running the VID locally. Alternatively, to enabla users to skip the software installation and environment setup, an Docker image is provided [hwhapply/vid:latest](https://hub.docker.com/r/hwhapply/vid). 
 
 ### Environment setup
 #### 1. Conda installation (version 24.7.1 is recommended)
@@ -124,7 +124,7 @@ usage: run_vid.py [-h] [--h5ad_dir H5AD_DIR] [--data_dir DATA_DIR] [--meta_dir M
 
 
 #### Docker image setup
-To simplify the setup process, we provide a Docker image that eliminates the need for manual equipment configuration. Please follow the steps below to use the Docker image:
+To simplify the setup process, we provide a Docker image that eliminates the requirement for manual environment configuration. Please follow the steps below to use the Docker image:
 - Install Docker:
 Download and install Docker based on your operating system by following the instructions provided here: [Docker Installation Guide](https://docs.docker.com/engine/install/).
 - Pull the Docker Image:
@@ -139,7 +139,7 @@ docker images
 ```
 You should see 'hwhapply/vid:latest' listed under the REPOSITORY column.
 - Execute Scripts within the Docker Container:
-All subsequent scripts and procedures should be executed within a Docker container created from the hwhapply/vid image. The tutorial is in the next section.
+All subsequent scripts and procedures should be executed within a Docker container created from the 'hwhapply/vid' image. The tutorial is in the next section.
 
 
 ## User tutorial
@@ -301,14 +301,14 @@ __help__ : Flag
 #### NPC-EBV-Lymphocytes ####
 Make a work directory for demo:
 ```
-mkdir -p ./demo/data
+mkdir ./demo
 ```
-Download the demo data to the demo directory from dropbox with wget:
+Download and extract the demo data to the demo directory from dropbox:
 ```
-wget --no-check-certificate 'https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1' -O ./demo/data/demo.rds
-wget --no-check-certificate 'https://www.dropbox.com/scl/fi/w4hhojmrnprcvj5emqljj/EBV_markers.txt?rlkey=rsa5lfha6rs8feivzmt5xpe9g&st=v13yukg0&dl=0' -O ./demo/data/EBV_markers.txt
+wget --no-check-certificate 'https://www.dropbox.com/scl/fo/3u1ch4939idv6uely16k7/ADsdx0VF-JG2tLQUYYFvhu4?rlkey=eckmr4wpjkiinee6m77fy7rzr&st=hhuhub32&dl=1' -O ./demo.zip
+unzip ./demo.zip -d ./demo
 ```
-You can also download and save data to './demo/data' with [demodata](https://www.dropbox.com/scl/fi/bdkv2napos1md1uca2wg8/demo.rds?rlkey=bhe5deyz2o6kenj2s2fypxkzv&st=8armlfka&dl=1).
+You can also download at [demo](https://www.dropbox.com/scl/fo/3u1ch4939idv6uely16k7/ADsdx0VF-JG2tLQUYYFvhu4?rlkey=eckmr4wpjkiinee6m77fy7rzr&st=hhuhub32&dl=1).
 
 Running VID:
 ```
@@ -322,13 +322,14 @@ run_vid ./demo/data/demo.rds \
 #### NPC-EBV-Epithelial ####
 Make a work directory for demo2:
 ```
-mkdir -p ./demo2/data
+mkdir ./demo2
 ```
 Download the demo data to the demo directory from dropbox with wget:
 ```
-wget --no-check-certificate 'https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0' -O ./demo2/data/demo2.rds
+wget --no-check-certificate 'https://www.dropbox.com/scl/fo/1qfrs4izmdxr6pio8a0jx/AMTkwGoQ6samlV7ks3hEu2o?rlkey=gafgpo3j4tg98i0dxun4nf2e1&st=r2s6bcol&dl=1' -O ./demo2.zip
+unzip ./demo2.zip -d ./demo2
 ```
-You can also download and save data to './demo2/data' with [demodata2](https://www.dropbox.com/scl/fi/7lxap1hltlxqgy0v9vb05/demo2.rds?rlkey=eh4unrw8qkzz5wogl1ey3zozm&st=d91bko3t&dl=0).
+You can also download at [demo2](https://www.dropbox.com/scl/fo/1qfrs4izmdxr6pio8a0jx/AMTkwGoQ6samlV7ks3hEu2o?rlkey=gafgpo3j4tg98i0dxun4nf2e1&st=r2s6bcol&dl=1).
 
 Running VID:
 ```
@@ -340,5 +341,26 @@ run_vid ./demo2/data/demo2.rds \
 ```
 
 ### Docker Run ###
+You can run VID with docker image prepared in the last section:
+```
+docker run \
+       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
+       -v ./demo:/wkdir/output \
+       -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
+       vid \
+       --clinical_column ebv_status \
+       --metamodel xgb
+```
+Alternatively, you can provide the important gene list:
+```
+docker run \
+       -v ./demo/data/demo.rds:/wkdir/input/data.rds \
+       -v ./demo:/wkdir/output \
+       -v ./demo/data/EBV_markers.txt:/wkdir/data/markers.txt \
+       -v ./demo/data/important_features.txt:/wkdir/data/features.txt \ 
+       vid \
+       --clinical_column ebv_status \
+       --metamodel mlp
+```
 
 ## Expert Usage ##
