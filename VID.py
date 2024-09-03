@@ -537,6 +537,7 @@ class VID(Utils_Model):
         optimal_meta_cv_score = meta_cv_scores[meta_cv_scores['rank_test_roc_auc'] == 1][0:1][self.basemodel_cv_scores.columns]
         optimal_meta_cv_score.index = [self.metamodel]
         self.val_cv_scores = pd.concat([self.basemodel_cv_scores, optimal_meta_cv_score], axis=0)
+        self.val_cv_scores.index = self.test_scores.index
         
         # save the cross validation scores on the test set
         self.val_cv_scores.to_csv(os.path.join(self.output_dir, f'val_cv_scores_{self.average}.csv'))
