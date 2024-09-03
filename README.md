@@ -74,7 +74,7 @@ Change to the work directory:
 cd VID
 ```
 
-#### 3. Create a conda environment called 'vid_env' for the VID running:
+#### 3. Create a conda environment called vid_env for the VID running:
 Choose the configuration file (vid_env_xxx.yml) to create the environment based on your OS:
 ```
 conda create -f vid_env_{your_OS}.yml -n vid_env
@@ -147,7 +147,7 @@ Please ensure that the input file conforms to the standard input format below.
 ### __Input files__:  <br>
 There are two input files that are required for VID running: <br>
 #### 1. Seurat object (rds) ####
-The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the 'seuratobj_dir' is parent directory. 
+The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the `seuratobj_dir` is parent directory. 
 ```
 seuratobj_dir/xxx.rds
 ```
@@ -169,20 +169,20 @@ The ideal metadata looks like the table below:
 - clinical_column ('clinical_column' by default): The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
 - sample_column ('orig.ident' by default): orig.ident: The unique identifier for the cell origin (sample), included in the metadata by default.
 
-You can also specify the corresponding names of those columns in your dataset with parameters 'clinical_column' and 'sample_column':
+You can also specify the corresponding names of those columns in your dataset with parameters `clinical_column` and `sample_column`:
 ```
 run_vid seuratobj_dir/xxx.rds \
         --clinical_column your_clinical_colname \
         --sample_column your_sample_id_colname
 ```
-Specify the 'batch_column' as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
+Specify the `batch_column` as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
 
 #### 2. Virus markers (txt) ####
 A txt file contains the list of virus biomarkers, should be included in current work directory:
 ```
 ./markers.txt
 ```
-Alternatively, specify your own virus marker file directory wtih parameter 'marker_dir':
+Alternatively, specify your own virus marker file directory wtih parameter `marker_dir`:
 ```
 run_vid seuratobj_dir/xxx.rds \
         --clinical_column your_clinical_colname \
@@ -353,7 +353,7 @@ Parameter '-v' is applied to map the local directory to container working direct
 ```
 -v /your/local/dir(file):/container/dir(file)
 ```
-When you execute VID image, you can replace '/your/local/dir(file)' with your local directory, please don't change the container directory('/container/dir(file)'). Modify the container directory will lead to execution failure. 
+When you execute VID image, you can replace `/your/local/dir(file)` with your local directory, please don't change the `/container/dir(file)`. Modify the container directory will lead to execution failure. 
 
 Alternatively, You can specify other VID parameters after image name(vid):
 ```
@@ -390,9 +390,9 @@ docker run \
        --clinical_column ebv_status \
        --metamodel mlp
 ```
-The outputs will be saved in the output directory you specified, the output will be saved in './demo/YYmmdd_HHMMSS' in this example, the structure of docker running output has no different with conda running.
+The outputs will be saved in the output directory you specified, the output will be saved in `./demo/YYmmdd_HHMMSS` in this example, the structure of docker running output has no different with conda running.
 
 ### Expert Usage ###
-An object of VID class will be saved as the 'vid_YYmmdd_HHMMSS.pkl' in 'output' directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset. Can refer to [expert_usage.ipynb]() for details.
+An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in 'output' directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset. Can refer to [expert_usage.ipynb]() for details.
 
 
