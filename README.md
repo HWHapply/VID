@@ -15,11 +15,7 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector:
   * [Usage](#usage)
   * [Demo](#demo)
   * [Docker Run](#docker-run)
-
-* [Expert Usage](#expert-usage)
-  * [16S rRNA gene sequencing data of OSCC patients](#human-microbiome)
-  * [Whole metagenomics data of Tara Ocean](#ocean-microbiome)
-  * [Transcriptomics data of NASH patients](#human-transcriptome)
+  * [Expert Usage](#expert-usage)
 
 
 ## Installation
@@ -324,7 +320,7 @@ Make a work directory for demo2:
 ```
 mkdir ./demo2
 ```
-Download the demo data to the demo directory from dropbox with wget:
+Download and extract the demo data to the demo directory from dropbox::
 ```
 wget --no-check-certificate 'https://www.dropbox.com/scl/fo/1qfrs4izmdxr6pio8a0jx/AMTkwGoQ6samlV7ks3hEu2o?rlkey=gafgpo3j4tg98i0dxun4nf2e1&st=r2s6bcol&dl=1' -O ./demo2.zip
 unzip ./demo2.zip -d ./demo2
@@ -341,7 +337,40 @@ run_vid ./demo2/data/demo2.rds \
 ```
 
 ### Docker Run ###
-You can run VID with docker image prepared in the last section:
+#### Usage
+Below is the example code for docker running:
+```
+docker run \
+-v /path/to/data.rds:/wkdir/input/data.rds \
+-v /path/to/output/dir:/wkdir/output \
+-v /path/to/marker.txt:/wkdir/input/markers.txt \
+-v /path/to/import_genes.txt:/wkdir/input/features.txt \
+vid \
+--clinical_column clinical_colname \
+--metamodel xgb \
+...
+```
+Parameter '-v' is applied to map the local directory to container working directory. The usage of '-v' shown below:
+```
+-v /your/local/dir(file):/container/dir(file)
+```
+When you execute VID image, you can replace '/your/local/dir(file)' with your local directory, please don't change the container directory('/container/dir(file)'). Modify the container directory will lead to execution failure. 
+
+Alternatively, You can specify other VID parameters after image name(vid):
+```
+vid \
+--clinical_column clinical_colname \
+--metamodel xgb \
+...
+```
+The VID parameter you can specify are listed below:
+```
+[--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN]
+[--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD]
+[--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
+```
+#### demo
+Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
 ```
 docker run \
        -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -351,7 +380,7 @@ docker run \
        --clinical_column ebv_status \
        --metamodel xgb
 ```
-Alternatively, you can provide the important gene list:
+You can also provide the important feature list:
 ```
 docker run \
        -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -362,5 +391,7 @@ docker run \
        --clinical_column ebv_status \
        --metamodel mlp
 ```
+The outputs will be saved in the output directory you specified, the output will be saved in './demo/yymmdd_HHMMSS' in this example, the structure of docker running output has no different with conda running.
 
-## Expert Usage ##
+### Expert Usage ###
+An object of VID class will be saved as the 'vid_yymmdd_HHMMSS.pkl' in 'output' directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset. Can refer to [expert_usage.ipynb]() for details.
