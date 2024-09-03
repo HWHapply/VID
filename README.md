@@ -3,9 +3,6 @@
 
 ![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green) ![ ](https://img.shields.io/badge/R-4.4.1-blue) ![ ](https://img.shields.io/badge/conda-24.7.1-green)  ![ ](https://img.shields.io/badge/docker-27.1.1-blue)  
 
-## Citation
-Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector: Ensemble Machine Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers, dd Month yyyy, PROTOCOL (Version 1) available at Protocol Exchange [paper_DOI]
-
 ## Table of Contents
 * [Installation](#installation)
   * [Hardware](#hardware)
@@ -395,3 +392,7 @@ The outputs will be saved in the output directory you specified, the output will
 
 ### Expert Usage ###
 An object of VID class will be saved as the 'vid_yymmdd_HHMMSS.pkl' in 'output' directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset. Can refer to [expert_usage.ipynb]() for details.
+
+## Citation
+Please cite: Wenhao Han, Jiahui Hu, Kane Toh Hui Chen. Viral Infection Detector: Ensemble Machine Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers, dd Month yyyy, PROTOCOL (Version 1) available at Protocol Exchange [paper_DOI]
+
