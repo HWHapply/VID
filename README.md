@@ -14,8 +14,9 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh, Hui Chen*. Viral Infection Detecto
   * [Usage](#usage)
   * [Demo](#demo)
   * [Docker Run](#docker-run)
-  * [Expert Usage](#expert-usage)
-
+* [Transfer VID Model On Unseen Data](#transfer-vid-model-on-unseen-data)
+  * [Transfer Learning With Conda](transfer-learning-with-conda)
+  * [Transfer Learning With Docker](transfer-learning-with-docker)
 
 ## Installation
 
@@ -396,14 +397,29 @@ vid \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
-The outputs will be saved in the output directory you specified, the output will be saved in `./demo/YYmmdd_HHMMSS` in this example, the structure of docker running output has no different with conda running.
+The outputs will be saved in the output directory you specified,  in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the structure of docker running output has no different with conda running.
 
-### Expert Usage ###
-An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset.
-Perform transfer learning with docker image:
+## Transfer VID Model On Unseen Data ##
+An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory of VID output. We can transfer the pre-trained VID model on a new dataset, which can save training time and improve the generalization. The pre-trained model can only be applid on the data of same oncovirus and comforms input standard.
+
+### Transfer Learning With Conda ###
+To perfrom transer learning in `vid_env` we created, change the input data and specify the directory of pre-trained vid object with argument `vidmodel_dir`.
+Perform transfer learning on demo data in `vid_env`:
+```
+run_vid ./demo/data/demo_unseen.rds \
+--output_dir ./demo:\
+--marker_dir ./demo/data/EBV_markers.txt \
+--feature_dir ./demo/data/important_features.txt \
+--vidmodel_dir ./demo/data/vid_demo.pkl \
+--clinical_column ebv_status \
+--metamodel xgb
+```
+
+### Transfer Learning With Docker ###
+To perform the transfer learning with docker image, exchange the input data with unseen data and map the directory of pre-trained vid object to the working directory in the container. Perform transfer learning on the demo dataset with docker image:
 ```
 docker run \
--v ./demo/data/demo.rds:/wkdir/input/data.rds \
+-v ./demo/data/demo_unseen.rds:/wkdir/input/data.rds \
 -v ./demo:/wkdir/output \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
 -v ./demo/data/important_features.txt:/wkdir/input/features.txt \
@@ -412,4 +428,5 @@ vid \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
+The output of transfer learning is the same with standard process.
 
