@@ -314,10 +314,10 @@ You can also download from [demo](https://www.dropbox.com/scl/fo/3u1ch4939idv6ue
 Running VID:
 ```
 run_vid ./demo/data/demo.rds \
-        --output_dir ./demo \
-        --marker_dir ./demo/data/EBV_markers.txt \
-        --clinical_column ebv_status \
-        --metamodel xgb 
+--output_dir ./demo \
+--marker_dir ./demo/data/EBV_markers.txt \
+--clinical_column ebv_status \
+--metamodel xgb 
 ```
 
 #### NPC-EBV-Epithelial ####
@@ -335,10 +335,10 @@ You can also download from [demo2](https://www.dropbox.com/scl/fo/1qfrs4izmdxr6p
 Running VID:
 ```
 run_vid ./demo2/data/demo2.rds \
-        --output_dir ./demo2 \ 
-        --marker_dir ./demo2/data/EBV_markers.txt \
-        --clinical_column EBV_state \
-        --metamodel mlp
+--output_dir ./demo2 \ 
+--marker_dir ./demo2/data/EBV_markers.txt \
+--clinical_column EBV_state \
+--metamodel mlp
 ```
 
 ### Docker Run ###
