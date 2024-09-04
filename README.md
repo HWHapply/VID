@@ -173,8 +173,8 @@ The ideal metadata looks like the table below:
 You can also specify the corresponding names of those columns in your dataset with parameters `clinical_column` and `sample_column`:
 ```
 run_vid seuratobj_dir/xxx.rds \
-        --clinical_column your_clinical_colname \
-        --sample_column your_sample_id_colname
+--clinical_column your_clinical_colname \
+--sample_column your_sample_id_colname
 ```
 Specify the `batch_column` as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
 
@@ -186,9 +186,9 @@ A txt file contains the list of virus biomarkers, should be included in current 
 Alternatively, specify your own virus marker file directory wtih parameter `marker_dir`:
 ```
 run_vid seuratobj_dir/xxx.rds \
-        --clinical_column your_clinical_colname \
-        --sample_column your_sample_id_colname \
-        --marker_dir your_marker_file_directory
+--clinical_column your_clinical_colname \
+--sample_column your_sample_id_colname \
+--marker_dir your_marker_file_directory
 ```
 ### __Output files__: <br>
 The code will automatically create output directory in current work directory named with the starting timestamp :
@@ -249,7 +249,7 @@ __clinical_column__ : str, optional, default = clinical_column
    > this column. This column will be applied for training set defination together with 'marker_dir'.
    > Please prepare the column with valid values in metadata and pass the column name when running the code.
 
-__batch_column__ : str, optional, default = batch
+__batch_column__ : str, optional, default = None
    > The column indicates the batch label which will be applied in batch correction with harmony.
 
 __sample_column__ : str, optional, default = orig.ident
