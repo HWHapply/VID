@@ -399,7 +399,7 @@ vid \
 The outputs will be saved in the output directory you specified, the output will be saved in `./demo/YYmmdd_HHMMSS` in this example, the structure of docker running output has no different with conda running.
 
 ### Expert Usage ###
-An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in 'output' directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset.
+An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory of VID output. You can load this object to jupyter notebook to check the detail of model training and predict the infection status of new dataset.
 Perform transfer learning with docker image:
 ```
 docker run \
