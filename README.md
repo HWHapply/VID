@@ -134,7 +134,11 @@ Confirm that the image has been successfully pulled by listing the available Doc
 ```
 docker images
 ```
-You should see 'hwhapply/vid:latest' listed under the REPOSITORY column.
+The 'hwhapply/vid:latest' repository has listed under the REPOSITORY column.
+```
+REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
+hwhapply/vid         latest    a59825e4b92d   21 hours ago    7.96GB
+```
 - Execute Scripts within the Docker Container:
 All subsequent scripts and procedures should be executed within a Docker container created from the 'hwhapply/vid' image. The tutorial is in the next section.
 
@@ -180,7 +184,7 @@ run_vid seuratobj_dir/xxx.rds \
 Specify the `batch_column` as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
 
 #### 2. Virus markers (txt) ####
-A txt file contains the list of virus biomarkers, should be included in current work directory:
+A txt file contains the list of virus biomarkers, should be included in current working directory:
 ```
 ./markers.txt
 ```
@@ -192,7 +196,7 @@ run_vid seuratobj_dir/xxx.rds \
 --marker_dir your_marker_file_directory
 ```
 ### __Output files__: <br>
-The code will automatically create output directory in current work directory named with the starting timestamp :
+The code will automatically create output directory in current working directory named with the starting timestamp :
 ```
 YYYYmmdd_HHMMSS 
 ├── data
@@ -231,7 +235,7 @@ __seuratobj_dir__ : str, requied
    > The directory of the input rds file (seurat object).
 
 __output_dir__ : str, optional, default = './'
-   > The output directory, set as current work directory by default.
+   > The output directory, set as current working directory by default.
 
 __marker_dir__ : str, optional, default = ./markers.txt
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
@@ -343,7 +347,6 @@ run_vid ./demo2/data/demo2.rds \
 ```
 
 ### Docker Run ###
-#### Usage
 Below is the example code for docker running:
 ```
 docker run \
@@ -362,7 +365,7 @@ Parameter '-v' is applied to map the local directory to container working direct
 ```
 When you execute VID image, you can replace `/your/local/dir(file)` with your local directory, please don't change the `/container/dir(file)`. Modify the container directory will lead to execution failure. 
 
-Alternatively, You can specify other VID parameters after image name(vid):
+Alternatively, You can specify other VID parameters after `vid` (image name):
 ```
 vid \
 --clinical_column clinical_colname \
@@ -375,7 +378,7 @@ The VID parameter you can specify are listed below:
 [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD]
 [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--vidmodel_dir VIDMODEL_DIR]
 ```
-#### demo
+
 Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
 ```
 docker run \
