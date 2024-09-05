@@ -30,7 +30,7 @@ Development and testing were carried out on different machines:
 |--------|-----|--------------|---|
 | Macbook Pro | 8-core Apple M1 chip | 16G | macOS Sonoma Version 14.6.1 |
 | Linux WorkStation | 16-core Intel Xeon E5-2620 v4 braodwell-EP * 2  | 96G | Ubuntu 22.04 | 
-| ThinkPad | ... | 16G | Windows 10 |
+| ThinkPad | 10-core 12th Gen Intel(R) Core(TM) i7-1255U | 16G | Windows 10 |
 
 
 ### Software
