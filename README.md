@@ -354,7 +354,7 @@ docker run \
 -v /path/to/output/dir:/wkdir/output \
 -v /path/to/marker.txt:/wkdir/input/markers.txt \
 -v /path/to/import_genes.txt:/wkdir/input/features.txt \
-vid \
+vid:latest \
 --clinical_column clinical_colname \
 --metamodel xgb \
 ...
@@ -365,7 +365,7 @@ Parameter '-v' is applied to map the local directory to container working direct
 ```
 When you execute VID image, you can replace `/your/local/dir(file)` with your local directory, please don't change the `/container/dir(file)`. Modify the container directory will lead to execution failure. 
 
-Alternatively, You can specify other VID parameters after `vid` (image name):
+Alternatively, You can specify other VID parameters after `vid:latest` (image name):
 ```
 vid \
 --clinical_column clinical_colname \
@@ -385,7 +385,7 @@ docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
 -v ./demo:/wkdir/output \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
-vid \
+vid:latest \
 --clinical_column ebv_status \
 --metamodel xgb
 ```
@@ -396,7 +396,7 @@ docker run \
 -v ./demo:/wkdir/output \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
 -v ./demo/data/important_features.txt:/wkdir/input/features.txt \ 
-vid \
+vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
@@ -427,7 +427,7 @@ docker run \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
 -v ./demo/data/important_features.txt:/wkdir/input/features.txt \
 -v ./demo/data/vid_demo.pkl:/wkdir/input/vid.pkl \
-vid \
+vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
