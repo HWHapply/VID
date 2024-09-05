@@ -49,7 +49,7 @@ if __name__ == '__main__':
 	except Exception as e:
 		raise ValueError("Shutting down due to argument definition error") from e
 
-	if 'vidmodel_dir' in args_input:
+	if args_input['vidmodel_dir']:
 		with open(args_input['vidmodel_dir'], 'rb') as file:
 			vid = pickle.load(file)
 		print("VID model passed, perform transfer learning...")

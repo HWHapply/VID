@@ -330,7 +330,8 @@ class VID(Utils_Model):
                     cv_results[f'split{fold_idx}_test_roc_auc'].append(roc_auc)
 
                 models.append(models_curr)
-                model_idx += 1
+                if self.vidmodel_dir:
+                    model_idx += 1
                 
             # Average predictions for the test set 
             self.meta_features = meta_features
