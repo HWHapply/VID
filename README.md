@@ -196,7 +196,7 @@ run_vid seuratobj_dir/xxx.rds \
 --marker_dir your_marker_file_directory
 ```
 ### __Output files__: <br>
-The code will automatically create output directory in current working directory named with the starting timestamp :
+The code will automatically create output directory in current working directory named with the starting timestamp:
 ```
 YYYYmmdd_HHMMSS 
 ├── data
