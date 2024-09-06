@@ -94,16 +94,24 @@ Remove the VID environment:
 conda env remove -n vid_env
 ```
 
-#### 4. Make the VID globally accessible:
+#### 4. Make the VID globally accessible permen:
 Make the scripts executable:
 ```
 chmod +x ./*
 ```
-Create the solf link 'run_vid' of source script:
+Open your .bashrc or .zshrc file in a text editor:
 ```
-sudo ln -s $(realpath ./run_vid.sh) /usr/local/bin/run_vid
+nano ~/.bashrc  # or ~/.zshrc for Zsh
 ```
-Execute with 'sudo' command if the 'Permission deny' error occurred. 
+Add the following line at the end of the file:
+```
+export PATH="$PATH:."
+```
+Reload the Configuration File:
+```
+source ~/.bashrc  # or source ~/.zshrc
+```
+
 
 #### 5. Validate the environment setup:
 Run the command below under any directory:
