@@ -3,7 +3,7 @@
 ![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green) ![ ](https://img.shields.io/badge/R-4.4.1-blue) ![ ](https://img.shields.io/badge/conda-24.7.1-green)  ![ ](https://img.shields.io/badge/docker-27.1.1-blue)  
 
 ## Citation
-Please cite: Wenhao Han, Jiahui Hu, Kane Toh, Hui Chen*. Viral Infection Detector: Ensemble Machine Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers, dd Month yyyy, PROTOCOL (Version 1) available at Protocol Exchange [paper_DOI]
+Please cite: Wenhao Han, Jiahui Hu, Kane Toh, Hui Chen*. Viral Infection Detector: Ensemble Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers, dd Month yyyy, PROTOCOL (Version 1) available at Protocol Exchange [paper_DOI]
 
 ## Table of Contents
 * [Installation](#installation)
