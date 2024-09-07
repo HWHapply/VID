@@ -94,7 +94,7 @@ Remove the VID environment:
 conda env remove -n vid_env
 ```
 
-#### 4. Make the VID globally accessible permen:
+#### 4. Make the VID globally accessible permanently:
 Make the scripts executable:
 ```
 chmod +x ./*
