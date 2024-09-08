@@ -15,8 +15,8 @@ Please cite: Wenhao Han, Jiahui Hu, Kane Toh, Hui Chen*. Viral Infection Detecto
   * [Demo](#demo)
   * [Docker Run](#docker-run)
 * [Transfer VID Model On Unseen Data](#transfer-vid-model-on-unseen-data)
-  * [Transfer Learning With Conda](transfer-learning-with-conda)
-  * [Transfer Learning With Docker](transfer-learning-with-docker)
+  * [Transfer Learning With Conda](#transfer-learning-with-conda)
+  * [Transfer Learning With Docker](#transfer-learning-with-docker)
 
 ## Installation
 
