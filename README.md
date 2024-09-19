@@ -239,17 +239,17 @@ YYYYmmdd_HHMMSS
     - ***vid_YYmmdd_HHMMSS.pkl***: The VID object (for expert usage), timestamped with the current date and time.
 
 ### Parameters ###
-__seuratobj_dir__ : str, requied
+__seuratobj_dir__ : str, **requied**
    > The directory of the input rds file (seurat object).
 
-__output_dir__ : str, optional, default = './'
-   > The output directory, set as current working directory by default.
-
-__marker_dir__ : str, optional, default = ./markers.txt
+__marker_dir__ : str, **required**, default = ./markers.txt
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
    > The markers will be applied for the defination of traning set(truely infected and truely uninfected), 
    > while the cells from infected sample with any marker expressed will be considered truely infected.
    > The markers will also be ***excluded*** from modeling.
+
+__output_dir__ : str, optional, default = './'
+   > The output directory, set as current working directory by default.
 
 __feature_dir__ : str, optional, default = None
    > The directory of a txt file contains a list of important genes, with each gene occupying one line.
