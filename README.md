@@ -155,7 +155,7 @@ All subsequent scripts and procedures should be executed within a Docker contain
 ### Usage ###
 Simply run VID in terminal with command below:
 ```
-run_vid seuratobj_dir/xxx.rds
+run_vid seuratobj_dir/xxx.rds --marker_dir markers.txt
 ```
 Please ensure that the input file conforms to the standard input format below. 
 ### __Input files__:  <br>
@@ -192,11 +192,7 @@ run_vid seuratobj_dir/xxx.rds \
 Specify the `batch_column` as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
 
 #### 2. Virus markers (txt) ####
-A txt file contains the list of virus biomarkers, should be included in current working directory:
-```
-./markers.txt
-```
-Alternatively, specify your own virus marker file directory wtih parameter `marker_dir`:
+A txt file contains the list of virus biomarkers, should be specified with parameter `marker_dir`:
 ```
 run_vid seuratobj_dir/xxx.rds \
 --clinical_column your_clinical_colname \
