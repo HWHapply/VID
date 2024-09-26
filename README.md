@@ -238,7 +238,7 @@ YYYYmmdd_HHMMSS
 __seuratobj_dir__ : str, **requied**
    > The directory of the input rds file (seurat object).
 
-__marker_dir__ : str, **required**, default = ./markers.txt
+__marker_dir__ : str, **optional**, default = ./markers.txt
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
    > The markers will be applied for the defination of traning set(truely infected and truely uninfected), 
    > while the cells from infected sample with any marker expressed will be considered truely infected.
@@ -251,6 +251,8 @@ __feature_dir__ : str, optional, default = None
    > The directory of a txt file contains a list of important genes, with each gene occupying one line.
    > If given, ignore feature selection and apply the important genes for modeling, otherwise, the boruta
    > feature selection will be applied to select important genes.
+
+__label_dir__: str, optional, default = None
   
 __clinical_column__ : str, optional, default = clinical_column
    > The column indicates the sample-level clinical diagnosis of infection, the column should
