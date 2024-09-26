@@ -68,11 +68,10 @@ class VID(Utils_Model):
             print('Dataset loading finished.')
             
             # load the marker list of the virus
-            if os.path.isfile(self.marker_dir):
+            if self.marker_dir:
                 with open(self.marker_dir, 'r') as file:
                     self.markers = [line.strip() for line in file]
-            else:
-                raise KeyError("Marker file dosen't exist, please double check your marker file directory.")      
+                    self.markers = [gene for gene in self.markers if gene in self.data_df.columns]
         
             # check the if the clinical test column, 'batch' and sample id column included in the metadata table
             essential_columns = [self.clinical_column, self.sample_column]
@@ -81,32 +80,40 @@ class VID(Utils_Model):
                     raise KeyError(f'{col} not included in metadata, please add the column.')
                 
             # detect the normal control: if a sample only have negative cell, we consider it normal control
-            neg_value_counts = self.meta_df.loc[self.meta_df[self.clinical_column] == 'negative', self.sample_column].value_counts()
-            neg_samples = []
-            for sid in neg_value_counts.index:
-                if neg_value_counts.loc[sid] == len(self.meta_df[self.meta_df[self.sample_column] == sid]):
-                    neg_samples.append(sid)
-            if len(neg_samples) == 0:
-                raise ValueError(f'Cannot detect the normal control(true negative sample) in provided dataset.')
-            else:
-                print(f'{len(neg_samples)} normal controls detected.')
+            if not self.label_dir:
+                neg_value_counts = self.meta_df.loc[self.meta_df[self.clinical_column] == 'negative', self.sample_column].value_counts()
+                neg_samples = []
+                for sid in neg_value_counts.index:
+                    if neg_value_counts.loc[sid] == len(self.meta_df[self.meta_df[self.sample_column] == sid]):
+                        neg_samples.append(sid)
+                if len(neg_samples) == 0:
+                    raise ValueError(f'Cannot detect the normal control(true negative sample) in provided dataset.')
+                else:
+                    print(f'{len(neg_samples)} normal controls detected.')
             
             # labeling based on the clinical test and gene expression
             # true positive : clinical positive + at least one marker expressed
             # true negative : clinical negative 
             # unknown sample : clinical positive + no marker expressed
-            print('Labeling...')
-            self.markers = [gene for gene in self.markers if gene in self.data_df.columns]
-            if len(self.markers) != 0:
-                self.meta_df.loc[(self.meta_df[self.clinical_column] == 'positive') &
-                                 (self.data_df[self.markers] != 0).any(axis=1), 'label'] = 1
-                self.meta_df.loc[self.meta_df[self.sample_column].isin(neg_samples), 'label'] = 0
-                self.meta_df['label'].fillna(2, inplace=True)
+            if self.label_dir:
+                print('Applying the pre-defined labels.')
+                with open(self.label_dir, 'r') as file:
+                    self.labels = [int(line.strip()) for line in file]
+                self.meta_df['label'] = self.labels
+                file.close()
             else:
-                raise KeyError(f'Labeling failed, marker provided not included in the expression data.')
+                print('Labeling...')
+                if len(self.markers) != 0:
+                    self.meta_df.loc[(self.meta_df[self.clinical_column] == 'positive') &
+                                    (self.data_df[self.markers] != 0).any(axis=1), 'label'] = 1
+                    self.meta_df.loc[self.meta_df[self.sample_column].isin(neg_samples), 'label'] = 0
+                    self.meta_df['label'].fillna(2, inplace=True)
+                else:
+                    raise KeyError(f'Labeling failed, marker provided not included in the expression data.')
             
             # drop the markers
-            self.data_df.drop(self.markers, axis = 1, inplace=True)
+            if self.marker_dir:
+                self.data_df.drop(self.markers, axis = 1, inplace=True)
             
             self.data_train = self.data_df[self.meta_df['label'] != 2]
             self.meta_train = self.meta_df.loc[self.data_train.index, :]
@@ -633,9 +640,4 @@ class VID(Utils_Model):
         # scaler = StandardScaler()
         # self.data_array_processed = scaler.fit_transform(self.data_df[self.features])
         # if self.batch_column:
-        #     ho_all = hm.run_harmony(self.data_array_processed, self.meta_df[[self.batch_column]], vars_use = [self.batch_column], max_iter_harmony=100)
-        #     self.data_df_processed = pd.DataFrame(ho_all.Z_corr.T, columns=self.features, index=self.data_df.index)
-        # else:
-        #     self.data_df_processed = pd.DataFrame(self.data_array_processed, columns=self.features, index=self.data_df.index)
-        # self.umap_plot()
-    
+        #     ho_all = hm.run_harmony(self.data_array_processed, self.meta_df[[self.batch_column]], vars_use = [self.batch_column], max_

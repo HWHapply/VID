@@ -13,8 +13,9 @@ def define_arguments():
 	parser.add_argument('--meta_dir', '-md', default = None, type = str, help = 'The directory of metadata.')
 	parser.add_argument('--output_dir', '-od', default = './output', type = str, help = 'The output directory.')
 	parser.add_argument('--vidmodel_dir', '-vmd', default = None, type = str, help = 'The directory of the vid object to applied for transfer learning.')
-	parser.add_argument('--marker_dir', '-mkd', default = './markers.txt', type = str, help = 'The markers stores in a txt file(one gene per row).')
+	parser.add_argument('--marker_dir', '-mkd', default = None, type = str, help = 'The markers stores in a txt file(one gene per row).')
 	parser.add_argument('--feature_dir', '-fd', default = None, type = str, help = 'The directory of txt file stores the important features(gene).')
+	parser.add_argument('--label_dir', '-ld', default = None, type = str, help = 'The directory of txt file stores the pre-defined labels.')
 	parser.add_argument('--clinical_column', '-cc', default = 'clinical_column', type = str, help = 'The column indicates the infection status in clinical assessment.(Sample level)')
 	parser.add_argument('--batch_column', '-bc', default = None, type = str, help = 'The column indicates the batch label that will be used for batch correction(harmony).')
 	parser.add_argument('--sample_column', '-sc', default = 'orig.ident', type = str, help = 'The column indicates the sample id.')
@@ -61,8 +62,4 @@ if __name__ == '__main__':
  
 	# save the vid model and training time
 	current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-	with open(os.path.join(args_input['output_dir'], f'vid_{current_time}.pkl'), "wb") as file:
-		pickle.dump(vid, file)
-		print('VID model saved!')
-
-
+	with open(os.path.jo

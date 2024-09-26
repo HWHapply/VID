@@ -17,6 +17,7 @@ optional_args_list=(
     "vidmodel_dir"
     "marker_dir"
     "feature_dir" 
+    "label_dir"
     "clinical_column"
     "batch_column" 
     "sample_column"
@@ -39,7 +40,7 @@ usage() {
                   [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] 
                   [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] 
                   [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]
-                  [--vidmodel_dir VIDMODEL_DIR]"
+                  [--vidmodel_dir VIDMODEL_DIR] [--label_dir LABEL_DIR]"
     exit 1
 }
 
@@ -143,4 +144,4 @@ python_args=$(printf "%s " "${optional_args[@]}")
 python "$RUN_VID" $python_args
 
 # Save the predicted infection status to seurat object
-Rscript "$SAVE_RESULT" "$seuratobj_dir" "$rawdata_dir"
+Rscript "$SAVE_
