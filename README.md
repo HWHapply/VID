@@ -411,6 +411,18 @@ hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
+You can provided the user defined :
+```
+docker run \
+-v ./demo/data/demo.rds:/wkdir/input/data.rds \
+-v ./demo:/wkdir/output \
+-v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
+-v ./demo/data/important_features.txt:/wkdir/input/features.txt \
+-v ./demo/data/labels.txt:/wkdir/input/labels.txt \
+hwhapply/vid:latest \
+--clinical_column ebv_status \
+--metamodel mlp
+```
 The outputs will be saved in the output directory you specified,  in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the structure of docker running output has no different with conda running.
 
 ## Transfer VID Model On Unseen Data ##
