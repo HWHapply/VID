@@ -411,7 +411,7 @@ hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
-You can provided the user defined :
+You can provide self-defined labels and ignore the automatical labeling:
 ```
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
