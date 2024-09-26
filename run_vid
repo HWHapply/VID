@@ -144,4 +144,4 @@ python_args=$(printf "%s " "${optional_args[@]}")
 python "$RUN_VID" $python_args
 
 # Save the predicted infection status to seurat object
-Rscript "$SAVE_
+Rscript "$SAVE_RESULT" "$seuratobj_dir" "$rawdata_dir"
