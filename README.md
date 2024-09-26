@@ -120,11 +120,11 @@ run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
 ```
-Usage: /usr/local/bin/run_vid <seuratobj_dir> [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] 
+Usage: /Users/hwh/Desktop/BGI Intern/EBV/VID/run_vid <seuratobj_dir> [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] 
                   [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] 
                   [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] 
                   [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]
-                  [--vidmodel_dir VIDMODEL_DIR]
+                  [--vidmodel_dir VIDMODEL_DIR] [--label_dir LABEL_DIR]
 ```
 
 
@@ -238,7 +238,7 @@ YYYYmmdd_HHMMSS
 __seuratobj_dir__ : str, **requied**
    > The directory of the input rds file (seurat object).
 
-__marker_dir__ : str, **required**, default = ./markers.txt
+__marker_dir__ : str, **optional**, default = None
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
    > The markers will be applied for the defination of traning set(truely infected and truely uninfected), 
    > while the cells from infected sample with any marker expressed will be considered truely infected.
