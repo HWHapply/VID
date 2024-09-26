@@ -199,6 +199,8 @@ run_vid seuratobj_dir/xxx.rds \
 --sample_column your_sample_id_colname \
 --marker_dir your_marker_file_directory
 ```
+The markers will be filetered out before model training. If the label file is not specified with parameter `label_dir` by user, the markers will also be applied for labeling.
+
 ### __Output files__: <br>
 The code will automatically create output directory in current working directory named with the starting timestamp:
 ```
@@ -248,11 +250,14 @@ __output_dir__ : str, optional, default = './'
    > The output directory, set as current working directory by default.
 
 __feature_dir__ : str, optional, default = None
-   > The directory of a txt file contains a list of important genes, with each gene occupying one line.
+   > The directory of a text file contains a list of important genes, with each gene occupying one line.
    > If given, ignore feature selection and apply the important genes for modeling, otherwise, the boruta
    > feature selection will be applied to select important genes.
 
 __label_dir__: str, optional, default = None
+   > The directory of a text file contains the user-defined label for model training, with each label occupying one line.
+   > Three valid labels should be included in the text file: 0 (true negative cell), 1 (true positive cell), and 2 (target cells).
+   > If given, ignore the labeling step and apply user-defined label for model construction and prediction.
   
 __clinical_column__ : str, optional, default = clinical_column
    > The column indicates the sample-level clinical diagnosis of infection, the column should
