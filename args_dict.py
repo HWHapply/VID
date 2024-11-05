@@ -181,8 +181,8 @@ param_grids = {
     'param_distributions_xgb' : {
         'learning_rate': uniform(0.0001, 0.3 - 0.0001),  # Uniform distribution between 0.0001 and 0.3
         'gamma': uniform(0, 0.2),  # Uniform distribution between 0 and 0.2
-        'reg_lambda': uniform(1, 100 - 1),  # Uniform distribution between 1 and 100
-        'reg_alpha': uniform(0, 0.1),  # Uniform distribution between 0 and 0.1
+        'reg_lambda': uniform(1, 10 - 1),  # Uniform distribution between 1 and 100
+        'reg_alpha': uniform(0, 1),  # Uniform distribution between 0 and 0.1
         'max_depth': randint(3, 6),  # Random integers between 3 (inclusive) and 6 (exclusive)
         'subsample': uniform(0.7, 1.0 - 0.7),  # Uniform distribution between 0.7 and 1.0
         'n_estimators': randint(10, 101)  # Random integers between 10 and 101 (inclusive)
