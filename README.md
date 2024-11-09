@@ -385,7 +385,7 @@ vid \
 ```
 The VID parameter you can specify are listed below:
 ```
-[--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN]
+[--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--label_dir LABEL_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN]
 [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD]
 [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--vidmodel_dir VIDMODEL_DIR]
 ```
