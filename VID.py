@@ -622,6 +622,9 @@ class VID(Utils_Model):
         # else:
         #     self.meta_df.to_csv(self.meta_dir)
         
+        self.meta_df.loc[(self.meta_df['infection_probability'] > 0.7) | (self.meta_df['infection_probability'] < 0.3), 'confidence'] = 'high'
+        self.meta_df.loc[(self.meta_df['infection_probability'] < 0.7) & (self.meta_df['infection_probability'] > 0.3), 'confidence'] = 'low'
+        
         # save the metadata table
         output_data_dir = os.path.join(os.path.dirname(self.output_dir), 'data')
         if os.path.isfile(os.path.join(output_data_dir, 'dmatrix.csv')):
