@@ -290,7 +290,7 @@ __threshold__ : float, optional {recommended range: 0.6 ~ 0.9}, default = None
    > The default 'infection_status' in final meta data is defined with threshold = 0.5, the additional colunm defined by this threshold 
    > will be named as 'infection_status_{threshold}' which won't overwrite the the default. 
 
-__average__ : str, optional {micro, macro, samples, weighted, binary, None} , default = weighted 
+__average__ : str, optional {micro, macro, weighted} , default = weighted 
    > Define the type of averaging performed on the evaluation scores among different class. 
 
 __random_state__ : int, optional , default = 42
