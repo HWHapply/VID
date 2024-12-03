@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, roc_auc_score, ConfusionMatrixDisplay, roc_curve
+from sklearn.metrics import confusion_matrix, roc_auc_score, ConfusionMatrixDisplay, roc_curve, RocCurveDisplay
 from boruta import BorutaPy
 from args_dict import args_fs
 from sklearn.ensemble import RandomForestClassifier
@@ -49,7 +49,7 @@ class Utils_Model:
         """
         cm = confusion_matrix(label, pred)
         
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(8, 6))
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['uninfected', 'infected'])
         
         disp.plot(include_values=True, cmap='Blues', values_format='d', ax=ax)
@@ -62,46 +62,40 @@ class Utils_Model:
         for text in disp.text_.ravel():
             text.set_fontsize(20)
         
+        # set label and title format
         plt.ylabel('Ground Truth', fontsize=16)
         plt.xlabel('Prediction', fontsize=16)
         plt.title(f'Confusion Matrix', fontsize=20)
         
+        
         # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, 'Confusion_Matrix_test.png'))  
+        plt.savefig(os.path.join(self.output_dir, 'Confusion_Matrix_test.png'), bbox_inches='tight', dpi=300)  
         
         # Close the plot to free up memory
         plt.close()
 
-    def roc_plot(self, y_true, y_pred_prob):
-        """
-        Parameters:
-        y_true: array-like, shape (n_samples,)
-            True binary labels.
-        y_pred_prob: array-like, shape (n_samples,)
-            Target scores, can either be probability estimates of the positive class, confidence values, or non-thresholded measure of decisions.
-        """
+    
+    def roc_plot(self, y_true, y_pred_proba):
+        # Generate the ROC curve
+        display = RocCurveDisplay.from_predictions(
+            y_true,
+            y_pred_proba,
+            name=f"positive vs negative",
+            color="darkorange",
+            plot_chance_level=True,
+        )
+        # Customize the plot labels and title
+        _ = display.ax_.set(
+            xlabel="False Positive Rate",
+            ylabel="True Positive Rate",
+            title=f"ROC curve",
+        )
+        # Remove spines using seaborn
+        sns.despine(ax=display.ax_)
+        display.figure_.savefig(os.path.join(self.output_dir, 'ROC_Curve_test.png'), dpi=300, bbox_inches="tight")
 
-        # Compute ROC curve and ROC area
-        fpr, tpr, _ = roc_curve(y_true, y_pred_prob)
-        roc_auc = roc_auc_score(y_true, y_pred_prob)
-        
-        # Plotting
-        plt.figure(figsize=(6, 6))
-        plt.plot(fpr, tpr, color="b", label=f'ROC curve (AUC = {roc_auc:.2f})', lw=2, alpha=0.8)
-        plt.plot([0, 1], [0, 1], linestyle="--", lw=2, color="r", label="Chance", alpha=0.8)
-        
-        plt.xlim([0, 1])
-        plt.ylim([0, 1])
-        plt.xlabel('False Positive Rate', fontsize = 10)
-        plt.ylabel('True Positive Rate', fontsize = 10)
-        plt.title(f'ROC curve of {self.metamodel} on testing set', fontsize = 10)
-        plt.legend(loc="lower right")
-
-        # Save the plot to a directory
-        plt.savefig(os.path.join(self.output_dir, 'ROC_Curve_test.png'))  # Replace with your desired directory and filename
-        
-        # Close the plot to free up memory
-        plt.close()
+        # Close the figure to free memory
+        plt.close(display.figure_)
 
     def histogram(self, pred_proba, title = 'test'):
         """
@@ -118,6 +112,9 @@ class Utils_Model:
         plt.ylabel('Frequency')
         plt.title(f'Distribution of Predicted Probability of {self.metamodel}')
         
+        # remove the top and right edges
+        sns.despine()
+        
         # Save the histogram of predicted probability
         plt.savefig(os.path.join(self.output_dir, f'pred_proba_hist_{title}.png'))  
         
@@ -128,7 +125,7 @@ class Utils_Model:
         '''
         Visualize the feature importance of xgbclassifier.
         '''
-        fig, ax = plt.subplots(figsize=(4, 3))
+        fig, ax = plt.subplots(figsize=(5, 4))
 
         xgboost.plot_importance(self.grid_result.best_estimator_, 
                             ax=ax,
