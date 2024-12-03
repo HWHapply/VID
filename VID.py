@@ -73,11 +73,17 @@ class VID(Utils_Model):
                     self.markers = [line.strip() for line in file]
                     self.markers = [gene for gene in self.markers if gene in self.data_df.columns]
         
-            # check the if the clinical test column, 'batch' and sample id column included in the metadata table
+            # check the if the clinical test column and sample id column included in the metadata table
             essential_columns = [self.clinical_column, self.sample_column]
             for col in essential_columns:
                 if col not in self.meta_df.columns:
                     raise KeyError(f'{col} not included in metadata, please add the column.')
+                
+            # convert the clinical test value to lowercase and check if only 'positive' and 'negative' included
+            self.meta_df[self.clinical_column] = self.meta_df[self.clinical_column].str.lower()
+            if not self.meta_df[self.clinical_column].isin(['positive', 'negative']).all():
+                raise ValueError("Only 'positive' and 'negative' allowed in the clinical column, unexpected value provided.")
+    
                 
             # detect the normal control: if a sample only have negative cell, we consider it normal control
             if not self.label_dir:
@@ -455,6 +461,7 @@ class VID(Utils_Model):
         specificity_scores = []
         f1_scores = []
         auc_scores = []
+        self.pred_proba = {}
     
         # perform normalization
         scaler = StandardScaler()
@@ -482,6 +489,9 @@ class VID(Utils_Model):
             # Make predictions on the test set
             predictions = model.predict(X_test)
             probabilities = model.predict_proba(X_test)[:, 1]
+            
+            # save the predicted probabilities of base models
+            self.pred_proba[model_name] = probabilities
             
             # Calculate evaluation metrics
             accuracy = accuracy_score(self.y_test, predictions)
@@ -524,6 +534,9 @@ class VID(Utils_Model):
         # Meta-model predictions on the test set
         final_predictions = self.grid_result.predict(self.test_meta_features)
         final_probabilities = self.grid_result.predict_proba(self.test_meta_features)[:, 1]
+        
+        # save the predicted probability of meta model
+        self.pred_proba[self.metamodel] = final_probabilities
         
         # draw and save the confusion matrix
         self.cm_plot(self.y_test, final_predictions)
