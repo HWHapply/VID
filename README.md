@@ -101,9 +101,10 @@ chmod +x ./*
 ```
 Open your `.bashrc` or `.zshrc`(MacOS) file in a text editor:
 ```
-nano ~/.bashrc  # or ~/.zshrc 
+echo $0 # check your system type
+nano ~/.bashrc  # or nano ~/.zshrc to open configuration file
 ```
-Add the following line at the end of the file to add:
+Add the following line at the end of the file:
 ```
 export PATH="$PATH:$(pwd)" 
 ```
