@@ -183,7 +183,7 @@ The ideal metadata looks like the table below:
 - clinical_column ('clinical_column' by default): The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
 - sample_column ('orig.ident' by default): The unique identifier for the cell origin (sample), included in the metadata by default.
 
-You can also specify the corresponding names of those columns in your dataset with parameters `clinical_column` and `sample_column`:
+You can also specify those columns in your dataset accordingly with parameters `clinical_column` and `sample_column`:
 ```
 run_vid seuratobj_dir/xxx.rds \
 --clinical_column your_clinical_colname \
@@ -242,7 +242,7 @@ __seuratobj_dir__ : str, **requied**
 
 __marker_dir__ : str, **optional**, default = None
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
-   > The markers will be applied for the defination of traning set(truely infected and truely uninfected), 
+   > The markers will be applied for the definition of traning set(truely infected and truely uninfected), 
    > while the cells from infected sample with any marker expressed will be considered truely infected.
    > The markers will also be ***excluded*** from modeling.
 
