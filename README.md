@@ -30,7 +30,7 @@ Development and testing were carried out on different machines:
 |--------|-----|--------------|---|
 | Macbook Pro | 8-core Apple M1 chip | 16G | macOS Sonoma Version 14.6.1 |
 | Linux WorkStation | 16-core Intel Xeon E5-2620 v4 braodwell-EP * 2  | 96G | Ubuntu 22.04 | 
-| ThinkPad | 10-core 12th Gen Intel(R) Core(TM) i7-1255U | 16G | Windows 10 |
+
 
 
 ### Software
@@ -99,17 +99,21 @@ Make the scripts executable:
 ```
 chmod +x ./*
 ```
-Open your .bashrc or .zshrc file in a text editor:
+Open your `.bashrc` or `.zshrc`(MacOS) file in a text editor:
 ```
-nano ~/.bashrc  # or ~/.zshrc for Zsh
+nano ~/.bashrc  # or ~/.zshrc 
 ```
-Add the following line at the end of the file:
+Add the following line at the end of the file to add:
 ```
-export PATH="$PATH:."
+export PATH="$PATH:$(pwd)" 
 ```
 Reload the Configuration File:
 ```
 source ~/.bashrc  # or source ~/.zshrc
+```
+Check if the vid path added sucessfully:
+```
+echo $PATH
 ```
 
 
@@ -240,11 +244,17 @@ YYYYmmdd_HHMMSS
 __seuratobj_dir__ : str, **requied**
    > The directory of the input rds file (seurat object).
 
-__marker_dir__ : str, **optional**, default = None
+__marker_dir__ : str, **required**
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
    > The markers will be applied for the definition of traning set(truely infected and truely uninfected), 
    > while the cells from infected sample with any marker expressed will be considered truely infected.
    > The markers will also be ***excluded*** from modeling.
+
+__clinical_column__ : str, **required**, default = clinical_column
+   > The column indicates the sample-level clinical diagnosis of infection, the column should
+   > included in the metadata of the input seurat object. 'positive' and 'negative' are two valid values in
+   > this column. This column will be applied for training set defination together with 'marker_dir'.
+   > Please prepare the column with valid values in metadata and pass the column name when running the code.
 
 __output_dir__ : str, optional, default = './'
    > The output directory, set as current working directory by default.
@@ -258,12 +268,6 @@ __label_dir__: str, optional, default = None
    > The directory of a text file contains the user-defined label for model training, with each label occupying one line.
    > Three valid labels should be included in the text file: 0 (true negative cell), 1 (true positive cell), and 2 (target cells).
    > If given, ignore the labeling step and apply user-defined label for model construction and prediction.
-  
-__clinical_column__ : str, optional, default = clinical_column
-   > The column indicates the sample-level clinical diagnosis of infection, the column should
-   > included in the metadata of the input seurat object. 'positive' and 'negative' are two valid values in
-   > this column. This column will be applied for training set defination together with 'marker_dir'.
-   > Please prepare the column with valid values in metadata and pass the column name when running the code.
 
 __batch_column__ : str, optional, default = None
    > The column indicates the batch label which will be applied in batch correction with harmony.
