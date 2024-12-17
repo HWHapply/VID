@@ -652,6 +652,9 @@ class VID(Utils_Model):
         # draw histogram of the predicted probabilities
         self.histogram(self.meta_unknown['infection_probability'], 'unseen')
         
+        # draw box plot for the cross validation result
+        self.box_cv()
+        
         # visualize the distribution of infection status with umap
         # scaler = StandardScaler()
         # self.data_array_processed = scaler.fit_transform(self.data_df[self.features])

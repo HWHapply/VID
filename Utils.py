@@ -168,3 +168,37 @@ class Utils_Model:
 
         # Close the plot to free up memory
         plt.close()
+        
+    def box_cv(self):
+        df = self.val_cv_scores.iloc[[-1], :]
+
+        # Step 1: Reshape the data
+        # Filter only the split columns (e.g., test_accuracy and test_f1)
+        split_columns = [col for col in df.columns if col.startswith('split')]
+        reshaped_data = df[split_columns].melt(var_name="Metric_Fold", value_name="Value")
+        
+        # Extract metric names from column names
+        reshaped_data['Metric'] = reshaped_data['Metric_Fold'].apply(lambda x: "_".join(x.split('_')[2:])) 
+        reshaped_data['Fold'] = reshaped_data['Metric_Fold'].apply(lambda x: x.split('_')[0])  
+        
+        # Step 2: Draw the boxplot
+        plt.figure(figsize=(5, 4))
+        sns.boxplot(data=reshaped_data, x='Metric', y='Value', palette="Set2")
+        
+        # Step 3: Overlay data points
+        sns.stripplot(data=reshaped_data, x='Metric', y='Value', color='black', size=4, jitter=True, alpha=0.6)
+        
+        # Customizing the plot
+    #    plt.title("Boxplot of cross validation scores", fontsize=14)
+        plt.xlabel("Metrics", fontsize=12)
+        plt.ylabel("Values", fontsize=12)
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        # Remove the right and top spines
+        sns.despine()
+        
+        # Save the histogram of predicted probability
+        plt.savefig(os.path.join(self.output_dir, 'cv_box.png'))  
+
+        # Close the plot to free up memory
+        plt.close()
