@@ -221,7 +221,9 @@ YYYYmmdd_HHMMSS
     ├── pred_proba_hist_unseen.png
     ├── test_scores_weighted.csv
     ├── val_cv_scores_weighted.csv
+    ├── cv_box.png
     └── vid_YYmmdd_HHMMSS.pkl
+
 ```
 #### Explanation: ####
 
@@ -239,6 +241,7 @@ YYYYmmdd_HHMMSS
     - ***pred_proba_hist_unseen.png***: A histogram showing the distribution of predicted probabilities on an unseen dataset.
     - ***test_scores_weighted.csv***: A table containing the weighted test scores.
     - ***val_cv_scores_weighted.csv***: A table file containing the weighted cross-validation scores.
+    - ***cv_box.png***: A box plot showing the cross validation results of meta model.
     - ***vid_YYmmdd_HHMMSS.pkl***: The VID object (for expert usage), timestamped with the current date and time.
 
 ### Parameters ###
