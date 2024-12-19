@@ -160,9 +160,9 @@ All subsequent scripts and procedures should be executed within a Docker contain
 ### Usage ###
 Simply run VID in terminal with command below:
 ```
-run_vid seuratobj_dir/xxx.rds --marker_dir markers.txt
+run_vid seuratobj_dir/xxx.rds --marker_dir markers.txt --clinical_column clinical_column
 ```
-Please ensure that the input file conforms to the standard input format below. 
+Please ensure that the input file conforms to the standard input format specified below. 
 ### __Input files__:  <br>
 There are two input files that are required for VID running: <br>
 #### 1. Seurat object (rds) ####
@@ -185,8 +185,8 @@ The ideal metadata looks like the table below:
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | 
 
-- clinical_column ('clinical_column' by default): The sample level infection diagnosis, only has two str values: 'positive' and 'negative'.
-- sample_column ('orig.ident' by default): The unique identifier for the cell origin (sample), included in the metadata by default.
+- clinical_column ('clinical_column' by default): The sample level infection status, only has two str values: 'positive' and 'negative'.
+- sample_column ('orig.ident' by default): The unique identifier for sample the cell originate from, included in the metadata by default.
 
 You can also specify those columns in your dataset accordingly with parameters `clinical_column` and `sample_column`:
 ```
@@ -197,14 +197,14 @@ run_vid seuratobj_dir/xxx.rds \
 Specify the `batch_column` as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
 
 #### 2. Virus markers (txt) ####
-A txt file contains the list of virus biomarkers, should be specified with parameter `marker_dir`:
+A text file contains the list of virus biomarkers, should be specified with parameter `marker_dir`, the content of marker file shows below:
 ```
-run_vid seuratobj_dir/xxx.rds \
---clinical_column your_clinical_colname \
---sample_column your_sample_id_colname \
---marker_dir your_marker_file_directory
+viral marker 1
+viral marker 2
+viral marker 3
+...
 ```
-The markers will be filetered out before model training. If the label file is not specified with parameter `label_dir` by user, the markers will also be applied for labeling.
+The markers will be filetered out from the high variance genes before model training. If the label file is not specified with parameter `label_dir` by user, the markers will also be applied for labeling.
 
 ### __Output files__: <br>
 The code will automatically create output directory in current working directory named with the starting timestamp:
@@ -271,7 +271,7 @@ __feature_dir__ : str, optional, default = None
 __label_dir__: str, optional, default = None
    > The directory of a text file contains the user-defined label for model training, with each label occupying one line.
    > Three valid labels should be included in the text file: 0 (true negative cell), 1 (true positive cell), and 2 (target cells).
-   > If given, ignore the labeling step and apply user-defined label for model construction and prediction.
+   > If given, ignore the labeling step and apply user-defined label for model construction and prediction. 
 
 __batch_column__ : str, optional, default = None
    > The column indicates the batch label which will be applied in batch correction with harmony.
@@ -366,7 +366,7 @@ run_vid ./demo2/data/demo2.rds \
 ```
 
 ### Docker Run ###
-Below is the example code for docker running:
+Below is the `example` code for docker running:
 ```
 docker run \
 -v /path/to/data.rds:/wkdir/input/data.rds \
