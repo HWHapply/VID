@@ -125,11 +125,43 @@ run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
 ```
-Usage: /Users/hwh/Desktop/BGI Intern/EBV/VID/run_vid <seuratobj_dir> [--output_dir OUTPUT_DIR] [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] 
-                  [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] 
-                  [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] 
-                  [--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--help]
-                  [--vidmodel_dir VIDMODEL_DIR] [--label_dir LABEL_DIR]
+Usage: /path/to/run_vid   
+    seuratobj_dir, required
+                        The directory of input seurat object.
+    --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
+                        The markers stores in a txt file(one gene per row).
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
+                        The column indicates the infection status in clinical assessment.(Sample level)
+    --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
+                        The output directory.
+    --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
+                        The directory of txt file stores the important features(gene).
+    --label_dir LABEL_DIR, -ld LABEL_DIR, optional
+                        The directory of txt file stores the pre-defined labels.
+    --batch_column BATCH_COLUMN, -bc BATCH_COLUMN, optional
+                        The column indicates the batch label that will be used for batch correction(harmony).
+    --sample_column SAMPLE_COLUMN, -sc SAMPLE_COLUMN, optional
+                        The column indicates the sample id.
+    --test_ratio TEST_RATIO, -tr TEST_RATIO, optional
+                        The ratio of validating set.
+    --num_split NUM_SPLIT, -ns NUM_SPLIT, optional
+                        The number of splitting for base model training and hyperparameter tuning for meta model.
+    --metamodel METAMODEL, -mm METAMODEL, optional
+                        The classifier applied as meta model.
+    --threshold THRESHOLD, -threds THRESHOLD, optional
+                        The threshold for the decision function of final prediction.
+    --average AVERAGE, -avg AVERAGE, optional
+                        Define the type of averaging performed on the evaluation scores among different class.
+    --random_state RANDOM_STATE, -rs RANDOM_STATE, optional
+                        The random state for the reproduction of result.
+    --n_jobs N_JOBS, -threads N_JOBS, optional
+                        Number of threads applied for parallel excecution.
+    --verbose VERBOSE, -v VERBOSE, optional
+                        The verbose mode.
+    --vidmodel_dir VIDMODEL_DIR, -vmd VIDMODEL_DIR, optional
+                        The directory of the vid object to applied for transfer learning.
+    -h, --help            
+                        Show this help message and exit.
 ```
 
 
