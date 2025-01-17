@@ -243,6 +243,7 @@ YYYYmmdd_HHMMSS
     - ***val_cv_scores_weighted.csv***: A table file containing the weighted cross-validation scores.
     - ***cv_box.png***: A box plot showing the cross validation results of meta model.
     - ***vid_YYmmdd_HHMMSS.pkl***: The VID object (for expert usage), timestamped with the current date and time.
+    - ***log.txt***: The log message for VID running.
 
 ### Parameters ###
 __seuratobj_dir__ : str, **requied**
