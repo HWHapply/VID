@@ -5,7 +5,7 @@ from datetime import datetime
 
 def define_arguments():
 	# Create a parser object
-	parser = argparse.ArgumentParser(description='Arguments for Virus Infection Detector:')
+	parser = argparse.ArgumentParser()
 
 	# Define optional argument
 	parser.add_argument('--h5ad_dir', '-hd', default = None, help = 'The directory of input h5ad file.')
@@ -26,11 +26,11 @@ def define_arguments():
 	parser.add_argument('--average', '-avg', default = 'weighted', type = str, help = 'Define the type of averaging performed on the evaluation scores among different class.')
 	parser.add_argument('--random_state', '-rs', default = 42, type = int, help = 'The random state for the reproduction of result.')
 	parser.add_argument('--n_jobs', '-threads', default = -1, type = int, help = 'Number of threads applied for parallel excecution.')
-	parser.add_argument('--verbose', '-v', default = 2, type = int , help='The verbose mode.')
+	parser.add_argument('--verbose', '-v', default = 1, type = int , help='The verbose mode.')
 
 	# Parse the command-line arguments
 	args = parser.parse_args()
-	parser.print_help()
+	#parser.print_help()
 	return args
 
 
@@ -41,7 +41,6 @@ if __name__ == '__main__':
 		args = define_arguments()
 		print()
 		print("Arguments defined for VID:")
-		print()
 		args_input = {}
 		for arg, value in args.__dict__.items():
 			# if value:

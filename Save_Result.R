@@ -1,6 +1,4 @@
 # save the predicted infection status to seurat object
-
-cat("\n")
 library(Seurat)
 
 # Take positional arguments

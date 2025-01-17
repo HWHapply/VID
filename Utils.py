@@ -65,7 +65,7 @@ class Utils_Model:
         # set label and title format
         plt.ylabel('Ground Truth', fontsize=16)
         plt.xlabel('Prediction', fontsize=16)
-        plt.title(f'Confusion Matrix', fontsize=20)
+        #plt.title(f'Confusion Matrix', fontsize=20)
         
         
         # Save the histogram of predicted probability
@@ -88,7 +88,7 @@ class Utils_Model:
         _ = display.ax_.set(
             xlabel="False Positive Rate",
             ylabel="True Positive Rate",
-            title=f"ROC curve",
+            #title=f"ROC curve",
         )
         # Remove spines using seaborn
         sns.despine(ax=display.ax_)
