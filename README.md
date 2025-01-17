@@ -447,7 +447,7 @@ docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
 -v ./demo:/wkdir/output \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
--v ./demo/data/important_features.txt:/wkdir/input/features.txt \ 
+-v ./demo/data/important_features.txt:/wkdir/input/features.txt \
 hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
