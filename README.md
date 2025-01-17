@@ -125,7 +125,7 @@ run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
 ```
-Usage: /path/to/run_vid   
+Usage: /Your/local/path/to/run_vid   
     seuratobj_dir, required
                         The directory of input seurat object.
     --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
