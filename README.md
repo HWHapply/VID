@@ -254,7 +254,8 @@ YYYYmmdd_HHMMSS
     ├── test_scores_weighted.csv
     ├── val_cv_scores_weighted.csv
     ├── cv_box.png
-    └── vid_YYmmdd_HHMMSS.pkl
+    ├── vid_YYmmdd_HHMMSS.pkl
+    └── log.txt
 
 ```
 #### Explanation: ####
