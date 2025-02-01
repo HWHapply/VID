@@ -55,7 +55,6 @@ Development and testing were carried out on different machines:
 - anndata (https://anndata.readthedocs.io/en/latest/)
 - tqdm (https://github.com/tqdm/tqdm)
 - Matplotlib (https://matplotlib.org/)
-- umap (https://umap-learn.readthedocs.io/en/latest/)
 - seaborn (https://seaborn.pydata.org/)
   
 #### Docker image
