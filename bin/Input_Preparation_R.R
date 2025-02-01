@@ -6,6 +6,11 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
 
+# Check if required packages are installed and install them if necessary
+if (!requireNamespace("sp", quietly = TRUE)) {
+  install.packages("sp")
+}
+
 # Check and install Seurat package if not installed
 if (!requireNamespace("Seurat", quietly = TRUE)) {
   remotes::install_github("satijalab/seurat", ref = "v4.4.0")
