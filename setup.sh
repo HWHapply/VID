@@ -5,27 +5,19 @@ set -e
 
 echo "Starting VID setup..."
 
-# Clone the repository if not already present
-if [ ! -d "VID" ]; then
-    echo "Cloning the VID repository..."
-    git clone https://github.com/HWHapply/VID.git
-fi
-
-cd VID
-
 # Detect the operating system
 OS_TYPE=$(uname)
 case "$OS_TYPE" in
     "Linux")
-        ENV_FILE="env/vid_env_Linux.yml"
+        ENV_FILE="./env/vid_env_Linux.yml"
         SHELL_CONFIG="$HOME/.bashrc"
         ;;
     "Darwin")
-        ENV_FILE="env/vid_env_macOS.yml"
+        ENV_FILE="./env/vid_env_macOS.yml"
         SHELL_CONFIG="$HOME/.zshrc"
         ;;
     "CYGWIN"* | "MINGW"* | "MSYS"*)
-        ENV_FILE="env/vid_env_Windows.yml"
+        ENV_FILE="./env/vid_env_Windows.yml"
         SHELL_CONFIG="$HOME/.bashrc" # Adjust if using a different shell in Windows
         ;;
     *)
