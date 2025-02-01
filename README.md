@@ -79,8 +79,12 @@ chmod +x setup.sh
 ./setup.sh
 ```
 #### 3. Validate the environment setup:
-Run the command below under any directory:
+Activate the `vid_env`:
+```bash
+conda activate vid_env
 ```
+Run the command below under any directory:
+```bash
 run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
