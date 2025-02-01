@@ -378,7 +378,7 @@ Parameter '-v' is applied to map the local directory to container working direct
 ```
 When you execute VID image, you can replace `/your/local/dir(file)` with your local directory, please don't change the `/container/dir(file)`. Modify the container directory will lead to execution failure. 
 
-Specify `clinical_column` after `hwhapply/vid:latest` if `label_dir`(self-defined label) is not provided:
+Specify `clinical_column` after `hwhapply/vid:latest`:
 ```
 docker run
 ...
@@ -388,9 +388,9 @@ hwhapply/vid:latest \
 ```
 The optional arguments you can specify are listed below:
 ```
-[--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--label_dir LABEL_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN]
-[--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD]
-[--average AVERAGE] [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--vidmodel_dir VIDMODEL_DIR]
+[--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO]
+[--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE]
+[--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--vidmodel_dir VIDMODEL_DIR]
 ```
 
 Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
