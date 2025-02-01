@@ -1,0 +1,189 @@
+#!/bin/bash
+
+# Define source directory and scripts
+SOURCE_DIR="$(dirname "$(realpath "$0")")"
+PREPARE_DATASET="$SOURCE_DIR/Input_Preparation_R.R"
+RUN_VID="$SOURCE_DIR/run_vid.py"
+SAVE_RESULT="$SOURCE_DIR/Save_Result.R"
+
+# Define the list of optional arguments
+optional_args_list=(
+    "h5ad_dir" 
+    "data_dir" 
+    "meta_dir"
+    "output_dir"
+    "vidmodel_dir"
+    "marker_dir"
+    "feature_dir" 
+    "label_dir"
+    "clinical_column"
+    "batch_column" 
+    "sample_column"
+    "test_ratio"
+    "num_split"
+    "metamodel"
+    "threshold"
+    "average"
+    "random_state"
+    "n_jobs"
+    "verbose"
+)
+
+# Initialize optional arguments array
+optional_args=()
+
+# Function to display usage
+usage() {
+    echo "Usage: $0   
+    seuratobj_dir, required
+                        The directory of input seurat object.
+    --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
+                        The markers stores in a txt file(one gene per row).
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
+                        The column indicates the infection status in clinical assessment.(Sample level)
+    --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
+                        The output directory.
+    --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
+                        The directory of txt file stores the important features(gene).
+    --label_dir LABEL_DIR, -ld LABEL_DIR, optional
+                        The directory of txt file stores the pre-defined labels.
+    --batch_column BATCH_COLUMN, -bc BATCH_COLUMN, optional
+                        The column indicates the batch label that will be used for batch correction(harmony).
+    --sample_column SAMPLE_COLUMN, -sc SAMPLE_COLUMN, optional
+                        The column indicates the sample id.
+    --test_ratio TEST_RATIO, -tr TEST_RATIO, optional
+                        The ratio of validating set.
+    --num_split NUM_SPLIT, -ns NUM_SPLIT, optional
+                        The number of splitting for base model training and hyperparameter tuning for meta model.
+    --metamodel METAMODEL, -mm METAMODEL, optional
+                        The classifier applied as meta model.
+    --threshold THRESHOLD, -threds THRESHOLD, optional
+                        The threshold for the decision function of final prediction.
+    --average AVERAGE, -avg AVERAGE, optional
+                        Define the type of averaging performed on the evaluation scores among different class.
+    --random_state RANDOM_STATE, -rs RANDOM_STATE, optional
+                        The random state for the reproduction of result.
+    --n_jobs N_JOBS, -threads N_JOBS, optional
+                        Number of threads applied for parallel excecution.
+    --verbose VERBOSE, -v VERBOSE, optional
+                        The verbose mode.
+    --vidmodel_dir VIDMODEL_DIR, -vmd VIDMODEL_DIR, optional
+                        The directory of the vid object to applied for transfer learning.
+    -h, --help            
+                        Show this help message and exit."
+                        
+    exit 1
+}
+
+# Parse command-line arguments
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        --help|-h)
+            usage
+            ;;
+        -*)
+            arg_name="${1#--}"
+            if [[ " ${optional_args_list[@]} " =~ " ${arg_name} " ]]; then
+                if [[ -n "$2" && ! "$2" =~ ^- ]]; then
+                    optional_args+=("$1 $2")
+                    if [[ "$1" == "--output_dir" ]]; then
+                        output_dir="$2"
+                    fi
+                    shift
+                else
+                    echo "Error: Value for $1 is missing"
+                    usage
+                fi
+            else
+                echo "Error: Unknown argument $1"
+                usage
+            fi
+            ;;
+        *)
+            if [[ -z "$seuratobj_dir" ]]; then
+                seuratobj_dir="$1"
+            else
+                echo "Error: Unexpected positional argument $1"
+                usage
+            fi
+            ;;
+    esac
+    shift
+done
+
+
+# Ensure required positional argument is provided
+if [[ -z "$seuratobj_dir" ]]; then
+    echo "Error: Positional argument is required"
+    usage
+fi
+
+# Create output and rawdata directories with timestamp
+timestamp=$(date +"%Y%m%d_%H%M%S")
+if [[ -z "$output_dir" ]]; then
+    rawdata_dir="./${timestamp}/data"
+    output_dir="./${timestamp}/output"
+else
+    rawdata_dir="${output_dir}/${timestamp}/data"
+    output_dir="${output_dir}/${timestamp}/output"
+fi
+mkdir -p "$rawdata_dir" "$output_dir"
+
+# Define the log file inside the output directory
+log_file="$output_dir/log.txt"
+exec > >(tee -a "$log_file") 2>&1
+
+# Ensure --output_dir is included in optional arguments
+output_dir_set=false
+for i in "${!optional_args[@]}"; do
+    if [[ "${optional_args[$i]}" =~ "--output_dir" ]]; then
+        optional_args[$i]="--output_dir $output_dir"
+        output_dir_set=true
+        break
+    fi
+done
+
+if [[ $output_dir_set == false ]]; then
+    optional_args+=("--output_dir $output_dir")
+fi
+
+echo ""
+echo "----- Script Execution Started at $(date) -----"
+echo "Input Directory: $seuratobj_dir"
+echo "Raw Data Directory: $rawdata_dir"
+echo "Output Directory: $output_dir"
+
+# Run the R script for input preparation
+echo ""
+echo "----- Input Preparing ... -----"
+Rscript "$PREPARE_DATASET" "$seuratobj_dir" "$rawdata_dir"
+
+# Determine file types in raw data directory
+h5ad_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "data.h5ad")
+dmatrix_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "dmatrix.csv")
+metadata_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "metadata.csv")
+
+if [[ -n "$h5ad_file" && -z "$dmatrix_file" && -z "$metadata_file" ]]; then
+    optional_args+=("--h5ad_dir $h5ad_file")
+elif [[ -n "$dmatrix_file" && -n "$metadata_file" ]]; then
+    optional_args+=("--data_dir $dmatrix_file" "--meta_dir $metadata_file")
+else
+    echo "Error: Unexpected files in raw data directory"
+    exit 1
+fi
+
+# Prepare arguments for Python script
+python_args=$(printf "%s " "${optional_args[@]}")
+
+# Run the Python script
+echo ""
+echo "----- Model training ... -----"
+python "$RUN_VID" $python_args
+
+# Save results using the R script
+echo ""
+echo "----- Saving Results ... -----"
+Rscript "$SAVE_RESULT" "$seuratobj_dir" "$rawdata_dir"
+
+echo "----- Execution Completed at $(date) -----"
+echo "Logs saved to $log_file"
