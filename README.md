@@ -127,7 +127,7 @@ Usage: /Your/local/path/to/run_vid
     -h, --help            
                         Show this help message and exit.
 ```
-
+Please be aware that it may take few minutes for vid to install all required packages in the first running.
 
 #### Docker image setup
 To simplify the setup process, we provide a Docker image that eliminates the requirement for manual environment configuration. Please follow the steps below to use the Docker image:
