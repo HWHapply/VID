@@ -217,8 +217,8 @@ The ideal metadata looks like the table below:
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | 
 
-- clinical_column ('clinical_column' by default): The sample level infection status, only has two str values: 'positive' and 'negative'.
-- sample_column ('orig.ident' by default): The unique identifier for sample the cell originate from, included in the metadata by default.
+- `clinical_column` ('clinical_column' by default): The sample level infection status, only has two str values: 'positive' and 'negative'.
+- `sample_column` ('orig.ident' by default): The unique identifier for sample the cell originate from, included in the metadata by default.
 
 You can also specify those columns in your dataset accordingly with parameters `clinical_column` and `sample_column`:
 ```
@@ -226,10 +226,10 @@ run_vid seuratobj_dir/xxx.rds \
 --clinical_column your_clinical_colname \
 --sample_column your_sample_id_colname
 ```
-Specify the `batch_column` as None if no batch appeared in dataset. The VID will ignore batch correction step if None is passed.
+Specify the `batch_column` as None if no batch effect appeared in dataset. The VID will ignore batch correction step if None is passed.
 
-#### 2. Virus markers (txt) ####
-A text file contains the list of virus biomarkers, should be specified with parameter `marker_dir`, the content of marker file shows below:
+#### 2. Viral markers (txt) ####
+A text file contains the list of viral biomarkers, should be specified with parameter `marker_dir`, the content of marker file shows below:
 ```
 viral marker 1
 viral marker 2
@@ -259,13 +259,13 @@ YYYYmmdd_HHMMSS
 ```
 #### Explanation: ####
 
-- **YYYYmmdd_HHMMSS/**: The root directory, named with the current timestamp:
+- **YYYYmmdd_HHMMSS**: The root directory, named with the current timestamp:
 
-  - **data/**: Contains the input data and metadata table with results saved inside.
+  - **data**: Contains the input data and metadata table with results saved inside.
     - ***data.rds***: The input Seurat object file with predicted infection status and probabilities in the meta.data.
     - ***metadata.csv***: A CSV file containing metadata the same as the samples in `data.rds`.
 
-  - **output/**: Contains the results and outputs from the machine learning tasks.
+  - **output**: Contains the results and outputs from the machine learning tasks.
     - ***Confusion_Matrix_test.png***: An image file showing the confusion matrix on the test set.
     - ***ROC_Curve_test.png***: An image file showing the Receiver Operating Characteristic (ROC) curve on the test set.
     - ***important_genes.txt***: A text file listing the important genes identified by the boruta.
@@ -408,7 +408,7 @@ docker run \
 -v /path/to/import_genes.txt:/wkdir/input/features.txt \
 hwhapply/vid:latest \
 --clinical_column clinical_colname \
---metamodel xgb \
+--optional_argument argument_value \
 ...
 ```
 Parameter '-v' is applied to map the local directory to container working directory. The usage of '-v' shown below:
@@ -417,14 +417,15 @@ Parameter '-v' is applied to map the local directory to container working direct
 ```
 When you execute VID image, you can replace `/your/local/dir(file)` with your local directory, please don't change the `/container/dir(file)`. Modify the container directory will lead to execution failure. 
 
-Alternatively, You can specify other VID parameters after `vid:latest` (image name):
+Specify `clinical_column` after `hwhapply/vid:latest` if `label_dir`(self-defined label) is not provided:
 ```
-vid \
+docker run
+...
+hwhapply/vid:latest \
 --clinical_column clinical_colname \
---metamodel xgb \
 ...
 ```
-The VID parameter you can specify are listed below:
+The optional arguments you can specify are listed below:
 ```
 [--marker_dir MARKER_DIR] [--feature_dir FEATURE_DIR] [--label_dir LABEL_DIR] [--clinical_column CLINICAL_COLUMN] [--batch_column BATCH_COLUMN]
 [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO] [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD]
@@ -441,7 +442,7 @@ hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel xgb
 ```
-You can also provide the important feature list:
+You can also provide the important feature list to skip feature selection:
 ```
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -452,7 +453,7 @@ hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
-You can provide self-defined labels and ignore the automatical labeling:
+Provide self-defined labels to skip the automatical labeling:
 ```
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -467,7 +468,7 @@ hwhapply/vid:latest \
 The outputs will be saved in the output directory you specified,  in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the structure of docker running output has no different with conda running.
 
 ## Transfer VID Model On Unseen Data ##
-An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory of VID output. We can transfer the pre-trained VID model on a new dataset, which can save training time and improve the generalization. The pre-trained model can only be applid on the data of same oncovirus and comforms input standard.
+An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory of VID output. We can transfer the pre-trained VID model on a new dataset, which can save training time and make the model generalize on unseen data. The pre-trained model can only be applid on the data of same oncovirus and comforms input standard.
 
 ### Transfer Learning With Conda ###
 To perfrom transer learning in `vid_env` we created, change the input data and specify the directory of pre-trained vid object with argument `vidmodel_dir`.
@@ -483,7 +484,7 @@ run_vid ./demo/data/demo_unseen.rds \
 ```
 
 ### Transfer Learning With Docker ###
-To perform the transfer learning with docker image, exchange the input data with unseen data and map the directory of pre-trained vid object to the working directory in the container. Perform transfer learning on the demo dataset with docker image:
+To perform the transfer learning with docker image, exchange the input data with unseen data and map the path of pre-trained vid object to the corresponding directory in the container. Perform transfer learning on the demo dataset with docker image:
 ```
 docker run \
 -v ./demo/data/demo_unseen.rds:/wkdir/input/data.rds \
