@@ -74,51 +74,12 @@ Change to the work directory:
 ```
 cd VID
 ```
-
-#### 3. Create a conda environment called vid_env for the VID running:
-Choose the configuration file (vid_env_xxx.yml) to create the environment based on your OS:
+Make sure the `setup.sh` is excutable and run it from `VID` directory:
+```bash
+chmod +x setup.sh
+./setup.sh
 ```
-conda create -f vid_env_{your_OS}.yml -n vid_env
-```
-Activate the environment:
-```
-conda activate vid_env
-```
-###### Remove the conda environment with commands below: 
-Dectivate the VID environment:
-```
-conda deactivate vid_env
-```
-Remove the VID environment:
-```
-conda env remove -n vid_env
-```
-
-#### 4. Make the VID globally accessible permanently:
-Make the scripts executable:
-```
-chmod +x ./*
-```
-Open your `.bashrc` or `.zshrc`(MacOS) file in a text editor:
-```
-echo $0 # check your system type
-nano ~/.bashrc  # or nano ~/.zshrc to open configuration file
-```
-Add the following line at the end of the file:
-```
-export PATH="$PATH:$(pwd)" 
-```
-Reload the Configuration File:
-```
-source ~/.bashrc  # or source ~/.zshrc
-```
-Check if the vid path added sucessfully:
-```
-echo $PATH
-```
-
-
-#### 5. Validate the environment setup:
+#### 3. Validate the environment setup:
 Run the command below under any directory:
 ```
 run_vid --help
@@ -358,19 +319,19 @@ __vidmodel_dir__ : str, optional, default = None
 ### Demo ###
 
 #### NPC-EBV-Lymphocytes ####
-Make a work directory for demo:
-```
+create a new work directory for demo:
+```bash
 mkdir ./demo
 ```
 Download and extract the demo data to the demo directory from dropbox:
-```
+```bash
 wget --no-check-certificate 'https://www.dropbox.com/scl/fo/3u1ch4939idv6uely16k7/ADsdx0VF-JG2tLQUYYFvhu4?rlkey=eckmr4wpjkiinee6m77fy7rzr&st=hhuhub32&dl=1' -O ./demo.zip
 unzip ./demo.zip -d ./demo
 ```
 You can also download from [demo](https://www.dropbox.com/scl/fo/3u1ch4939idv6uely16k7/ADsdx0VF-JG2tLQUYYFvhu4?rlkey=eckmr4wpjkiinee6m77fy7rzr&st=hhuhub32&dl=1) and extract to './demo'.
 
 Running VID:
-```
+```bash
 run_vid ./demo/data/demo.rds \
 --output_dir ./demo \
 --marker_dir ./demo/data/EBV_markers.txt \
@@ -379,19 +340,19 @@ run_vid ./demo/data/demo.rds \
 ```
 
 #### NPC-EBV-Epithelial ####
-Make a work directory for demo2:
-```
+Create a new work directory for demo2:
+```bash
 mkdir ./demo2
 ```
 Download and extract the demo data to the demo directory from dropbox::
-```
+```bash
 wget --no-check-certificate 'https://www.dropbox.com/scl/fo/1qfrs4izmdxr6pio8a0jx/AMTkwGoQ6samlV7ks3hEu2o?rlkey=gafgpo3j4tg98i0dxun4nf2e1&st=r2s6bcol&dl=1' -O ./demo2.zip
 unzip ./demo2.zip -d ./demo2
 ```
 You can also download from [demo2](https://www.dropbox.com/scl/fo/1qfrs4izmdxr6pio8a0jx/AMTkwGoQ6samlV7ks3hEu2o?rlkey=gafgpo3j4tg98i0dxun4nf2e1&st=r2s6bcol&dl=1) and extract to './demo2'.
 
 Running VID:
-```
+```bash
 run_vid ./demo2/data/demo2.rds \
 --output_dir ./demo2 \ 
 --marker_dir ./demo2/data/EBV_markers.txt \
@@ -434,7 +395,7 @@ The optional arguments you can specify are listed below:
 ```
 
 Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
-```
+```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
 -v ./demo:/wkdir/output \
@@ -444,7 +405,7 @@ hwhapply/vid:latest \
 --metamodel xgb
 ```
 You can also provide the important feature list to skip feature selection:
-```
+```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
 -v ./demo:/wkdir/output \
@@ -455,7 +416,7 @@ hwhapply/vid:latest \
 --metamodel mlp
 ```
 Provide self-defined labels to skip the automatical labeling:
-```
+```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
 -v ./demo:/wkdir/output \
@@ -474,7 +435,7 @@ An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` 
 ### Transfer Learning With Conda ###
 To perfrom transer learning in `vid_env` we created, change the input data and specify the directory of pre-trained vid object with argument `vidmodel_dir`.
 Perform transfer learning on demo data in `vid_env`:
-```
+```bash
 run_vid ./demo/data/demo_unseen.rds \
 --output_dir ./demo:\
 --marker_dir ./demo/data/EBV_markers.txt \
@@ -486,7 +447,7 @@ run_vid ./demo/data/demo_unseen.rds \
 
 ### Transfer Learning With Docker ###
 To perform the transfer learning with docker image, exchange the input data with unseen data and map the path of pre-trained vid object to the corresponding directory in the container. Perform transfer learning on the demo dataset with docker image:
-```
+```bash
 docker run \
 -v ./demo/data/demo_unseen.rds:/wkdir/input/data.rds \
 -v ./demo:/wkdir/output \
