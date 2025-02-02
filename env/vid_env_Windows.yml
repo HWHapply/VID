@@ -122,7 +122,7 @@ dependencies:
       - torch==2.6.0
       - torchaudio==2.6.0
       - torchvision==0.21.0
-      - tqdm==4.66.6.dev8+g0a439b5
+      - tqdm==4.66.6
       - typing-extensions==4.12.2
       - tzdata==2025.1
       - xgboost==2.1.3
