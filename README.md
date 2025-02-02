@@ -30,6 +30,7 @@ Development and testing were carried out on different machines:
 |--------|-----|--------------|---|
 | Macbook Pro | 8-core Apple M1 chip | 16G | macOS Sonoma Version 14.6.1 |
 | Linux WorkStation | 16-core Intel Xeon E5-2620 v4 braodwell-EP * 2  | 96G | Ubuntu 22.04 | 
+| Alienware 17 R5 | 6-core Intel i7-8750H CPU | 16G | Windows 10 |
 
 
 
