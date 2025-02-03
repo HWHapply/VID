@@ -65,6 +65,8 @@ Above software list displays the minimal requirements for running the VID locall
 #### 1. Conda installation (version 24.7.1 is recommended)
 Please install conda according to your OS from (https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
+If you are windows user, please install git bash for your system from(https://git-scm.com/downloads/win). After installation, Press `Win + X`, then search `git bash` to open the git bash command line. Then proceed to the next step.
+
 #### 2. Compiling from source code
 Clone the source github repository to local machine:
 ```
