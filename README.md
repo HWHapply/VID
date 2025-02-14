@@ -66,11 +66,11 @@ If you are Windows user, please install git bash for your system from(https://gi
 
 #### 2. Compiling from source code
 Clone the source github repository to local machine:
-```
+```bash
 git clone https://github.com/HWHapply/VID.git
 ```
 Change to the work directory:
-```
+```bash
 cd VID
 ```
 Make sure the `setup.sh` is excutable and run it from `VID` directory:
@@ -88,7 +88,7 @@ Run the command below under any directory:
 run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
-```
+```bash
 Usage: /Your/local/path/to/run_vid   
     seuratobj_dir, required
                         The directory of input seurat object.
@@ -135,16 +135,16 @@ To simplify the setup process, we provide a Docker image that eliminates the req
 Download and install Docker based on your operating system by following the instructions provided here: [Docker Installation Guide](https://docs.docker.com/engine/install/).
 - Pull the Docker Image:
 Retrieve the VID Docker image from Docker Hub using the following command:
-```
+```bash
 docker pull hwhapply/vid:latest
 ```
 - Verify the Image:
 Confirm that the image has been successfully pulled by listing the available Docker images:
-```
+```bash
 docker images
 ```
 The 'hwhapply/vid:latest' repository has listed under the REPOSITORY column.
-```
+```bash
 REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
 hwhapply/vid         latest    a59825e4b92d   21 hours ago    7.96GB
 ```
@@ -155,23 +155,25 @@ All subsequent scripts and procedures should be executed within a Docker contain
 ## User tutorial
 ### Usage ###
 Simply run VID in terminal with command below:
-```
-run_vid seuratobj_dir/xxx.rds --marker_dir markers.txt --clinical_column clinical_column
+```bash
+run_vid seuratobj_dir/xxx.rds --marker_dir markers.txt 
 ```
 Please ensure that the input file conforms to the standard input format specified below. 
 ### __Input files__:  <br>
 There are two input files that are required for VID running: <br>
 #### 1. Seurat object (rds) ####
-The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, the `seuratobj_dir` is parent directory. 
+The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, where **log-transformation** on the raw counts and **high-variance gene selection** are required:
+``` R
+# example code for the two required steps
+seurat_object <- NormalizeData(seurat_object) # log-transformation on raw counts
+seurat_object <- FindVariableFeatures(seurat_object, selection.method = "vst", nfeatures = 2000) # top 2000 high-variance genes selection
 ```
-seuratobj_dir/xxx.rds
-```
-Some columns should be included in metadata of the seurat object, visualize the metadata with code below:
-```
-# Run the code below in Rstudio or Jupyter:
+Two columns should be included in metadata of the seurat object, visualize the metadata with code below:
+```R
+# Run the code below in Rstudio or Jupyter notebook with R kernel:
 library(seurat)
 seurat_obj <- ReadRDS('seuratobj_dir/xxx.rds')
-seurat_obj@@meta.data
+seurat_obj@meta.data
 ```
 The ideal metadata looks like the table below:
 | orig.ident | ... | clinical_column |
@@ -181,20 +183,20 @@ The ideal metadata looks like the table below:
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | 
 
-- `clinical_column` ('clinical_column' by default): The sample level infection status, only has two str values: 'positive' and 'negative'.
+- `clinical_column` ('clinical_column' by default): The sample level infection status, only has two str values: 'positive' and 'negative', please note that this column is not included in the metadata by default, please manually add it if doesn't exist.
 - `sample_column` ('orig.ident' by default): The unique identifier for sample the cell originate from, included in the metadata by default.
 
-You can also specify those columns in your dataset accordingly with parameters `clinical_column` and `sample_column`:
-```
+Please specify the column names in your dataset accordingly with optional arguments `clinical_column` and `sample_column`:
+```bash
 run_vid seuratobj_dir/xxx.rds \
+--marker_dir markers.txt  \
 --clinical_column your_clinical_colname \
 --sample_column your_sample_id_colname
 ```
-Specify the `batch_column` as None if no batch effect appeared in dataset. The VID will ignore batch correction step if None is passed.
 
 #### 2. Viral markers (txt) ####
 A text file contains the list of viral biomarkers, should be specified with parameter `marker_dir`, the content of marker file shows below:
-```
+```bash
 viral marker 1
 viral marker 2
 viral marker 3
@@ -204,7 +206,7 @@ The markers will be filetered out from the high variance genes before model trai
 
 ### __Output files__: <br>
 The code will automatically create output directory in current working directory named with the starting timestamp:
-```
+```bash
 YYYYmmdd_HHMMSS 
 ├── data
 │   ├── data.rds
@@ -252,7 +254,7 @@ __marker_dir__ : str, **required**
    > while the cells from infected sample with any marker expressed will be considered truely infected.
    > The markers will also be ***excluded*** from modeling.
 
-__clinical_column__ : str, **required**, default = clinical_column
+__clinical_column__ : str, **optional**, default = clinical_column
    > The column indicates the sample-level clinical diagnosis of infection, the column should
    > included in the metadata of the input seurat object. 'positive' and 'negative' are two valid values in
    > this column. This column will be applied for training set defination together with 'marker_dir'.
