@@ -88,7 +88,7 @@ Run the command below under any directory:
 run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
-```bash
+```
 Usage: /Your/local/path/to/run_vid   
     seuratobj_dir, required
                         The directory of input seurat object.
