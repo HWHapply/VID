@@ -184,7 +184,7 @@ The ideal metadata looks like the table below:
 | celln_uid |  ... | negative | 
 
 - `clinical_column` ('clinical_column' by default): The sample level infection status, only has two str values: 'positive' and 'negative', please note that this column is not included in the metadata by default, please manually add it if doesn't exist.
-- `sample_column` ('orig.ident' by default): The unique identifier for sample the cell originate from, included in the metadata by default.
+- `sample_column` ('orig.ident' by default): The unique identifier for patient the cell originate from, included in the metadata by default.
 
 Please specify the column names in your dataset accordingly with optional arguments `clinical_column` and `sample_column`:
 ```bash
@@ -230,7 +230,7 @@ YYYYmmdd_HHMMSS
 
   - **data**: Contains the input data and metadata table with results saved inside.
     - ***data.rds***: The input Seurat object file with predicted infection status and probabilities in the meta.data.
-    - ***metadata.csv***: A CSV file containing metadata the same as the samples in `data.rds`.
+    - ***metadata.csv***: A separate CSV file saves the metadata of `data.rds`.
 
   - **output**: Contains the results and outputs from the machine learning tasks.
     - ***Confusion_Matrix_test.png***: An image file showing the confusion matrix on the test set.
