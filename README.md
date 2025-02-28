@@ -349,7 +349,7 @@ Create a new work directory for demo2:
 ```bash
 mkdir ./demo2
 ```
-Download and extract the demo data to the demo directory from dropbox::
+Download and extract the demo data to the demo directory from dropbox:
 ```bash
 wget --no-check-certificate 'https://www.dropbox.com/scl/fo/1qfrs4izmdxr6pio8a0jx/AMTkwGoQ6samlV7ks3hEu2o?rlkey=gafgpo3j4tg98i0dxun4nf2e1&st=r2s6bcol&dl=1' -O ./demo2.zip
 unzip ./demo2.zip -d ./demo2
@@ -367,7 +367,7 @@ run_vid ./demo2/data/demo2.rds \
 
 ### Docker Run ###
 Below is the `example` code for docker running:
-```
+```bash
 docker run \
 -v /path/to/data.rds:/wkdir/input/data.rds \
 -v /path/to/output/dir:/wkdir/output \
@@ -393,13 +393,13 @@ hwhapply/vid:latest \
 ...
 ```
 The optional arguments you can specify are listed below:
-```
+```bash
 [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO]
 [--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE]
 [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--vidmodel_dir VIDMODEL_DIR]
 ```
-
-Run VID with docker image on demo data, apply feature (gene) selection and set xgb as meta model:
+#### Demo for docker running ####
+Run VID with `hwhapply/vid:latest` image on demo dataset (NPC-EBV-Lymphocytes), apply feature selection and set xgb as meta model:
 ```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -432,13 +432,13 @@ hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
-The outputs will be saved in the output directory you specified,  in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the structure of docker running output has no different with conda running.
+The outputs will be saved in the output directory you specified, in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the output of docker running follows the standard output structure. 
 
 ## Transfer VID Model On Unseen Data ##
-An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory of VID output. We can transfer the pre-trained VID model on a new dataset, which can save training time and make the model generalize on unseen data. The pre-trained model can only be applid on the data of same oncovirus and comforms input standard.
+An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory. We can transfer the pre-trained VID model on a new dataset, which can save training time and make the model generalize on unseen data. The pre-trained model can only be applid on the data of same oncovirus and comforms input standard.
 
 ### Transfer Learning With Conda ###
-To perfrom transer learning in `vid_env` we created, change the input data and specify the directory of pre-trained vid object with argument `vidmodel_dir`.
+To perfrom transer learning in `vid_env` we created, exchange the input data with the new dataset (demo_unseen.rds) and specify the directory of pre-trained vid object with argument `vidmodel_dir`.
 Perform transfer learning on demo data in `vid_env`:
 ```bash
 run_vid ./demo/data/demo_unseen.rds \
@@ -451,7 +451,7 @@ run_vid ./demo/data/demo_unseen.rds \
 ```
 
 ### Transfer Learning With Docker ###
-To perform the transfer learning with docker image, exchange the input data with unseen data and map the path of pre-trained vid object to the corresponding directory in the container. Perform transfer learning on the demo dataset with docker image:
+To perform the transfer learning with docker image, map the path of pre-trained vid object to the corresponding model directory in the container. Perform transfer learning on the demo dataset with docker image:
 ```bash
 docker run \
 -v ./demo/data/demo_unseen.rds:/wkdir/input/data.rds \
@@ -463,7 +463,7 @@ hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
-The output of transfer learning is the same with standard process.
+The output of transfer learning follows the standard output structure.
 
 ## Citation
 Please cite: Wenhao Han, Jiahui Hu, Kane Toh, Hui Chen*. Viral Infection Detector: Ensemble Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers, dd Month yyyy, PROTOCOL (Version 1) available at Protocol Exchange [paper_DOI]
