@@ -31,7 +31,7 @@ WORKDIR /opt/VID
 COPY entrypoint.sh /opt/VID/entrypoint.sh
 
 # Create the Conda environment from the env.yml file
-RUN conda env create -f ./env/vid_env_linux.yml -n vid_env 
+RUN conda env create -f ./env/vid_env_Linux.yml -n vid_env 
 
 # Ensure all files under /opt/VID are executable
 RUN chmod -R +x /opt/VID
