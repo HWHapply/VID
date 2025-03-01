@@ -45,7 +45,7 @@ fi
 
 
 # Run the main script with the provided arguments
-bash /opt/VID/run_vid "$container_input_path" --output_dir "$container_output_dir"  $feature_file $args $vid_file $marker_file $label_file
+bash /opt/VID/bin/run_vid "$container_input_path" --output_dir "$container_output_dir"  $feature_file $args $vid_file $marker_file $label_file
 
 echo "VID process complete!"
 
