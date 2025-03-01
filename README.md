@@ -466,4 +466,6 @@ hwhapply/vid:latest \
 The output of transfer learning follows the standard output structure.
 
 ## Citation
-Please cite: Wenhao Han, Jiahui Hu, Kane Toh, Hui Chen*. Viral Infection Detector: Ensemble Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers, dd Month yyyy, PROTOCOL (Version 1) available at Protocol Exchange [paper_DOI]
+Please cite: Viral Infection Detector: Ensemble Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers
+Wenhao Han, Jiahui Hu, Qin Kane Toh, Ming Ni, Roy Tan, Liang Wu, Xin Jin, Min Jian, Miao Xu, Hui Chen
+bioRxiv 2025.02.27.639934; doi: https://doi.org/10.1101/2025.02.27.639934
