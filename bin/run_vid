@@ -178,7 +178,7 @@ python_args=$(printf "%s " "${optional_args[@]}")
 # Run the Python script
 echo ""
 echo "----- Model training ... -----"
-python "$RUN_VID" $python_args
+python -u "$RUN_VID" $python_args
 
 # Save results using the R script
 echo ""
