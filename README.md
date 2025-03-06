@@ -162,18 +162,33 @@ Please ensure that the input file conforms to the standard input format specifie
 ### __Input files__:  <br>
 There are two input files that are required for VID running: <br>
 #### 1. Seurat object (rds) ####
-The input file seurat object saved in 'xxx.rds' format which generated with seurat single cell pipeline, where **log-transformation** on the raw counts and **high-variance gene selection** are required:
+To run VID, please convert your scRNA-seq data as seurat object first.
+
+Below are the supported input formats and how to convert them as Seurat object in R:
+| Format	| Function to Load and convert in Seurat |
+|--------|--------------|
+|Matrix Market (.mtx) |	Read10X(), CreateSeuratObject() |
+| HDF5 (.h5)	| Read10X_h5(), CreateSeuratObject() |
+| CSV/TSV (.csv, .tsv) |	read.csv(), read.table(), CreateSeuratObject() |
+| SingleCellExperiment object(.rds) |	readRDS(), as.Seurat() |
+| Loom (.loom)	| Connect(), as.Seurat() |
+| AnnData (.h5ad) |	Convert(), LoadH5Seurat() |
+
+Then, apply log-transformation with `NormalizeData` function and high variance gene selection with `FindVariableFeatures` function, and finally save the seurat object as RDS file with `saveRDS` function.
+
+Here we present an example of input preparation for VID:
 ``` R
-# example code for the two required steps
+library(seurat)
+expression_matrix <- read.csv("path/to/expression_matrix.csv", row.names = 1) # input is expression matrix saved in csv format
+seurat_object <- CreateSeuratObject(counts = expression_matrix) # Create Seurat object
 seurat_object <- NormalizeData(seurat_object) # log-transformation on raw counts
 seurat_object <- FindVariableFeatures(seurat_object, selection.method = "vst", nfeatures = 2000) # top 2000 high-variance genes selection
+saveRDS(seurat_object, file = file.path(output_dir, "data.rds")) # save the seurat_object as output_dir/data.rds(VID input)
 ```
-Two columns should be included in metadata of the seurat object, visualize the metadata with code below:
+The VID training set consists of cells from both infected and uninfected cancer patients. A column indicates the patient-level infection status should be included in metadata of the seurat object, visualize the metadata with code below:
 ```R
-# Run the code below in Rstudio or Jupyter notebook with R kernel:
-library(seurat)
-seurat_obj <- ReadRDS('seuratobj_dir/xxx.rds')
-seurat_obj@meta.data
+# Visualize the metadata of seurat object:
+seurat_object@meta.data
 ```
 The ideal metadata looks like the table below:
 | orig.ident | ... | clinical_column |
@@ -183,15 +198,13 @@ The ideal metadata looks like the table below:
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | 
 
-- `clinical_column` ('clinical_column' by default): The sample level infection status, only has two str values: 'positive' and 'negative', please note that this column is not included in the metadata by default, please manually add it if doesn't exist.
-- `sample_column` ('orig.ident' by default): The unique identifier for patient the cell originate from, included in the metadata by default.
+- `clinical_column` (str, 'clinical_column' by default): The patient-level infection status, only has two values: 'positive' and 'negative', please note that this column is not included in the metadata by default, **please manually add it if doesn't exist**.
 
-Please specify the column names in your dataset accordingly with optional arguments `clinical_column` and `sample_column`:
+Specifying the column names in your dataset accordingly with optional arguments `clinical_column`:
 ```bash
 run_vid seuratobj_dir/xxx.rds \
 --marker_dir markers.txt  \
 --clinical_column your_clinical_colname \
---sample_column your_sample_id_colname
 ```
 
 #### 2. Viral markers (txt) ####
@@ -248,7 +261,7 @@ YYYYmmdd_HHMMSS
 __seuratobj_dir__ : str, **requied**
    > The directory of the input rds file (seurat object).
 
-__marker_dir__ : str, **required**
+__marker_dir__ : str, **required**, default = None
    > The directory of a txt file contains the list of virus biomarkers, with each gene occupying one line.
    > The markers will be applied for the definition of traning set(truely infected and truely uninfected), 
    > while the cells from infected sample with any marker expressed will be considered truely infected.
