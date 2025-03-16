@@ -103,17 +103,29 @@ class Utils_Model:
             pred_proba: list or pd.DataFrame or np.array, the list of predicted probability
             title: str ('test' or 'unseen', default 'test'), the dataset to draw
         """
-        plt.figure()
-        plt.hist(pred_proba, bins=10, range=(0, 1), color='skyblue', edgecolor='black')
+        # Plot the histogram
+        plt.figure(figsize=(6, 4))
+        sns.histplot(pred_proba, bins=30, color='black')
+        
+        # Add a vertical line at x = 0.7
+        if self.threshold:
+            plt.axvline(x=self.threshold, color='red', linestyle='dashed', label=f'Threshold = {self.threshold}')
+            plt.legend(loc='upper center')
+        
+        # Remove grid
+        plt.grid(False)
+        
+        # remove the upd an right boundary
+        ax = plt.gca()
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        
+        # Labels and title
+        plt.xlabel("infection_probability", fontweight = 'bold')
+        plt.ylabel("count", fontweight = 'bold')
+        plt.title(f'Distribution of infection probability predicted by {self.metamodel}', fontweight = 'bold')
+        
 
-        # Adding labels and title
-        plt.xlabel('Probability')
-        plt.ylabel('Frequency')
-        plt.title(f'Distribution of Predicted Probability of {self.metamodel}')
-        
-        # remove the top and right edges
-        sns.despine()
-        
         # Save the histogram of predicted probability
         plt.savefig(os.path.join(self.output_dir, f'pred_proba_hist_{title}.png'))  
         
@@ -142,6 +154,7 @@ class Utils_Model:
 
         # Close the plot to free up memory
         plt.close()
+
         
     def box_cv(self):
         df = self.val_cv_scores.iloc[[-1], :]
