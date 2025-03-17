@@ -445,6 +445,19 @@ hwhapply/vid:latest \
 --clinical_column ebv_status \
 --metamodel mlp
 ```
+Run VID with `hwhapply/vid:latest` image on the second demo dataset (NPC-EBV-Epithelial), apply mlp as meta model and set `infection_probability > 0.7` as the threshold for final infection detection:
+```bash
+docker run \
+-v ./demo2/data/demo2.rds:/wkdir/input/data.rds \
+-v ./demo2:/wkdir/output \
+-v ./demo2/data/EBV_markers.txt:/wkdir/input/markers.txt \
+-v ./demo2/data/important_genes.txt:/wkdir/input/features.txt \
+hwhapply/vid:latest \
+--clinical_column EBV_state \
+--metamodel mlp \
+--threshold 0.7
+```
+
 The outputs will be saved in the output directory you specified, in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the output of docker running follows the standard output structure. 
 
 ## Transfer VID Model On Unseen Data ##
