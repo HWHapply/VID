@@ -94,8 +94,8 @@ Usage: /Your/local/path/to/run_vid
                         The directory of input seurat object.
     --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
                         The markers stores in a txt file(one gene per row).
-    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
-                        The column indicates the infection status in clinical assessment.(Sample level)
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, optional
+                        The column indicates the infection status in clinical assessment.(Patient level)
     --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
                         The output directory.
     --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
@@ -145,8 +145,8 @@ docker images
 ```
 The 'hwhapply/vid:latest' repository has listed under the REPOSITORY column.
 ```bash
-REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
-hwhapply/vid         latest    a59825e4b92d   21 hours ago    7.96GB
+REPOSITORY     TAG       IMAGE ID       CREATED       SIZE
+hwhapply/vid   latest    73f3f353748c   2 weeks ago   15.5GB
 ```
 - Execute Scripts within the Docker Container:
 All subsequent scripts and procedures should be executed within a Docker container created from the 'hwhapply/vid' image. The tutorial is in the next section.
