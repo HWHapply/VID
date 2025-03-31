@@ -39,8 +39,8 @@ usage() {
                         The directory of input seurat object.
     --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
                         The markers stores in a txt file(one gene per row).
-    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
-                        The column indicates the infection status in clinical assessment.(Sample level)
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, optional
+                        The column indicates the infection status in clinical assessment.(Patient level)
     --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
                         The output directory.
     --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
