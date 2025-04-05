@@ -47,51 +47,103 @@ class Utils_Model:
         - A confusion matrix plot with larger values.
         """
         cm = confusion_matrix(label, pred)
-        
-        fig, ax = plt.subplots(figsize=(8, 6))
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['uninfected', 'infected'])
-        
+
+        # Create figure and axis
+        fig, ax = plt.subplots(figsize=(4, 3))
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Uninfected', 'Infected'])
+
+        # Plot confusion matrix
         disp.plot(include_values=True, cmap='Blues', values_format='d', ax=ax)
+
+
+        # Remove plot spines (grid box lines)
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+            
+
+        # Set tick label fonts and sizes
+        ax.set_xticklabels(disp.display_labels, fontsize=8, fontname='Arial', va='center')
+        ax.set_yticklabels(disp.display_labels, fontsize=8, fontname='Arial', rotation = 90, va='center')
+
+        # Keep the tick labels 
+        ax.tick_params(axis='x', which='both', length=0, pad = 8)  # Removes x-axis ticks
+        ax.tick_params(axis='y', which='both', length=0)  # Removes y-axis ticks
         
-        # Increase the font size of the display labels
-        ax.set_xticklabels(disp.display_labels, fontsize=14)
-        ax.set_yticklabels(disp.display_labels, fontsize=14)
-        
-        # Increase the font size of the annotations
+        # Set axis labels
+        ax.set_xlabel('Prediction', fontsize=8, fontname='Arial', loc='center')
+        ax.set_ylabel('Ground Truth', fontsize=8, fontname='Arial', loc='center')
+
+        # Customize number annotations inside matrix
         for text in disp.text_.ravel():
-            text.set_fontsize(20)
-        
-        # set label and title format
-        plt.ylabel('Ground Truth', fontsize=16)
-        plt.xlabel('Prediction', fontsize=16)
-        #plt.title(f'Confusion Matrix', fontsize=20)
-        
-        
-        # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, 'Confusion_Matrix_test.png'), bbox_inches='tight', dpi=300)  
-        
-        # Close the plot to free up memory
+            text.set_fontsize(8)
+            text.set_fontname('Arial')
+
+        # Colorbar font customization
+        cbar = disp.im_.colorbar
+        cbar.ax.tick_params(labelsize=8)
+        for label in cbar.ax.get_yticklabels():
+            label.set_fontname('Arial')
+            
+        # Remove the colorbar border
+        for spine in cbar.ax.spines.values():
+            spine.set_visible(False)
+
+        plt.tight_layout()
+        # Save figure
+        output_path = os.path.join(self.output_dir, 'Confusion_Matrix_test.png')
+        plt.savefig(output_path, bbox_inches="tight", dpi=600)
         plt.close()
 
     
     def roc_plot(self, y_true, y_pred_proba):
+        """
+        Draw ROC plot.
+        Args:
+            y_true : np.array, the list of true label.
+            y_pred_proba : np.array, the list of predicted probability.
+        """
+        # set the font type as 'Arial'
+        plt.rcParams['font.family'] = 'Arial'
+
+        fig, ax = plt.subplots(figsize=(4, 4))
+        
         # Generate the ROC curve
         display = RocCurveDisplay.from_predictions(
             y_true,
             y_pred_proba,
-            name=f"positive vs negative",
-            color="darkorange",
+            name="VID",
+            color="blue",
             plot_chance_level=True,
         )
-        # Customize the plot labels and title
-        _ = display.ax_.set(
-            xlabel="False Positive Rate",
-            ylabel="True Positive Rate",
-            #title=f"ROC curve",
-        )
+
+        ax = display.ax_
+        
+
+        # Customize the plot labels with Arial
+        ax.set_xlabel("False Positive Rate", fontsize=9, fontname='Arial')
+        ax.set_ylabel("True Positive Rate", fontsize=9, fontname='Arial')
+
+        # Set custom limits to add spacing around the plot
+        ax.set_xlim(-0.05, 1.05)
+        ax.set_ylim(-0.05, 1.05)
+    
+        # Set tick labels font
+        for label in ax.get_xticklabels() + ax.get_yticklabels():
+            label.set_fontname('Arial')
+            label.set_fontsize(8)
+            
+        # Customize legend
+        legend = ax.get_legend()
+        if legend:
+            legend.set_title(None)  # Optional: remove legend title
+            for text in legend.get_texts():
+                text.set_fontname('Arial')
+                text.set_fontsize(8)
         # Remove spines using seaborn
-        sns.despine(ax=display.ax_)
-        display.figure_.savefig(os.path.join(self.output_dir, 'ROC_Curve_test.png'), dpi=300, bbox_inches="tight")
+        #sns.despine(ax=ax)
+
+        # Save the figure
+        display.figure_.savefig(os.path.join(self.output_dir, 'ROC_Curve_test.png'), dpi=600, bbox_inches="tight")
 
         # Close the figure to free memory
         plt.close(display.figure_)
@@ -103,11 +155,12 @@ class Utils_Model:
             pred_proba: list or pd.DataFrame or np.array, the list of predicted probability
             title: str ('test' or 'unseen', default 'test'), the dataset to draw
         """
+        plt.rcParams['font.family'] = 'Arial'
         # Plot the histogram
         plt.figure(figsize=(6, 4))
         sns.histplot(pred_proba, bins=30, color='black')
         
-        # Add a vertical line at x = 0.7
+        # Add a vertical line at x = threshold
         if self.threshold:
             plt.axvline(x=self.threshold, color='red', linestyle='dashed', label=f'Threshold = {self.threshold}')
             plt.legend(loc='upper center')
@@ -121,13 +174,13 @@ class Utils_Model:
         ax.spines['right'].set_visible(False)
         
         # Labels and title
-        plt.xlabel("infection_probability", fontweight = 'bold')
-        plt.ylabel("count", fontweight = 'bold')
-        plt.title(f'Distribution of infection probability predicted by {self.metamodel}', fontweight = 'bold')
+        plt.xlabel("Infection Probability", fontweight = 'bold')
+        plt.ylabel("Count", fontweight = 'bold')
+        plt.title(f'Distribution of Infection Probability Predicted by {self.metamodel}', fontweight = 'bold')
         
 
         # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, f'pred_proba_hist_{title}.png'))  
+        plt.savefig(os.path.join(self.output_dir, f'pred_proba_hist_{title}.png'), dpi=600, bbox_inches="tight")  
         
         # Close the plot to free up memory
         plt.close()
@@ -136,6 +189,7 @@ class Utils_Model:
         '''
         Visualize the feature importance of xgbclassifier.
         '''
+        plt.rcParams['font.family'] = 'Arial'
         fig, ax = plt.subplots(figsize=(5, 4))
 
         xgboost.plot_importance(self.grid_result.best_estimator_, 
@@ -150,13 +204,14 @@ class Utils_Model:
         ax.spines['right'].set_visible(False)
         
         # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, 'XGB_featrue_importance.png'))  
+        plt.savefig(os.path.join(self.output_dir, 'XGB_featrue_importance.png'), dpi=600, bbox_inches="tight")  
 
         # Close the plot to free up memory
         plt.close()
 
         
     def box_cv(self):
+        plt.rcParams['font.family'] = 'Arial'
         df = self.val_cv_scores.iloc[[-1], :]
 
         # Step 1: Reshape the data
@@ -177,15 +232,16 @@ class Utils_Model:
         
         # Customizing the plot
     #    plt.title("Boxplot of cross validation scores", fontsize=14)
-        plt.xlabel("Metrics", fontsize=12)
-        plt.ylabel("Values", fontsize=12)
+        plt.xlabel("Metrics", fontsize=8)
+        plt.ylabel("Values", fontsize=8)
         plt.xticks(rotation=45)
         plt.tight_layout()
+        plt.tick_params(axis='both', which='major', labelsize=8)
         # Remove the right and top spines
         sns.despine()
         
         # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, 'cv_box.png'))  
+        plt.savefig(os.path.join(self.output_dir, 'cv_box.png'), dpi=600, bbox_inches="tight")  
 
         # Close the plot to free up memory
         plt.close()
