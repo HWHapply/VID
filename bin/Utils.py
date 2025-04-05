@@ -49,7 +49,7 @@ class Utils_Model:
         cm = confusion_matrix(label, pred)
 
         # Create figure and axis
-        fig, ax = plt.subplots(figsize=(4, 3))
+        fig, ax = plt.subplots(figsize=(5, 4))
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Uninfected', 'Infected'])
 
         # Plot confusion matrix
@@ -157,7 +157,7 @@ class Utils_Model:
         """
         plt.rcParams['font.family'] = 'Arial'
         # Plot the histogram
-        plt.figure(figsize=(6, 4))
+        plt.figure(figsize=(4, 4))
         sns.histplot(pred_proba, bins=30, color='black')
         
         # Add a vertical line at x = threshold
@@ -224,8 +224,8 @@ class Utils_Model:
         reshaped_data['Fold'] = reshaped_data['Metric_Fold'].apply(lambda x: x.split('_')[0])  
         
         # Step 2: Draw the boxplot
-        plt.figure(figsize=(5, 4))
-        sns.boxplot(data=reshaped_data, x='Metric', y='Value', palette="Set2")
+        plt.figure(figsize=(4, 4))
+        sns.boxplot(data=reshaped_data, x='Metric', y='Value', palette="Set2", boxprops=dict(facecolor="none"))
         
         # Step 3: Overlay data points
         sns.stripplot(data=reshaped_data, x='Metric', y='Value', color='black', size=4, jitter=True, alpha=0.6)
@@ -233,8 +233,10 @@ class Utils_Model:
         # Customizing the plot
     #    plt.title("Boxplot of cross validation scores", fontsize=14)
         plt.xlabel("Metrics", fontsize=8)
-        plt.ylabel("Values", fontsize=8)
-        plt.xticks(rotation=45)
+        plt.ylabel("Score", fontsize=8)
+        # Manually set the x-tick labels
+        custom_labels = ['Accuracy', 'Balanced Accuracy', 'Recall', 'F1-Score', 'Precision', 'AUC']  # Replace with your custom labels
+        plt.xticks(ticks=range(len(custom_labels)), labels=custom_labels, fontsize=8, rotation=45)
         plt.tight_layout()
         plt.tick_params(axis='both', which='major', labelsize=8)
         # Remove the right and top spines
