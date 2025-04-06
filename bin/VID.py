@@ -544,9 +544,10 @@ class VID(Utils_Model):
         # draw histogram of the predicted probabilities
         self.histogram(final_probabilities, 'test')
         
-        # draw ROC curve of the predicted probabilities
+        # draw ROC and precision-recall curve of the predicted probabilities
         self.roc_plot(self.y_test, final_probabilities)
-
+        self.pr_plot(self.y_test, final_probabilities)
+        
         # Calculate evaluation metrics
         accuracy = accuracy_score(self.y_test, final_predictions)
         balanced_accuracy = balanced_accuracy_score(self.y_test, final_predictions)

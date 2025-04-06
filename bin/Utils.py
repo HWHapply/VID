@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, roc_auc_score, ConfusionMatrixDisplay, roc_curve, RocCurveDisplay
+from sklearn.metrics import confusion_matrix, roc_auc_score, ConfusionMatrixDisplay, roc_curve, RocCurveDisplay, PrecisionRecallDisplay
 from boruta import BorutaPy
 from args_dict import args_fs
 from sklearn.ensemble import RandomForestClassifier
@@ -144,6 +144,59 @@ class Utils_Model:
 
         # Save the figure
         display.figure_.savefig(os.path.join(self.output_dir, 'ROC_Curve_test.png'), dpi=600, bbox_inches="tight")
+
+        # Close the figure to free memory
+        plt.close(display.figure_)
+        
+    def pr_plot(self, y_true, y_pred_proba):
+        """
+        Draw Precision-Recall (P-R) plot.
+        
+        Args:
+            y_true : np.array, the list of true labels.
+            y_pred_proba : np.array, the list of predicted probabilities.
+        """
+        # Set the font type to Arial
+        plt.rcParams['font.family'] = 'Arial'
+
+        # Create figure and axis
+        fig, ax = plt.subplots(figsize=(4, 4))
+
+        # Generate the P-R curve
+        display = PrecisionRecallDisplay.from_predictions(
+            y_true,
+            y_pred_proba,
+            name="VID",
+            color="blue",
+            ax=ax
+        )
+
+        # Add baseline (chance level) line
+        baseline = np.sum(y_true) / len(y_true)
+        ax.hlines(baseline, 0, 1, color='gray', linestyle='--', linewidth=1, label=f'Chance level ({baseline:.2f})')
+
+        # Customize axis labels
+        ax.set_xlabel("Recall", fontsize=9, fontname='Arial')
+        ax.set_ylabel("Precision", fontsize=9, fontname='Arial')
+
+        # Set custom limits for spacing
+        ax.set_xlim(-0.05, 1.05)
+        ax.set_ylim(-0.05, 1.05)
+
+        # Set tick label font and size
+        for label in ax.get_xticklabels() + ax.get_yticklabels():
+            label.set_fontname('Arial')
+            label.set_fontsize(8)
+
+        # Customize legend
+        legend = ax.legend(loc="lower left", frameon=True)
+        legend.set_title(None)
+        for text in legend.get_texts():
+            text.set_fontname('Arial')
+            text.set_fontsize(8)
+
+        # Save the figure
+        display.figure_.savefig(os.path.join(self.output_dir, 'PR_Curve_test.png'), dpi=600, bbox_inches="tight")
 
         # Close the figure to free memory
         plt.close(display.figure_)
