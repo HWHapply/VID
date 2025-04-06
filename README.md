@@ -227,6 +227,7 @@ YYYYmmdd_HHMMSS
 └── output
     ├── Confusion_Matrix_test.png
     ├── ROC_Curve_test.png
+    ├── PR_Curve_test.png
     ├── important_genes.txt
     ├── pred_proba_hist_test.png
     ├── pred_proba_hist_unseen.png
@@ -246,8 +247,9 @@ YYYYmmdd_HHMMSS
     - ***metadata.csv***: A separate CSV file saves the metadata of `data.rds`.
 
   - **output**: Contains the results and outputs from the machine learning tasks.
-    - ***Confusion_Matrix_test.png***: An image file showing the confusion matrix on the test set.
-    - ***ROC_Curve_test.png***: An image file showing the Receiver Operating Characteristic (ROC) curve on the test set.
+    - ***Confusion_Matrix_test.png***: An image showing the confusion matrix on the test set.
+    - ***ROC_Curve_test.png***: An image showing the Receiver Operating Characteristic (ROC) curve on the test set.
+    - ***PR_Curve_test.png***: An image showing the precision-recall curve on the test set.
     - ***important_genes.txt***: A text file listing the important genes identified by the boruta.
     - ***pred_proba_hist_test.png***: A histogram showing the distribution of predicted probabilities on the test dataset.
     - ***pred_proba_hist_unseen.png***: A histogram showing the distribution of predicted probabilities on an unseen dataset.
