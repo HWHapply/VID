@@ -360,9 +360,17 @@ class Utils_Model:
             
             # Adjusted figure size
             fig_width, fig_height = 4, 1.5
-            ax = plot.plot(figsize=(fig_width, fig_height), t_adjuster=0.06,
-                        max_value=round(np.max(df['ci_upper'] + 0.1), 2), min_value=round(max(np.min(df['ci_lower']) - 0.1, 0), 2),
-                        text_size=8, size=1)
+            ci_range = df['ci_upper'].max() - df['ci_lower'].min()
+            padding = 0.1 * ci_range
+            max_value = round(df['ci_upper'].max() + 1.5 * padding, 2)
+            min_value = round(max(df['ci_lower'].min() - padding, 0), 2)
+            ax = plot.plot(figsize=(fig_width, fig_height), 
+                           t_adjuster=0.06,
+                           max_value=max_value, 
+                           min_value=min_value,
+                           text_size=8,
+                           decimal=2,
+                           size=1)
             
             # Title
             plt.title(f"{key}", loc="center", x=-0.82, y=1.045, fontsize=10, fontweight = 'bold')

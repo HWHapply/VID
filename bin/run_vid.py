@@ -12,7 +12,7 @@ def define_arguments():
 	parser.add_argument('--data_dir', '-dd', default = None, type = str, help = 'The directory of gene expression.')
 	parser.add_argument('--meta_dir', '-md', default = None, type = str, help = 'The directory of metadata.')
 	parser.add_argument('--output_dir', '-od', default = './output', type = str, help = 'The output directory.')
-	parser.add_argument('--n_iter', '-nit', default = 100, type = int, help = 'Number of iteration applied in randomsearchcv.')
+	parser.add_argument('--n_iter', '-nit', default = 50, type = int, help = 'Number of iteration applied in randomsearchcv.')
 	parser.add_argument('--marker_dir', '-mkd', default = None, type = str, help = 'The markers stores in a txt file(one gene per row).')
 	parser.add_argument('--feature_dir', '-fd', default = None, type = str, help = 'The directory of txt file stores the important features(gene).')
 	parser.add_argument('--label_dir', '-ld', default = None, type = str, help = 'The directory of txt file stores the pre-defined labels.')

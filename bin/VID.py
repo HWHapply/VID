@@ -11,7 +11,6 @@ from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKF
 from sklearn.utils.validation import check_is_fitted
 from sklearn.ensemble import StackingClassifier
 
-from tqdm import tqdm
 import anndata
 import warnings
 warnings.filterwarnings('ignore')  
@@ -256,7 +255,8 @@ class VID(Utils_Model):
                                       refit='roc_auc',
                                       verbose=self.verbose,
                                       n_jobs=self.n_jobs,
-                                      n_iter=self.n_iter 
+                                      n_iter=self.n_iter,
+                                      random_state=self.random_state
                                       )
 
             self.grid_result = grid.fit(self.X_train_norm[self.features], self.y_train)
