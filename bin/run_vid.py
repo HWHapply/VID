@@ -1,6 +1,5 @@
 import argparse
 from VID import *
-import pickle
 from datetime import datetime
 
 

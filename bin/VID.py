@@ -11,10 +11,6 @@ from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKF
 from sklearn.utils.validation import check_is_fitted
 from sklearn.ensemble import StackingClassifier
 
-
-import torch 
-import torch.nn as nn
-
 from tqdm import tqdm
 import anndata
 import warnings
@@ -207,7 +203,6 @@ class VID(Utils_Model):
             
             # set class weight for metal model:
             class_weights = compute_class_weight('balanced', classes=np.unique(self.y_train), y=self.y_train)
-            class_weights = torch.tensor(class_weights, dtype=torch.float)
             self.pos_weight = class_weights[1] / class_weights[0]
             model_init_kwargs['XGB']['scale_pos_weight'] = float(self.pos_weight)
             

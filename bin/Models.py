@@ -5,10 +5,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from xgboost import XGBClassifier
-import torch 
-import torch.nn as nn
-import torch.nn.init as init
-from skorch import NeuralNetClassifier
 import warnings
 warnings.filterwarnings("ignore")
 
