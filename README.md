@@ -11,9 +11,6 @@
   * [Usage](#usage)
   * [Demo](#demo)
   * [Docker Run](#docker-run)
-* [Transfer VID Model On Unseen Data](#transfer-vid-model-on-unseen-data)
-  * [Transfer Learning With Conda](#transfer-learning-with-conda)
-  * [Transfer Learning With Docker](#transfer-learning-with-docker)
 
 ## Installation
 
@@ -102,6 +99,8 @@ Usage: /Your/local/path/to/run_vid
                         The directory of txt file stores the important features(gene).
     --label_dir LABEL_DIR, -ld LABEL_DIR, optional
                         The directory of txt file stores the pre-defined labels.
+    --n_iter n_ITER, -nit N_ITER, optional
+                        The number of iteration applied in randomsearchcv.
     --batch_column BATCH_COLUMN, -bc BATCH_COLUMN, optional
                         The column indicates the batch label that will be used for batch correction(harmony).
     --sample_column SAMPLE_COLUMN, -sc SAMPLE_COLUMN, optional
@@ -110,20 +109,14 @@ Usage: /Your/local/path/to/run_vid
                         The ratio of validating set.
     --num_split NUM_SPLIT, -ns NUM_SPLIT, optional
                         The number of splitting for base model training and hyperparameter tuning for meta model.
-    --metamodel METAMODEL, -mm METAMODEL, optional
-                        The classifier applied as meta model.
     --threshold THRESHOLD, -threds THRESHOLD, optional
                         The threshold for the decision function of final prediction.
-    --average AVERAGE, -avg AVERAGE, optional
-                        Define the type of averaging performed on the evaluation scores among different class.
     --random_state RANDOM_STATE, -rs RANDOM_STATE, optional
                         The random state for the reproduction of result.
     --n_jobs N_JOBS, -threads N_JOBS, optional
                         Number of threads applied for parallel excecution.
     --verbose VERBOSE, -v VERBOSE, optional
                         The verbose mode.
-    --vidmodel_dir VIDMODEL_DIR, -vmd VIDMODEL_DIR, optional
-                        The directory of the vid object to applied for transfer learning.
     -h, --help            
                         Show this help message and exit.
 ```
@@ -225,16 +218,12 @@ YYYYmmdd_HHMMSS
 │   ├── data.rds
 │   └── metadata.csv
 └── output
-    ├── Confusion_Matrix_test.png
-    ├── ROC_Curve_test.png
-    ├── PR_Curve_test.png
+    ├── Confusion_matrix_test.png
+    ├── Forest_plot_test.png
+    ├── Infection_probability_histogram.png
+    ├── ROC_PR_curve_test.png
+    ├── XGB_feature_importance.png
     ├── important_genes.txt
-    ├── pred_proba_hist_test.png
-    ├── pred_proba_hist_unseen.png
-    ├── test_scores_weighted.csv
-    ├── val_cv_scores_weighted.csv
-    ├── cv_box.png
-    ├── vid_YYmmdd_HHMMSS.pkl
     └── log.txt
 
 ```
@@ -247,16 +236,12 @@ YYYYmmdd_HHMMSS
     - ***metadata.csv***: A separate CSV file saves the metadata of `data.rds`.
 
   - **output**: Contains the results and outputs from the machine learning tasks.
-    - ***Confusion_Matrix_test.png***: An image showing the confusion matrix on the test set.
-    - ***ROC_Curve_test.png***: An image showing the Receiver Operating Characteristic (ROC) curve on the test set.
-    - ***PR_Curve_test.png***: An image showing the precision-recall curve on the test set.
+    - ***Confusion_matrix_test.png***: An image showing the confusion matrix on the test set.
+    - ***Forest_plot_test.png***: Grid of forest plots showing the evaluation scores of base model and VID with confidence interval on the test set.
+    - ***Infection_probability_histogram.png***: A histogram showing the distribution of predicted probabilities on the test and unknown dataset.
+    - ***ROC_PR_curve_test.png***: An image showing the Receiver Operating Characteristic (ROC) curve and precision-recall curve on the test set.
+    - ***XGB_feature_importance.png***: Grid of bar plots showing the contribution of base model in the prediction.
     - ***important_genes.txt***: A text file listing the important genes identified by the boruta.
-    - ***pred_proba_hist_test.png***: A histogram showing the distribution of predicted probabilities on the test dataset.
-    - ***pred_proba_hist_unseen.png***: A histogram showing the distribution of predicted probabilities on an unseen dataset.
-    - ***test_scores_weighted.csv***: A table containing the weighted test scores.
-    - ***val_cv_scores_weighted.csv***: A table file containing the weighted cross-validation scores.
-    - ***cv_box.png***: A box plot showing the cross validation results of meta model.
-    - ***vid_YYmmdd_HHMMSS.pkl***: The VID object (for expert usage), timestamped with the current date and time.
     - ***log.txt***: The log message for VID running.
 
 ### Parameters ###
@@ -286,7 +271,10 @@ __feature_dir__ : str, optional, default = None
 __label_dir__: str, optional, default = None
    > The directory of a text file contains the user-defined label for model training, with each label occupying one line.
    > Three valid labels should be included in the text file: 0 (true negative cell), 1 (true positive cell), and 2 (target cells).
-   > If given, ignore the labeling step and apply user-defined label for model construction and prediction. 
+   > If given, ignore the labeling step and apply user-defined label for model construction and prediction.
+
+__n_iter__: int, optional, default = 100
+   > The number of iteration applied in hyperparameter tunning('n_iter' augment RamdomizedSearchCV).
 
 __batch_column__ : str, optional, default = None
    > The column indicates the batch label which will be applied in batch correction with harmony.
@@ -302,19 +290,12 @@ __test_ratio__ : float, optional, default = 0.3
 __num_split__ : int, optional, default = 5
    > The number of splitting for base model training and hyperparameter tuning of meta model.
 
-__metamodel__ : str, optional {xgb, mlp}, default = xgb
-   > The classifier applied as meta model. If 'xgb' passed, extreme gradient boosting classifier will be applied. If 'mlp'
-   > passed, the multi-layer perceptron will be applied.
-
 __threshold__ : float, optional {recommended range: 0.6 ~ 0.9}, default = None
    > The threshold for the decision function of final prediction. It can be understand as confidence of prediction: with higher threshold, 
    > the detected infection will be more reliable, but it may leads to misdetection of potential infected cells if the threshold is too high.
    > With this parameter specified, additional column with predicted infection status defined by this threshold will be added in meta data.
    > The default 'infection_status' in final meta data is defined with threshold = 0.5, the additional colunm defined by this threshold 
    > will be named as 'infection_status_{threshold}' which won't overwrite the the default. 
-
-__average__ : str, optional {micro, macro, weighted} , default = weighted 
-   > Define the type of averaging performed on the evaluation scores among different class. 
 
 __random_state__ : int, optional , default = 42
    > The seed used to initialize a pseudo-random number generator (PRNG). It ensures that the results of random processes,
@@ -330,11 +311,6 @@ __verbose__ : int, optional, default = 2
 
 __help__ : Flag
    >  Show the help message and exit.
-
-__vidmodel_dir__ : str, optional, default = None
-   >  The directory of VID object, perform transfer learning by passing the directory of `vid_YYmmdd_HHMMSS.pkl` from previous output.
-   >  The pretained models from the vid object passed will be applied for transfer learning, the output structure is
-   >  the same as standard running. Please be cautious that meta model specified should be consistent with the previous running.
 
 ### Demo ###
 
@@ -355,8 +331,7 @@ Running VID:
 run_vid ./demo/data/demo.rds \
 --output_dir ./demo \
 --marker_dir ./demo/data/EBV_markers.txt \
---clinical_column ebv_status \
---metamodel xgb 
+--clinical_column ebv_status 
 ```
 
 #### NPC-EBV-Epithelial ####
@@ -376,12 +351,11 @@ Running VID:
 run_vid ./demo2/data/demo2.rds \
 --output_dir ./demo2 \ 
 --marker_dir ./demo2/data/EBV_markers.txt \
---clinical_column EBV_state \
---metamodel mlp
+--clinical_column EBV_state 
 ```
 
 ### Docker Run ###
-Below is the `example` code for docker running:
+Below is the `example` code for docker running(please don't run this):
 ```bash
 docker run \
 -v /path/to/data.rds:/wkdir/input/data.rds \
@@ -410,11 +384,11 @@ hwhapply/vid:latest \
 The optional arguments you can specify are listed below:
 ```bash
 [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO]
-[--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--average AVERAGE]
-[--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE] [--vidmodel_dir VIDMODEL_DIR]
+[--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--n_iter N_ITER]
+[--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
 ```
 #### Demo for docker running ####
-Run VID with `hwhapply/vid:latest` image on demo dataset (NPC-EBV-Lymphocytes), apply feature selection and set xgb as meta model:
+Run VID with `hwhapply/vid:latest` image on demo dataset (NPC-EBV-Lymphocytes):
 ```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -422,7 +396,6 @@ docker run \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
 hwhapply/vid:latest \
 --clinical_column ebv_status \
---metamodel xgb
 ```
 You can also provide the important feature list to skip feature selection:
 ```bash
@@ -432,8 +405,7 @@ docker run \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
 -v ./demo/data/important_features.txt:/wkdir/input/features.txt \
 hwhapply/vid:latest \
---clinical_column ebv_status \
---metamodel mlp
+--clinical_column ebv_status 
 ```
 Provide self-defined labels to skip the automatical labeling:
 ```bash
@@ -444,10 +416,9 @@ docker run \
 -v ./demo/data/important_features.txt:/wkdir/input/features.txt \
 -v ./demo/data/labels.txt:/wkdir/input/labels.txt \
 hwhapply/vid:latest \
---clinical_column ebv_status \
---metamodel mlp
+--clinical_column ebv_status 
 ```
-Run VID with `hwhapply/vid:latest` image on the second demo dataset (NPC-EBV-Epithelial), apply mlp as meta model and set `infection_probability > 0.7` as the threshold for final infection detection:
+Run VID with `hwhapply/vid:latest` image on the second demo dataset (NPC-EBV-Epithelial), set `infection_probability > 0.7` as the threshold for final infection detection:
 ```bash
 docker run \
 -v ./demo2/data/demo2.rds:/wkdir/input/data.rds \
@@ -456,42 +427,10 @@ docker run \
 -v ./demo2/data/important_genes.txt:/wkdir/input/features.txt \
 hwhapply/vid:latest \
 --clinical_column EBV_state \
---metamodel mlp \
 --threshold 0.7
 ```
 
 The outputs will be saved in the output directory you specified, in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the output of docker running follows the standard output structure. 
-
-## Transfer VID Model On Unseen Data ##
-An object of VID class will be saved as the `vid_YYmmdd_HHMMSS.pkl` in `output` directory. We can transfer the pre-trained VID model on a new dataset, which can save training time and make the model generalize on unseen data. The pre-trained model can only be applid on the data of same oncovirus and comforms input standard.
-
-### Transfer Learning With Conda ###
-To perfrom transer learning in `vid_env` we created, exchange the input data with the new dataset (demo_unseen.rds) and specify the directory of pre-trained vid object with argument `vidmodel_dir`.
-Perform transfer learning on demo data in `vid_env`:
-```bash
-run_vid ./demo/data/demo_unseen.rds \
---output_dir ./demo:\
---marker_dir ./demo/data/EBV_markers.txt \
---feature_dir ./demo/data/important_features.txt \
---vidmodel_dir ./demo/data/vid_demo.pkl \
---clinical_column ebv_status \
---metamodel xgb
-```
-
-### Transfer Learning With Docker ###
-To perform the transfer learning with docker image, map the path of pre-trained vid object to the corresponding model directory in the container. Perform transfer learning on the demo dataset with docker image:
-```bash
-docker run \
--v ./demo/data/demo_unseen.rds:/wkdir/input/data.rds \
--v ./demo:/wkdir/output \
--v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
--v ./demo/data/important_features.txt:/wkdir/input/features.txt \
--v ./demo/data/vid_demo.pkl:/wkdir/input/vid.pkl \
-hwhapply/vid:latest \
---clinical_column ebv_status \
---metamodel mlp
-```
-The output of transfer learning follows the standard output structure.
 
 ## Citation
 Please cite: Viral Infection Detector: Ensemble Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers
