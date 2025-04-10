@@ -1,12 +1,20 @@
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, roc_auc_score, ConfusionMatrixDisplay, roc_curve, RocCurveDisplay, PrecisionRecallDisplay
+import matplotlib
+from sklearn.metrics import confusion_matrix, roc_auc_score, ConfusionMatrixDisplay, roc_curve, RocCurveDisplay, PrecisionRecallDisplay, precision_score, recall_score, f1_score, balanced_accuracy_score
 from boruta import BorutaPy
 from args_dict import args_fs
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.utils import resample
+
 import os
-import xgboost
+import xgboost as xgb
 import seaborn as sns
+from zepid.graphics import EffectMeasurePlot
+from matplotlib.gridspec import GridSpec
+from sklearn.calibration import CalibratedClassifierCV, CalibrationDisplay
+from PIL import Image
 import numpy as np
+import pandas as pd
 np.int = np.int32
 np.float = np.float64
 np.bool = np.bool_
@@ -39,6 +47,8 @@ class Utils_Model:
     
     def cm_plot(self, label, pred):
         """
+        Draw the confusion matrix.
+        
         Parameters:
         - pred: predictions of model on testing set
         - label: true class label of testing set
@@ -90,213 +100,380 @@ class Utils_Model:
 
         plt.tight_layout()
         # Save figure
-        output_path = os.path.join(self.output_dir, 'Confusion_Matrix_test.png')
+        output_path = os.path.join(self.output_dir, 'Confusion_matrix_test.png')
         plt.savefig(output_path, bbox_inches="tight", dpi=600)
         plt.close()
 
-    
-    def roc_plot(self, y_true, y_pred_proba):
+    def roc_pr_plot(self, y_true, y_pred_proba):
         """
-        Draw ROC plot.
-        Args:
-            y_true : np.array, the list of true label.
-            y_pred_proba : np.array, the list of predicted probability.
-        """
-        # set the font type as 'Arial'
-        plt.rcParams['font.family'] = 'Arial'
+        Draw combined ROC and Precision-Recall (P-R) plots side by side.
 
-        fig, ax = plt.subplots(figsize=(4, 4))
-        
-        # Generate the ROC curve
-        display = RocCurveDisplay.from_predictions(
-            y_true,
-            y_pred_proba,
-            name="VID",
-            color="blue",
-            plot_chance_level=True,
-        )
-
-        ax = display.ax_
-        
-
-        # Customize the plot labels with Arial
-        ax.set_xlabel("False Positive Rate", fontsize=9, fontname='Arial')
-        ax.set_ylabel("True Positive Rate", fontsize=9, fontname='Arial')
-
-        # Set custom limits to add spacing around the plot
-        ax.set_xlim(-0.05, 1.05)
-        ax.set_ylim(-0.05, 1.05)
-    
-        # Set tick labels font
-        for label in ax.get_xticklabels() + ax.get_yticklabels():
-            label.set_fontname('Arial')
-            label.set_fontsize(8)
-            
-        # Customize legend
-        legend = ax.get_legend()
-        if legend:
-            legend.set_title(None)  # Optional: remove legend title
-            for text in legend.get_texts():
-                text.set_fontname('Arial')
-                text.set_fontsize(8)
-        # Remove spines using seaborn
-        #sns.despine(ax=ax)
-
-        # Save the figure
-        display.figure_.savefig(os.path.join(self.output_dir, 'ROC_Curve_test.png'), dpi=600, bbox_inches="tight")
-
-        # Close the figure to free memory
-        plt.close(display.figure_)
-        
-    def pr_plot(self, y_true, y_pred_proba):
-        """
-        Draw Precision-Recall (P-R) plot.
-        
         Args:
             y_true : np.array, the list of true labels.
             y_pred_proba : np.array, the list of predicted probabilities.
         """
-        # Set the font type to Arial
+        # Set global font
         plt.rcParams['font.family'] = 'Arial'
+        plt.rcParams['font.size'] = 8
 
-        # Create figure and axis
-        fig, ax = plt.subplots(figsize=(4, 4))
+        # Create figure with 2 subplots
+        fig, axes = plt.subplots(1, 2, figsize=(8, 4), dpi=600)
 
-        # Generate the P-R curve
-        display = PrecisionRecallDisplay.from_predictions(
+        # === ROC Curve ===
+        roc_display = RocCurveDisplay.from_predictions(
             y_true,
             y_pred_proba,
             name="VID",
             color="blue",
-            ax=ax
+            ax=axes[0],
+            plot_chance_level=True
         )
 
-        # Add baseline (chance level) line
-        baseline = np.sum(y_true) / len(y_true)
-        ax.hlines(baseline, 0, 1, color='gray', linestyle='--', linewidth=1, label=f'Chance level ({baseline:.2f})')
+        axes[0].set_xlabel("False Positive Rate", fontsize=8, fontname='Arial')
+        axes[0].set_ylabel("True Positive Rate", fontsize=8, fontname='Arial')
+        axes[0].set_title("ROC Curve", fontsize = 8, fontname = 'Arial')
+        axes[0].set_xlim(-0.05, 1.05)
+        axes[0].set_ylim(-0.05, 1.05)
 
-        # Customize axis labels
-        ax.set_xlabel("Recall", fontsize=9, fontname='Arial')
-        ax.set_ylabel("Precision", fontsize=9, fontname='Arial')
-
-        # Set custom limits for spacing
-        ax.set_xlim(-0.05, 1.05)
-        ax.set_ylim(-0.05, 1.05)
-
-        # Set tick label font and size
-        for label in ax.get_xticklabels() + ax.get_yticklabels():
+        for label in axes[0].get_xticklabels() + axes[0].get_yticklabels():
             label.set_fontname('Arial')
             label.set_fontsize(8)
 
-        # Customize legend
-        legend = ax.legend(loc="lower left", frameon=True)
-        legend.set_title(None)
-        for text in legend.get_texts():
+        roc_legend = axes[0].get_legend()
+        if roc_legend:
+            roc_legend.set_title(None)
+            for text in roc_legend.get_texts():
+                text.set_fontname('Arial')
+                text.set_fontsize(8)
+
+        # === PR Curve ===
+        pr_display = PrecisionRecallDisplay.from_predictions(
+            y_true,
+            y_pred_proba,
+            name="VID",
+            color="blue",
+            ax=axes[1]
+        )
+
+        baseline = np.sum(y_true) / len(y_true)
+        axes[1].hlines(baseline, 0, 1, color='gray', linestyle='--', linewidth=1,
+                    label=f'Chance level (AP = {baseline:.2f})')
+
+        axes[1].set_xlabel("Recall", fontsize=8, fontname='Arial')
+        axes[1].set_ylabel("Precision", fontsize=8, fontname='Arial')
+        axes[1].set_title("PR Curve", fontsize = 8, fontname = 'Arial')
+        axes[1].set_xlim(-0.05, 1.05)
+        axes[1].set_ylim(-0.05, 1.05)
+
+        for label in axes[1].get_xticklabels() + axes[1].get_yticklabels():
+            label.set_fontname('Arial')
+            label.set_fontsize(8)
+
+        pr_legend = axes[1].legend(loc="lower left", frameon=True)
+        pr_legend.set_title(None)
+        for text in pr_legend.get_texts():
             text.set_fontname('Arial')
             text.set_fontsize(8)
 
-        # Save the figure
-        display.figure_.savefig(os.path.join(self.output_dir, 'PR_Curve_test.png'), dpi=600, bbox_inches="tight")
+        # Final layout
+        plt.tight_layout()
 
-        # Close the figure to free memory
-        plt.close(display.figure_)
+        # Save combined plot
+        fig.savefig(os.path.join(self.output_dir, 'ROC_PR_curve_test.png'), dpi=600, bbox_inches="tight")
 
-    def histogram(self, pred_proba, title = 'test'):
+        # Close to free memory
+        plt.close(fig)
+
+
+
+    def histogram(self):
         """
-        Plotting the histogram for predicted probability.
-        Arguments:
-            pred_proba: list or pd.DataFrame or np.array, the list of predicted probability
-            title: str ('test' or 'unseen', default 'test'), the dataset to draw
+        Plotting the histogram for predicted probabilities on test and unseen datasets.
         """
+        # Global font settings
         plt.rcParams['font.family'] = 'Arial'
-        # Plot the histogram
-        plt.figure(figsize=(4, 4))
-        sns.histplot(pred_proba, bins=30, color='black')
-        
-        # Add a vertical line at x = threshold
-        if self.threshold:
-            plt.axvline(x=self.threshold, color='red', linestyle='dashed', label=f'Threshold = {self.threshold}')
-            plt.legend(loc='upper center')
-        
-        # Remove grid
-        plt.grid(False)
-        
-        # remove the upd an right boundary
-        ax = plt.gca()
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        
-        # Labels and title
-        plt.xlabel("Infection Probability", fontweight = 'bold')
-        plt.ylabel("Count", fontweight = 'bold')
-        plt.title(f'Distribution of Infection Probability Predicted by {self.metamodel}', fontweight = 'bold')
-        
+        plt.rcParams['font.size'] = 8
 
-        # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, f'pred_proba_hist_{title}.png'), dpi=600, bbox_inches="tight")  
+        # Create subplots: 1 row x 2 columns
+        fig, axes = plt.subplots(1, 2, figsize=(8, 4), dpi=600)
+
+        datasets = [('Test Set', self.pred_proba['VID']), ('Unseen Set', self.meta_unknown['infection_probability'])]
+
+        for ax, (label, data) in zip(axes, datasets):
+            sns.histplot(data, bins=30, color='darkblue', ax=ax)
+
+            # Add threshold line if defined
+            if self.threshold is not None:
+                ax.axvline(x=self.threshold, color='red', linestyle='dashed', label=f'Threshold = {self.threshold:.2f}')
+                ax.legend(loc='upper center', fontsize=8)
+
+            # Styling
+            ax.set_xlabel("Infection Probability", fontsize = 8)
+            ax.set_ylabel("Count", fontsize = 8)
+            ax.set_title(label, fontsize = 8)
+            ax.grid(False)
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+
+        plt.tight_layout()
+        # Save the plot
+        plt.savefig(os.path.join(self.output_dir, 'Infection_probability_histogram.png'), dpi=600, bbox_inches="tight")
         
-        # Close the plot to free up memory
         plt.close()
+
         
     def xgb_feature_importance(self):
         '''
-        Visualize the feature importance of xgbclassifier.
+        Visualize the feature importance of XGBClassifier in a grid layout.
         '''
+        # Set font
         plt.rcParams['font.family'] = 'Arial'
-        fig, ax = plt.subplots(figsize=(5, 4))
+        plt.rcParams['font.size'] = 8
 
-        xgboost.plot_importance(self.grid_result.best_estimator_, 
-                            ax=ax,
-                            grid=False,
-                            importance_type='weight', 
-                            title='Feature Importance of XGBoostClassifier',
-                            show_values=True)
+        # Set up subplots: 1 row x 3 cols
+        fig, axes = plt.subplots(3, 1, figsize=(3, 6), dpi=600)
 
-        # Remove the top and right edges
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
+        importance_types = ['weight', 'gain', 'cover']
+        titles = {
+            'weight': 'Frequency (Weight)',
+            'gain': 'Average Gain',
+            'cover': 'Average Coverage'
+        }
+
+        # Get booster from final estimator
+        model = self.grid_result.best_estimator_.final_estimator_.get_booster()
         
-        # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, 'XGB_featrue_importance.png'), dpi=600, bbox_inches="tight")  
+        # Set your custom feature names
+        model.feature_names = ['RF', 'SVM', 'KNN', 'GNB', 'LGR']
+        
+        # Plot feature importance for each type (weight, gain, cover)
+        for ax, imp_type in zip(axes, importance_types):
+            xgb.plot_importance(
+                model,
+                ax=ax,
+                importance_type=imp_type,
+                show_values=False,
+                grid=False,
+                color='darkblue'
+            )
 
-        # Close the plot to free up memory
+            # Format values to two decimal places by modifying the x-tick labels
+            for tick in ax.get_xticklabels():
+                tick.set_text(f'{float(tick.get_text()):.2f}')
+
+            # Remove the title for the subplot
+            ax.set_title('', fontsize=8)
+            ax.set_xlabel(titles[imp_type], fontsize=8)
+            ax.set_ylabel('Model', fontsize=8)  # Set y-axis label as 'Feature'
+            
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+
+        plt.tight_layout(pad=1.0)  # Reduce padding between subplots
+        # Save the plot
+        plt.savefig(os.path.join(self.output_dir, 'XGB_feature_importance.png'), dpi=600, bbox_inches="tight")
         plt.close()
+    
+
 
         
-    def box_cv(self):
-        plt.rcParams['font.family'] = 'Arial'
-        df = self.val_cv_scores.iloc[[-1], :]
+    def evaluate_models_with_bootstrap(self, n_bootstrap=1000):
+        """
+        Evaluate multiple models using bootstrap sampling for classification metrics.
 
-        # Step 1: Reshape the data
-        # Filter only the split columns (e.g., test_accuracy and test_f1)
-        split_columns = [col for col in df.columns if col.startswith('split')]
-        reshaped_data = df[split_columns].melt(var_name="Metric_Fold", value_name="Value")
+        Args:
+            n_bootstrap: int, the number iteration for bootstrap.
+        """
+        # Define scoring functions
+        metrics = {
+            'Balanced Accuracy': balanced_accuracy_score,
+            'Precision': precision_score,
+            'Recall': recall_score,
+            'Specificity': recall_score,
+            'F1-score': f1_score,
+            'ROC_AUC': roc_auc_score,
+        }
+
+        # Initialize structure to store bootstrapped scores
+        bootstrap_scores = {
+            metric: {model: [] for model in self.pred_proba}
+            for metric in metrics
+        }
+
+        # Perform bootstrapping
+        for _ in range(n_bootstrap):
+            # Resample with replacement until both classes are present
+            while True:
+                indices = resample(np.arange(len(self.y_test)))
+                y_true_boot = self.y_test[indices]
+                if len(np.unique(y_true_boot)) == 2:
+                    break
+
+            for model, probs in self.pred_proba.items():
+                y_prob = np.array(probs)[indices]
+                y_pred = (y_prob >= 0.5).astype(int)
+
+                for metric_name, metric_func in metrics.items():
+                    if metric_name == 'ROC_AUC': 
+                        score = metric_func(y_true_boot, y_prob)
+                    elif metric_name == 'Balanced Accuracy':
+                        score = metric_func(y_true_boot, y_pred)
+                    elif metric_name == 'Specificity':
+                        score = metric_func(y_true_boot, y_pred, pos_label = 0, zero_division = 0)
+                    else:
+                        score = metric_func(y_true_boot, y_pred, zero_division=0)
+                    bootstrap_scores[metric_name][model].append(score)
+
+        # Compute mean and CI
+        results_dict = {}
+
+        for metric_name, scores_by_model in bootstrap_scores.items():
+            metric_df = pd.DataFrame(columns=['mean_score', 'ci_lower', 'ci_upper'])
+
+            for model, scores in scores_by_model.items():
+                mean_score = np.mean(scores)
+                ci_lower = np.percentile(scores, 2.5)
+                ci_upper = np.percentile(scores, 97.5)
+
+                metric_df.loc[model] = [mean_score, ci_lower, ci_upper]
+
+            results_dict[metric_name] = metric_df
+
+        return results_dict
+
+
+    def forest_plot(self):
+        """
+        Draw the forest plot. 
+        """
+        for key in self.ci_dict.keys():
+            df = self.ci_dict[key]
+            df = df.round(2)
+            # Set global font
+            matplotlib.rcParams['font.family'] = 'Arial'
+            matplotlib.rcParams['font.size'] = 8
+            
+            # Create forest plot
+            plot = EffectMeasurePlot(label=list(df.index), effect_measure=list(df['mean_score']), lcl=list(df['ci_lower']), ucl=list(df['ci_upper']))
+            plot.labels(effectmeasure='Mean', center=max(df['mean_score']))
+            plot.colors(pointshape="D", color='red')
+            
+            # Adjusted figure size
+            fig_width, fig_height = 4, 1.5
+            ax = plot.plot(figsize=(fig_width, fig_height), t_adjuster=0.06,
+                        max_value=round(np.max(df['ci_upper'] + 0.1), 2), min_value=round(np.min(df['ci_lower']) - 0.1, 2),
+                        text_size=8, size=1)
+            
+            # Title
+            plt.title(f"{key}", loc="center", x=-0.82, y=1.045, fontsize=10, fontweight = 'bold')
+            plt.suptitle("Model", x=0.08, y=0.913, fontsize=8)
+            
+            # Axis styling
+            ax.set_xlabel("Lower Performance                        Higher Performance", fontsize=8)
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+            ax.spines['bottom'].set_visible(True)
+            
+            # Save the histogram of predicted probability
+            plt.savefig(os.path.join(self.output_dir, f'{key}_forest.png'), dpi=600, bbox_inches="tight")  
+
+            # Close the plot to free up memory
+            plt.close()
+
+
+
+    def combine_images_pillow(self):
+        """
+        Combine PNG images into a grid using PIL with added space between images.
+        """
+        # set the layout parameters
+        grid_shape=(3, 2)
+        padding=250
         
-        # Extract metric names from column names
-        reshaped_data['Metric'] = reshaped_data['Metric_Fold'].apply(lambda x: "_".join(x.split('_')[2:])) 
-        reshaped_data['Fold'] = reshaped_data['Metric_Fold'].apply(lambda x: x.split('_')[0])  
+        # load image and get image attributes
+        image_files = ['Balanced Accuracy_forest.png',
+                       'Precision_forest.png',
+                       'Recall_forest.png',
+                       'Specificity_forest.png',
+                       'F1-score_forest.png',
+                       'ROC_AUC_forest.png']
+        images = [Image.open(os.path.join(self.output_dir, f)) for f in image_files]
+        rows, cols = grid_shape
+        width, height = images[0].size
+
+        # Create a blank canvas with extra space for padding between images
+        combined_img = Image.new(
+            'RGB', 
+            ((cols * width) + (cols - 1) * padding, (rows * height) + (rows - 1) * padding), 
+            (255, 255, 255)
+        )
+
+        # paste the image on the canvas
+        for idx, img in enumerate(images):
+            if idx >= rows * cols:
+                break
+            x_offset = (idx % cols) * (width + padding)
+            y_offset = (idx // cols) * (height + padding)
+            combined_img.paste(img, (x_offset, y_offset))
+
+        # save the iamge
+        combined_img.save(os.path.join(self.output_dir, 'Forest_plot_test.png'), dpi=(600, 600))
         
-        # Step 2: Draw the boxplot
-        plt.figure(figsize=(4, 4))
-        sns.boxplot(data=reshaped_data, x='Metric', y='Value', palette="Set2", boxprops=dict(facecolor="none"))
-        
-        # Step 3: Overlay data points
-        sns.stripplot(data=reshaped_data, x='Metric', y='Value', color='black', size=4, jitter=True, alpha=0.6)
-        
-        # Customizing the plot
-    #    plt.title("Boxplot of cross validation scores", fontsize=14)
-        plt.xlabel("Metrics", fontsize=8)
-        plt.ylabel("Score", fontsize=8)
-        # Manually set the x-tick labels
-        custom_labels = ['Accuracy', 'Balanced Accuracy', 'Recall', 'F1-Score', 'Precision', 'AUC']  # Replace with your custom labels
-        plt.xticks(ticks=range(len(custom_labels)), labels=custom_labels, fontsize=8, rotation=45)
+        # remove the separate images
+        for image in image_files:
+            os.remove(os.path.join(self.output_dir, image))
+            
+            
+    def calibration_plot(self):
+        """
+        Draw the calibration file for all models
+        """
+        matplotlib.rcParams['font.family'] = 'Arial'
+        matplotlib.rcParams['font.size'] = 8
+        fig = plt.figure(figsize=(12, 10))
+        gs = GridSpec(5, 2)
+        colors = plt.get_cmap("Dark2")
+
+        ax_calibration_curve = fig.add_subplot(gs[:2, :2])
+        calibration_displays = {}
+        for i, (clf, name) in enumerate(self.clf_list):
+            if name == 'VID':
+                X_test = self.X_test_norm[self.features]
+            else:
+                X_test = self.X_test_norm
+            display = CalibrationDisplay.from_estimator(
+                clf,
+                X_test,
+                self.y_test,
+                n_bins=10,
+                name=name,
+                ax=ax_calibration_curve,
+                color=colors(i),
+            )
+            calibration_displays[name] = display
+
+        ax_calibration_curve.grid()
+        ax_calibration_curve.set_title("Calibration Curves")
+
+        # Add histogram
+        grid_positions = [(2, 0), (2, 1), (3, 0), (3, 1), (4, 0), (4, 1)]
+        for i, (_, name) in enumerate(self.clf_list):
+            row, col = grid_positions[i]
+            ax = fig.add_subplot(gs[row, col])
+
+            ax.hist(
+                calibration_displays[name].y_prob,
+                range=(0, 1),
+                bins=10,
+                label=name,
+                color=colors(i),
+            )
+            ax.set(title=name, xlabel="Mean predicted probability", ylabel="Count")
+
         plt.tight_layout()
-        plt.tick_params(axis='both', which='major', labelsize=8)
-        # Remove the right and top spines
-        sns.despine()
-        
         # Save the histogram of predicted probability
-        plt.savefig(os.path.join(self.output_dir, 'cv_box.png'), dpi=600, bbox_inches="tight")  
+        plt.savefig(os.path.join(self.output_dir, f'Calibration_plot_test.png'), dpi=600, bbox_inches="tight")  
 
         # Close the plot to free up memory
         plt.close()

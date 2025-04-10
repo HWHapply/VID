@@ -3,6 +3,7 @@ from VID import *
 import pickle
 from datetime import datetime
 
+
 def define_arguments():
 	# Create a parser object
 	parser = argparse.ArgumentParser()
@@ -12,7 +13,7 @@ def define_arguments():
 	parser.add_argument('--data_dir', '-dd', default = None, type = str, help = 'The directory of gene expression.')
 	parser.add_argument('--meta_dir', '-md', default = None, type = str, help = 'The directory of metadata.')
 	parser.add_argument('--output_dir', '-od', default = './output', type = str, help = 'The output directory.')
-	parser.add_argument('--vidmodel_dir', '-vmd', default = None, type = str, help = 'The directory of the vid object to applied for transfer learning.')
+	parser.add_argument('--n_iter', '-nit', default = 100, type = int, help = 'Number of iteration applied in randomsearchcv.')
 	parser.add_argument('--marker_dir', '-mkd', default = None, type = str, help = 'The markers stores in a txt file(one gene per row).')
 	parser.add_argument('--feature_dir', '-fd', default = None, type = str, help = 'The directory of txt file stores the important features(gene).')
 	parser.add_argument('--label_dir', '-ld', default = None, type = str, help = 'The directory of txt file stores the pre-defined labels.')
@@ -21,9 +22,7 @@ def define_arguments():
 	parser.add_argument('--sample_column', '-sc', default = 'orig.ident', type = str, help = 'The column indicates the sample id.')
 	parser.add_argument('--test_ratio', '-tr', default = 0.3, type = float, help = 'The ratio of validating set.')
 	parser.add_argument('--num_split', '-ns', default = 5, type = int, help = 'The number of splitting for base model training and hyperparameter tuning for meta model.')
-	parser.add_argument('--metamodel', '-mm', default = 'xgb', type = str, help = 'The classifier applied as meta model.')
 	parser.add_argument('--threshold', '-threds', default = None, type = float, help = 'The threshold for the decision function of final prediction.')
-	parser.add_argument('--average', '-avg', default = 'weighted', type = str, help = 'Define the type of averaging performed on the evaluation scores among different class.')
 	parser.add_argument('--random_state', '-rs', default = 42, type = int, help = 'The random state for the reproduction of result.')
 	parser.add_argument('--n_jobs', '-threads', default = -1, type = int, help = 'Number of threads applied for parallel excecution.')
 	parser.add_argument('--verbose', '-v', default = 1, type = int , help='The verbose mode.')
@@ -49,20 +48,27 @@ if __name__ == '__main__':
 	except Exception as e:
 		raise ValueError("Shutting down due to argument definition error") from e
 
-	if args_input['vidmodel_dir']:
-		with open(args_input['vidmodel_dir'], 'rb') as file:
-			vid = pickle.load(file)
-		print("VID model passed, perform transfer learning...")
-		vid.__init__(args_input)
-		vid.fit()
-	else:
-		vid = VID(args_input)
-		vid.fit()
+	# initialize and train VID
+	vid = VID(args_input)
+	vid.fit()
+  
+	# perform evaluation 
+	try:
+		print()
+		print('Model Evaluating:')
+		vid.evaluate()
+		print('Model evaluation finished.')
+	except Exception as e:
+		raise RuntimeError(f'Model Evaluation failed:\n{e}')
+	
+	# perform prediction
+	try:
+		print()
+		print('Start detection...')
+		vid.predict_unknown()
+		print('Detection finished.')
+	except Exception as e:
+		raise RuntimeError(f'Prediction failed:\n{e}')
  
-	# save the vid model and training time
-	current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-	with open(os.path.join(args_input['output_dir'], f'vid_{current_time}.pkl'), "wb") as file:
-		pickle.dump(vid, file)
-		print('VID model saved!')
 
 

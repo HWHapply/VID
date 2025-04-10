@@ -1,8 +1,6 @@
-from Models import MLPClassifier
-import torch.optim as optim
 import numpy as np
 from scipy.stats import uniform, randint
-from skorch.callbacks import EarlyStopping
+
 
 
 # feature selection arguments
@@ -38,19 +36,9 @@ args_fs = {
 	}
 }
 
-#arguments for models initializations
-# early stopping initialization for MLP classifier
-early_stopping = EarlyStopping(
-    monitor='valid_loss',  # Metric to monitor
-    patience=5,            # Number of epochs with no improvement after which training will be stopped
-    threshold=0.0001,      # Minimum change to qualify as an improvement
-    threshold_mode='rel',  # Use relative threshold (i.e., 0.01% improvement)
-    lower_is_better=True   # Lower validation loss is better
-)
-
 # model initialization arguments
 model_init_kwargs = {
-    'rf': {
+    'RF': {
 		'n_estimators': 100,
 		'criterion': 'gini',
 		'max_depth': None,
@@ -70,7 +58,7 @@ model_init_kwargs = {
 		'ccp_alpha': 0.0,
 		'max_samples': None
 	},
-	'svc' : {
+	'SVM' : {
 		'C' : 1.0,
 		'kernel' : 'rbf',
 		'degree' : 3,
@@ -87,7 +75,7 @@ model_init_kwargs = {
 		'break_ties' : False,
 		'random_state' : 42
 	},
-	'knn' : {
+	'KNN' : {
 		'n_neighbors' : 5,
 		'weights' : 'uniform',
 		'algorithm' : 'auto',
@@ -97,11 +85,11 @@ model_init_kwargs = {
 		'metric_params' : None,
 		'n_jobs' : -1
 	},
-	'nb': {
+	'GNB': {
 		'priors' : None,
 		'var_smoothing' : 1e-09
 	}, 
-     'lgr' : {
+     'LGR' : {
 		'penalty' : 'l2',
 		'dual' : False,
 		'tol' : 0.0001,
@@ -112,13 +100,12 @@ model_init_kwargs = {
 		'random_state' : 42,
 		'solver' : 'lbfgs',
 		'max_iter' : 5000,
-		'multi_class' : 'auto',
 		'verbose' : 0,
 		'warm_start' : False,
 		'n_jobs' : -1,
 		'l1_ratio' : None
 	},
- 	'xgb' : {# general parameters, 
+ 	'XGB' : {# general parameters, 
       	'booster' : 'gbtree',
 		'device' : 'cpu',
 		'verbosity' : 0,
@@ -143,50 +130,44 @@ model_init_kwargs = {
 		'objective':'binary:logistic',
 		'eval_metric' : 'auc',
 		'seed' : 42
-  },
-  'mlp': {'module':MLPClassifier,
-          'optimizer': optim.Adam,
-          'max_epochs':100,
-          'lr' : 0.01,
-          'batch_size': 64,
-          'device' : 'cpu',
-          'verbose':False,
-          'callbacks':[early_stopping],
-          'optimizer__weight_decay':0.01
   }
 }
 
 
 # arguments grid for hyperparameter tuning
 param_grids = {
-    'param_grid_mlp' : {
-        'batch_size': [16, 32, 64, 128],
-#         'max_epochs': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-#         'optimizer': [optim.SGD, optim.RMSprop, optim.Adagrad, optim.Adadelta,
-#                       optim.Adam, optim.Adamax, optim.NAdam],
-#         'alpha' : [0.01, 0.05, 0.1, 0.2, 0.5, 1],
-        'optimizer__lr': np.logspace(-4, -1, 4),
-        'optimizer__betas': [(0.85, 0.99)],
-#         'optimizer__momentum': np.linspace(0.85, 0.99, 8),
-#         'module__weight_init': [init.uniform_, init.normal_, init.zeros_,
-#                                 init.xavier_normal_, init.xavier_uniform_,
-#                                 init.kaiming_normal_, init.kaiming_uniform_],
-#         'module__activation': [nn.Identity, nn.ReLU, nn.ELU, nn.ReLU6,
-#                                nn.GELU, nn.Softplus, nn.Softsign, nn.Tanh,
-#                                nn.Sigmoid, nn.Hardsigmoid],
-#         'module__weight_constraint': [1.0, 2.0, 3.0, 4.0, 5.0],
-#         'module__dropout_rate': [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-        'module__n_neurons': [16, 32, 48, 64]
-    },
-    'param_distributions_xgb' : {
-        'learning_rate': uniform(0.0001, 0.3),  # Uniform distribution between 0.0001 and 0.3
-        'gamma': uniform(0, 5),  # Uniform distribution between 0 and 0.2
-        'reg_lambda': uniform(0.1, 10),  # Uniform distribution between 1 and 100
-        'reg_alpha': uniform(0, 5),  # Uniform distribution between 0 and 0.1
-        'max_depth': randint(3, 6),  # Random integers between 3 (inclusive) and 6 (exclusive)
-        'subsample': uniform(0.6, 0.9),  # Uniform distribution between 0.7 and 1.0
-        'n_estimators': randint(50, 500)  # Random integers between 10 and 101 (inclusive)
-    }
+    # Base: RandomForest
+    'RF__n_estimators': randint(50, 500),
+    'RF__criterion': ['gini', 'entropy', 'log_loss'],
+    'RF__max_depth': randint(3, 15),
+    'RF__min_samples_split': randint(2, 10),
+    'RF__min_samples_leaf': randint(1, 4),
+
+    # Base: SVC (in pipeline with StandardScaler)
+    'SVM__C': uniform(0.1, 10),
+    'SVM__gamma': ['scale', 'auto'],  
+
+    # Base: KNN
+    'KNN__n_neighbors': randint(3, 15),
+    'KNN__weights': ['uniform', 'distance'],
+    'KNN__p': [1, 2],
+
+    # Base: GaussianNB — only one tunable param
+    'GNB__var_smoothing': uniform(1e-11, 1e-8),
+
+    # Base: Logistic Regression
+    'LGR__C': uniform(0.01, 10),
+    'LGR__penalty': ['l2'],
+    'LGR__solver': ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga'],
+    
+    # Final: XGB
+	'final_estimator__learning_rate': uniform(0.0001, 0.3),  # Uniform distribution between 0.0001 and 0.3
+	'final_estimator__gamma': uniform(0, 5),  # Uniform distribution between 0 and 0.2
+	'final_estimator__reg_lambda': uniform(0.1, 10),  # Uniform distribution between 1 and 100
+	'final_estimator__reg_alpha': uniform(0, 5),  # Uniform distribution between 0 and 0.1
+	'final_estimator__max_depth': randint(3, 6),  # Random integers between 3 (inclusive) and 6 (exclusive)
+	'final_estimator__subsample': uniform(0.6, 0.9),  # Uniform distribution between 0.7 and 1.0
+	'final_estimator__n_estimators': randint(50, 500)  # Random integers between 10 and 101 (inclusive)
 }
 
 

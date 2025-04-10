@@ -12,7 +12,7 @@ optional_args_list=(
     "data_dir" 
     "meta_dir"
     "output_dir"
-    "vidmodel_dir"
+    "n_iter"
     "marker_dir"
     "feature_dir" 
     "label_dir"
@@ -21,9 +21,7 @@ optional_args_list=(
     "sample_column"
     "test_ratio"
     "num_split"
-    "metamodel"
     "threshold"
-    "average"
     "random_state"
     "n_jobs"
     "verbose"
@@ -39,14 +37,16 @@ usage() {
                         The directory of input seurat object.
     --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
                         The markers stores in a txt file(one gene per row).
-    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, optional
-                        The column indicates the infection status in clinical assessment.(Patient level)
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
+                        The column indicates the infection status in clinical assessment.(Sample level)
     --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
                         The output directory.
     --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
                         The directory of txt file stores the important features(gene).
     --label_dir LABEL_DIR, -ld LABEL_DIR, optional
                         The directory of txt file stores the pre-defined labels.
+    --n_iter n_ITER, -nit N_ITER, optional
+                        The number of iteration applied in randomsearchcv.
     --batch_column BATCH_COLUMN, -bc BATCH_COLUMN, optional
                         The column indicates the batch label that will be used for batch correction(harmony).
     --sample_column SAMPLE_COLUMN, -sc SAMPLE_COLUMN, optional
@@ -55,20 +55,14 @@ usage() {
                         The ratio of validating set.
     --num_split NUM_SPLIT, -ns NUM_SPLIT, optional
                         The number of splitting for base model training and hyperparameter tuning for meta model.
-    --metamodel METAMODEL, -mm METAMODEL, optional
-                        The classifier applied as meta model.
     --threshold THRESHOLD, -threds THRESHOLD, optional
                         The threshold for the decision function of final prediction.
-    --average AVERAGE, -avg AVERAGE, optional
-                        Define the type of averaging performed on the evaluation scores among different class.
     --random_state RANDOM_STATE, -rs RANDOM_STATE, optional
                         The random state for the reproduction of result.
     --n_jobs N_JOBS, -threads N_JOBS, optional
                         Number of threads applied for parallel excecution.
     --verbose VERBOSE, -v VERBOSE, optional
                         The verbose mode.
-    --vidmodel_dir VIDMODEL_DIR, -vmd VIDMODEL_DIR, optional
-                        The directory of the vid object to applied for transfer learning.
     -h, --help            
                         Show this help message and exit."
                         
