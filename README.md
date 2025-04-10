@@ -51,6 +51,7 @@ Development and testing were carried out on different machines:
 - tqdm (https://github.com/tqdm/tqdm)
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
+- zEpid (https://zepid.readthedocs.io/en/latest/)
   
 #### Docker image
 Above software list displays the minimal requirements for running the VID locally. Alternatively, to enabla users to skip the software installation and environment setup, an Docker image is provided [hwhapply/vid:latest](https://hub.docker.com/r/hwhapply/vid). 
