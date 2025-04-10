@@ -46,7 +46,6 @@ Development and testing were carried out on different machines:
 - xgboost (https://xgboost.readthedocs.io/en/stable/install.html)
 - harmonypy (https://github.com/slowkow/harmonypy)
 - anndata (https://anndata.readthedocs.io/en/latest/)
-- tqdm (https://github.com/tqdm/tqdm)
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
 - zEpid (https://zepid.readthedocs.io/en/latest/)
