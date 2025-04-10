@@ -50,6 +50,7 @@ Development and testing were carried out on different machines:
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
 - zEpid (https://zepid.readthedocs.io/en/latest/)
+- Pillow (https://pillow.readthedocs.io/en/stable/handbook/overview.html)
   
 #### Docker image
 Above software list displays the minimal requirements for running the VID locally. Alternatively, to enabla users to skip the software installation and environment setup, an Docker image is provided [hwhapply/vid:latest](https://hub.docker.com/r/hwhapply/vid). 
