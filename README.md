@@ -44,8 +44,6 @@ Development and testing were carried out on different machines:
 - scikit-learn (https://scikit-learn.org)
 - boruta (https://github.com/scikit-learn-contrib/boruta_py)
 - xgboost (https://xgboost.readthedocs.io/en/stable/install.html)
-- pytorch (https://pytorch.org/get-started/locally/)
-- skorch (https://github.com/skorch-dev/skorch)
 - harmonypy (https://github.com/slowkow/harmonypy)
 - anndata (https://anndata.readthedocs.io/en/latest/)
 - tqdm (https://github.com/tqdm/tqdm)
