@@ -137,18 +137,19 @@ model_init_kwargs = {
 # arguments grid for hyperparameter tuning
 param_grids = {
     # Base: RandomForest
-    'RF__n_estimators': randint(50, 500),
+    'RF__n_estimators': randint(50, 200),
     'RF__criterion': ['gini', 'entropy', 'log_loss'],
-    'RF__max_depth': randint(3, 15),
+    'RF__max_depth': randint(3, 10),
     'RF__min_samples_split': randint(2, 10),
     'RF__min_samples_leaf': randint(1, 4),
 
     # Base: SVC (in pipeline with StandardScaler)
     'SVM__C': uniform(0.1, 10),
-    'SVM__gamma': ['scale', 'auto'],  
+    'SVM__gamma': ['scale', 'auto'],
+    'SVM__kernel': ['poly', 'rbf', 'sigmoid'],
 
     # Base: KNN
-    'KNN__n_neighbors': randint(3, 15),
+    'KNN__n_neighbors': randint(3, 10),
     'KNN__weights': ['uniform', 'distance'],
     'KNN__p': [1, 2],
 
@@ -157,8 +158,6 @@ param_grids = {
 
     # Base: Logistic Regression
     'LGR__C': uniform(0.01, 10),
-    'LGR__penalty': ['l2'],
-    'LGR__solver': ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga'],
     
     # Final: XGB
 	'final_estimator__learning_rate': uniform(0.0001, 0.3),  # Uniform distribution between 0.0001 and 0.3
@@ -167,7 +166,7 @@ param_grids = {
 	'final_estimator__reg_alpha': uniform(0, 5),  # Uniform distribution between 0 and 0.1
 	'final_estimator__max_depth': randint(3, 6),  # Random integers between 3 (inclusive) and 6 (exclusive)
 	'final_estimator__subsample': uniform(0.6, 0.9),  # Uniform distribution between 0.7 and 1.0
-	'final_estimator__n_estimators': randint(50, 500)  # Random integers between 10 and 101 (inclusive)
+	'final_estimator__n_estimators': randint(50, 200)  # Random integers between 10 and 101 (inclusive)
 }
 
 

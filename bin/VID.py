@@ -14,7 +14,7 @@ from sklearn.ensemble import StackingClassifier
 import anndata
 import warnings
 warnings.filterwarnings('ignore')  
-
+from joblib import parallel_backend
 
 
 from Utils import Utils_Model
@@ -224,51 +224,41 @@ class VID(Utils_Model):
         """
         Fit the stack generalization model on the training set.
         """
-        try:
-            print('')
-            print('Start model training...')
-            start_time = time.time()
-            
-            # initialize stack generalization model
-            self.base_estimators = [
-                ('RF', self.base_models[0]),
-                ('SVM', self.base_models[1]),
-                ('KNN', self.base_models[2]),
-                ('GNB', self.base_models[3]),
-                ('LGR', self.base_models[4])
-            ]
-            
-            stack = StackingClassifier(
-                estimators=self.base_estimators,
-                final_estimator=self.meta_model,
-                cv=self.skf,
-                stack_method='auto',
-                passthrough=False, 
-                n_jobs=self.n_jobs,
-                verbose=self.verbose,
-            )
+        # initialize stack generalization model
+        self.base_estimators = [
+            ('RF', self.base_models[0]),
+            ('SVM', self.base_models[1]),
+            ('KNN', self.base_models[2]),
+            ('GNB', self.base_models[3]),
+            ('LGR', self.base_models[4])
+        ]
+        
+        stack = StackingClassifier(
+            estimators=self.base_estimators,
+            final_estimator=self.meta_model,
+            cv=self.skf,
+            stack_method='auto',
+            passthrough=False, 
+            n_jobs=self.n_jobs,
+            verbose=self.verbose,
+        )
 
-            # Train the model and apply hyperparameter tunning
+        # Train the model and apply hyperparameter tunning
+        with parallel_backend("threading"):    
             grid = RandomizedSearchCV(estimator=stack,
-                                      param_distributions=param_grids,
-                                      cv=self.skf,
-                                      refit='roc_auc',
-                                      verbose=self.verbose,
-                                      n_jobs=self.n_jobs,
-                                      n_iter=self.n_iter,
-                                      random_state=self.random_state
-                                      )
+                                        param_distributions=param_grids,
+                                        cv=self.skf,
+                                        refit='roc_auc',
+                                        verbose=self.verbose,
+                                        n_jobs=self.n_jobs,
+                                        n_iter=self.n_iter,
+                                        random_state=self.random_state
+                                        )
 
-            self.grid_result = grid.fit(self.X_train_norm[self.features], self.y_train)
-            end_time = time.time()
-            total_training_time = end_time - start_time
-            print(f"Model training finished, total training time: {total_training_time:.2f} seconds")
-            
-            # show the feature importance of xgb 
-            self.xgb_feature_importance()
-            
-        except Exception as e:
-            raise RuntimeError(f'Model training failed:\n{e}')
+            self.grid_result = grid.fit(self.X_train_norm[self.features], self.y_train)   
+                
+        # show the feature importance of xgb 
+        self.xgb_feature_importance()
         
       
     def evaluate(self):
@@ -282,7 +272,6 @@ class VID(Utils_Model):
         self.pred_proba = {}
         self.clf_list = []
     
-        print('Start model evaluation...')
         # Train and evaluate each model
         for name, model in self.base_estimators:
             model.fit(self.X_train_norm, self.y_train)
@@ -314,7 +303,6 @@ class VID(Utils_Model):
         # draw the calibration plot
         #self.calibration_plot()
         
-        print('Model Evaluation finished.')
         
         
     def predict_unknown(self):

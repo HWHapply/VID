@@ -1,6 +1,8 @@
 import argparse
 from VID import *
 from datetime import datetime
+import sys
+sys.stdout.flush()
 
 
 def define_arguments():
@@ -48,13 +50,22 @@ if __name__ == '__main__':
 		raise ValueError("Shutting down due to argument definition error") from e
 
 	# initialize and train VID
-	vid = VID(args_input)
-	vid.fit()
+	try:
+		print()
+		print('Start model training...')
+		start_time = time.time()
+		vid = VID(args_input)
+		vid.fit()
+		end_time = time.time()
+		total_training_time = end_time - start_time
+		print(f"Model training finished, total training time: {total_training_time:.2f} seconds")
+	except Exception as e:
+		raise RuntimeError(f'Model training failed:\n{e}')
   
 	# perform evaluation 
 	try:
 		print()
-		print('Model Evaluating:')
+		print('Start model evaluation...')
 		vid.evaluate()
 		print('Model evaluation finished.')
 	except Exception as e:
