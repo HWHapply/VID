@@ -350,8 +350,8 @@ class Utils_Model:
             df = self.ci_dict[key]
             df = df.round(2)
             # Set global font
-            matplotlib.rcParams['font.family'] = 'Arial'
-            matplotlib.rcParams['font.size'] = 8
+            plt.rcParams['font.family'] = 'Arial'
+            plt.rcParams['font.size'] = 8
             
             # Create forest plot
             plot = EffectMeasurePlot(label=list(df.index), effect_measure=list(df['mean_score']), lcl=list(df['ci_lower']), ucl=list(df['ci_upper']))
@@ -437,8 +437,8 @@ class Utils_Model:
         """
         Draw the calibration file for all models
         """
-        matplotlib.rcParams['font.family'] = 'Arial'
-        matplotlib.rcParams['font.size'] = 8
+        plt.rcParams['font.family'] = 'Arial'
+        plt.rcParams['font.size'] = 8
         fig = plt.figure(figsize=(12, 10))
         gs = GridSpec(5, 2)
         colors = plt.get_cmap("Dark2")

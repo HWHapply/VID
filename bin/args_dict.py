@@ -165,7 +165,7 @@ param_grids = {
 	'final_estimator__reg_lambda': uniform(0.1, 10),  # Uniform distribution between 1 and 100
 	'final_estimator__reg_alpha': uniform(0, 5),  # Uniform distribution between 0 and 0.1
 	'final_estimator__max_depth': randint(3, 6),  # Random integers between 3 (inclusive) and 6 (exclusive)
-	'final_estimator__subsample': uniform(0.6, 0.9),  # Uniform distribution between 0.7 and 1.0
+	'final_estimator__subsample': uniform(0.6, 0.3),  # Uniform distribution between 0.7 and 1.0
 	'final_estimator__n_estimators': randint(50, 200)  # Random integers between 10 and 101 (inclusive)
 }
 
