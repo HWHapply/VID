@@ -41,7 +41,7 @@ Development and testing were carried out on different machines:
 - pandas (https://pandas.pydata.org/docs/getting_started/index.html)
 - NumPy (https://numpy.org/install/)
 - Scipy (https://scipy.org/install/)
-- scikit-learn (https://scikit-learn.org)
+- scikit-learn (https://scikit-learn.org/stable/install.html)
 - boruta (https://github.com/scikit-learn-contrib/boruta_py)
 - xgboost (https://xgboost.readthedocs.io/en/stable/install.html)
 - harmonypy (https://github.com/slowkow/harmonypy)
