@@ -39,7 +39,7 @@ Development and testing were carried out on different machines:
 
 #### Python packages
 - pandas (https://pandas.pydata.org/docs/getting_started/index.html)
-- NumPy (https://numpy.org/)
+- NumPy (https://numpy.org/install/)
 - Scipy (https://scipy.org/install/)
 - scikit-learn (https://scikit-learn.org)
 - boruta (https://github.com/scikit-learn-contrib/boruta_py)
