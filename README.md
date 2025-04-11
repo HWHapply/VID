@@ -34,22 +34,22 @@ Development and testing were carried out on different machines:
 - Conda v14.7.1 (https://github.com/conda)
 
 #### R packages
-- Seurat (https://satijalab.org/seurat/)
-- SeuratDisk (https://github.com/mojaveazure/seurat-disk)
+- Seurat v5.2.1 (https://satijalab.org/seurat/)
+- SeuratDisk v0.0.0.9021 (https://github.com/mojaveazure/seurat-disk)
 
 #### Python packages
-- pandas (https://pandas.pydata.org/docs/getting_started/index.html)
-- NumPy (https://numpy.org/install/)
-- Scipy (https://scipy.org/install/)
-- scikit-learn (https://scikit-learn.org/stable/install.html)
-- boruta (https://github.com/scikit-learn-contrib/boruta_py)
-- xgboost (https://xgboost.readthedocs.io/en/stable/install.html)
-- harmonypy (https://github.com/slowkow/harmonypy)
-- anndata (https://anndata.readthedocs.io/en/latest/)
-- Matplotlib (https://matplotlib.org/stable/)
-- seaborn (https://seaborn.pydata.org/installing.html)
-- zEpid (https://zepid.readthedocs.io/en/latest/)
-- Pillow (https://pillow.readthedocs.io/en/stable/installation/basic-installation.html)
+- pandas v2.2.3 (https://pandas.pydata.org/docs/getting_started/index.html)
+- NumPy v2.2.4 (https://numpy.org/install/)
+- Scipy v1.15.2 (https://scipy.org/install/)
+- scikit-learn v1.6.1 (https://scikit-learn.org/stable/install.html)
+- boruta v0.4.3 (https://github.com/scikit-learn-contrib/boruta_py)
+- xgboost v3.0.0 (https://xgboost.readthedocs.io/en/stable/install.html)
+- harmonypy v0.0.10 (https://github.com/slowkow/harmonypy)
+- anndata v0.11.4 (https://anndata.readthedocs.io/en/latest/)
+- Matplotlib v3.10.1 (https://matplotlib.org/stable/)
+- seaborn v0.13.2 (https://seaborn.pydata.org/installing.html)
+- zEpid v0.9.1 (https://zepid.readthedocs.io/en/latest/)
+- Pillow v11.1.0 (https://pillow.readthedocs.io/en/stable/installation/basic-installation.html)
   
 #### Docker image
 Above software list displays the minimal requirements for running the VID locally. Alternatively, to enabla users to skip the software installation and environment setup, an Docker image is provided [hwhapply/vid:latest](https://hub.docker.com/r/hwhapply/vid). 
