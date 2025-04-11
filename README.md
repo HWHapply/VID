@@ -38,7 +38,7 @@ Development and testing were carried out on different machines:
 - SeuratDisk (https://github.com/mojaveazure/seurat-disk)
 
 #### Python packages
-- pandas (https://pandas.pydata.org)
+- pandas (https://pandas.pydata.org/docs/getting_started/index.html)
 - NumPy (https://numpy.org/)
 - Scipy (https://scipy.org/install/)
 - scikit-learn (https://scikit-learn.org)
