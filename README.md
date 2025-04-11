@@ -394,7 +394,7 @@ docker run \
 -v ./demo:/wkdir/output \
 -v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
 hwhapply/vid:latest \
---clinical_column ebv_status \
+--clinical_column ebv_status 
 ```
 You can also provide the important feature list to skip feature selection:
 ```bash
