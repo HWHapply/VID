@@ -12,9 +12,7 @@ if (!requireNamespace("Seurat", quietly = TRUE)) {
 }
 
 # Check and install SeuratDisk package if not installed
-if (!requireNamespace("SeuratDisk", quietly = TRUE)) {
-  remotes::install_github("mojaveazure/seurat-disk")
-}
+install.packages("~/seurat-disk", repos = NULL, type = "source")
 
 library(Seurat)
 library(SeuratDisk)
