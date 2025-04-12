@@ -9,12 +9,29 @@ RUN apt-get update && \
     apt-get install -y git
 
 ## Update the package list and install required system dependencies for R
-RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libxml2-dev \
-    && apt-get clean
+# RUN apt-get update && apt-get install -y \
+#     libcurl4-openssl-dev \
+#     libssl-dev \
+#     libxml2-dev \
+#     && apt-get clean
 
+RUN apt-get update && apt-get install -y \
+    libhdf5-dev \
+    libxml2-dev \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libglpk-dev \
+    libgmp-dev \
+    libigraph-dev \
+    libzmq3-dev \
+    libboost-all-dev \
+    libfftw3-dev \
+    libpng-dev \
+    libx11-dev \
+    libcairo2-dev \
+    libgit2-dev \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set up Conda channels
 RUN conda config --add channels conda-forge && \
