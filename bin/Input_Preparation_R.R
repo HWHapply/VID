@@ -1,19 +1,3 @@
-# Set CRAN mirror to avoid interactive prompts
-options(repos = c(CRAN = "https://cloud.r-project.org/"))
-
-# Check if required packages are installed and install them if necessary
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-
-# Check and install Seurat package if not installed
-if (!requireNamespace("Seurat", quietly = TRUE)) {
-  remotes::install_github("satijalab/seurat", ref = "v5.2.1")
-}
-
-# Check and install SeuratDisk package if not installed
-install.packages("~/seurat-disk", repos = NULL, type = "source")
-
 library(Seurat)
 library(SeuratDisk)
 
