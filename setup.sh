@@ -48,6 +48,7 @@ chmod +x -R ./*
 # Clone github repository 
 cd ~/
 git clone https://github.com/mojaveazure/seurat-disk
+conda run -n vid_env Rscript -e "install.packages('~/seurat-disk', repos = NULL, type = 'source')"
 
 # Reload shell configuration
 source "$SHELL_CONFIG"
