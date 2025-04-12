@@ -202,12 +202,12 @@ run_vid seuratobj_dir/xxx.rds \
 #### 2. Viral markers (txt) ####
 A text file contains the list of viral biomarkers, should be specified with parameter `marker_dir`, the content of marker file shows below:
 ```bash
-viral marker 1
-viral marker 2
-viral marker 3
+viralmarker1
+viralmarker2
+viralmarker3
 ...
 ```
-The markers will be filetered out from the high variance genes before model training. If the label file is not specified with parameter `label_dir` by user, the markers will also be applied for labeling.
+If the label file is not specified with parameter `label_dir` by user, the markers will also be applied for labeling.
 
 ### __Output files__: <br>
 The code will automatically create output directory in current working directory named with the starting timestamp:
