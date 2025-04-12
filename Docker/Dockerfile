@@ -39,7 +39,7 @@ RUN chmod -R +x /opt/VID
 # Set the default CRAN source and install SeuratDisk package in the Conda environment
 RUN conda run -n vid_env Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); \
                                     if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes'); \
-                                    if (!requireNamespace('Seurat', quietly = TRUE)) {remotes::install_github('satijalab/seurat', ref = 'v4.4.3')}; \
+                                    if (!requireNamespace('Seurat', quietly = TRUE)) {remotes::install_github('satijalab/seurat', ref = 'v5.2.1')}; \
                                     if (!requireNamespace('SeuratDisk', quietly = TRUE)) {remotes::install_github('mojaveazure/seurat-disk')}"
 
 # Set the default command to run the tool with Conda environment
