@@ -43,7 +43,6 @@ if ! grep -q "$VID_BIN" "$SHELL_CONFIG"; then
     echo "Updating $SHELL_CONFIG to add VID/bin to PATH..."
     echo "export PATH=\"$VID_BIN:\$PATH\"" >> "$SHELL_CONFIG"
 fi
-chmod +x -R ./bin
 
 # Clone github repository 
 git clone https://github.com/mojaveazure/seurat-disk
