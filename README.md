@@ -383,7 +383,7 @@ hwhapply/vid:latest \
 The optional arguments you can specify are listed below:
 ```bash
 [--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO]
-[--num_split NUM_SPLIT] [--metamodel METAMODEL] [--threshold THRESHOLD] [--n_iter N_ITER]
+[--num_split NUM_SPLIT] [--threshold THRESHOLD] [--n_iter N_ITER]
 [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
 ```
 #### Demo for docker running ####
