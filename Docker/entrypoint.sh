@@ -5,7 +5,6 @@ args=""
 feature_file=""
 marker_file=""
 label_file=""
-vid_file=""
 
 # Parse other arguments
 while [[ "$#" -gt 0 ]]; do
@@ -21,7 +20,6 @@ container_output_dir="/wkdir/output"
 container_marker_path="/wkdir/input/markers.txt"
 container_feature_path="/wkdir/input/features.txt"
 container_label_path="/wkdir/input/labels.txt"
-container_vid_path="/wkdir/input/vid.pkl"
 
 # Check if the feature file is mounted (i.e., -v is used to mount a file)
 if [[ -f "$container_feature_path" ]]; then
@@ -38,14 +36,8 @@ if [[ -f "$container_label_path" ]]; then
     label_file="--label_dir $container_label_path"
 fi
 
-# Check if the feature file is mounted (i.e., -v is used to mount a file)
-if [[ -f "$container_vid_path" ]]; then
-    vid_file="--vidmodel_dir $container_vid_path"
-fi
-
-
 # Run the main script with the provided arguments
-bash /opt/VID/bin/run_vid "$container_input_path" --output_dir "$container_output_dir"  $feature_file $args $vid_file $marker_file $label_file
+bash /opt/VID/bin/run_vid "$container_input_path" --output_dir "$container_output_dir"  $feature_file $args $marker_file $label_file
 
 echo "VID process complete!"
 
