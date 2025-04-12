@@ -5,20 +5,26 @@ set -e
 
 echo "Starting VID setup..."
 
+# Clone github repository 
+git clone https://github.com/mojaveazure/seurat-disk
+
 # Detect the operating system
 OS_TYPE=$(uname)
 case "$OS_TYPE" in
     "Linux")
         ENV_FILE="./env/vid_env_Linux.yml"
         SHELL_CONFIG="$HOME/.bashrc"
+        SEURATDISK_PATH=$(realpath ./seurat-disk)
         ;;
     "Darwin")
         ENV_FILE="./env/vid_env_macOS.yml"
         SHELL_CONFIG="$HOME/.zshrc"
+        SEURATDISK_PATH=$(realpath ./seurat-disk)
         ;;
     "CYGWIN"* | "MINGW"* | "MSYS"*)
         ENV_FILE="./env/vid_env_Windows.yml"
         SHELL_CONFIG="$HOME/.bashrc" # Adjust if using a different shell in Windows
+        SEURATDISK_PATH='./seurat-disk'
         ;;
     *)
         echo "Unsupported OS: $OS_TYPE"
@@ -44,9 +50,7 @@ if ! grep -q "$VID_BIN" "$SHELL_CONFIG"; then
     echo "export PATH=\"$VID_BIN:\$PATH\"" >> "$SHELL_CONFIG"
 fi
 
-# Clone github repository 
-git clone https://github.com/mojaveazure/seurat-disk
-SEURATDISK_PATH=$(realpath ./seurat-disk)
+# install seurat disk
 conda run -n vid_env Rscript -e "install.packages('$SEURATDISK_PATH', repos = NULL, type = 'source')"
 
 # Reload shell configuration
