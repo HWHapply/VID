@@ -8,30 +8,30 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y git
 
-## Update the package list and install required system dependencies for R
-# RUN apt-get update && apt-get install -y \
-#     libcurl4-openssl-dev \
-#     libssl-dev \
-#     libxml2-dev \
-#     && apt-get clean
-
+# Update the package list and install required system dependencies for R
 RUN apt-get update && apt-get install -y \
-    libhdf5-dev \
-    libxml2-dev \
-    libssl-dev \
     libcurl4-openssl-dev \
-    libglpk-dev \
-    libgmp-dev \
-    libigraph-dev \
-    libzmq3-dev \
-    libboost-all-dev \
-    libfftw3-dev \
-    libpng-dev \
-    libx11-dev \
-    libcairo2-dev \
-    libgit2-dev \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+    libssl-dev \
+    libxml2-dev \
+    && apt-get clean
+
+# RUN apt-get update && apt-get install -y \
+#     libhdf5-dev \
+#     libxml2-dev \
+#     libssl-dev \
+#     libcurl4-openssl-dev \
+#     libglpk-dev \
+#     libgmp-dev \
+#     libigraph-dev \
+#     libzmq3-dev \
+#     libboost-all-dev \
+#     libfftw3-dev \
+#     libpng-dev \
+#     libx11-dev \
+#     libcairo2-dev \
+#     libgit2-dev \
+#     git \
+#     && rm -rf /var/lib/apt/lists/*
 
 # Set up Conda channels
 RUN conda config --add channels conda-forge && \
@@ -50,14 +50,12 @@ COPY entrypoint.sh /opt/VID/entrypoint.sh
 # Create the Conda environment from the env.yml file
 RUN conda env create -f ./env/vid_env_Linux.yml -n vid_env 
 
+# Install SeuratDisk
+RUN git clone https://github.com/mojaveazure/seurat-disk /opt/seurat-disk
+RUN conda run -n vid_env Rscript -e "install.packages('/opt/seurat-disk', repos = NULL, type = 'source')"
+
 # Ensure all files under /opt/VID are executable
 RUN chmod -R +x /opt/VID
-
-# Set the default CRAN source and install SeuratDisk package in the Conda environment
-RUN conda run -n vid_env Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); \
-                                    if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes'); \
-                                    if (!requireNamespace('Seurat', quietly = TRUE)) {remotes::install_github('satijalab/seurat', ref = 'v5.2.1')}; \
-                                    if (!requireNamespace('SeuratDisk', quietly = TRUE)) {remotes::install_github('mojaveazure/seurat-disk')}"
 
 # Set the default command to run the tool with Conda environment
 ENTRYPOINT ["conda", "run", "-n", "vid_env", "bash", "/opt/VID/entrypoint.sh"]
