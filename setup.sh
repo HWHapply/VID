@@ -43,12 +43,12 @@ if ! grep -q "$VID_BIN" "$SHELL_CONFIG"; then
     echo "Updating $SHELL_CONFIG to add VID/bin to PATH..."
     echo "export PATH=\"$VID_BIN:\$PATH\"" >> "$SHELL_CONFIG"
 fi
-chmod +x -R ./*
+chmod +x -R ./bin
 
 # Clone github repository 
-cd ~/
 git clone https://github.com/mojaveazure/seurat-disk
-conda run -n vid_env Rscript -e "install.packages('~/seurat-disk', repos = NULL, type = 'source')"
+SEURATDISK_PATH=$(realpath ./seurat-disk)
+conda run -n vid_env Rscript -e "install.packages('$SEURATDISK_PATH', repos = NULL, type = 'source')"
 
 # Reload shell configuration
 source "$SHELL_CONFIG"
