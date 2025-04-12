@@ -171,7 +171,7 @@ dependencies:
   - r-rcpphnsw=0.6.0=r41ha856d6a_0
   - r-rcppprogress=0.4.2=r41hc72bb7e_2
   - r-rcpptoml=0.1.7=r41ha856d6a_2
-  - r-reshape2=1.4.1=0a
+  - r-reshape2=1.4.4=r41ha856d6a_3
   - r-reticulate=1.36.0=r41ha856d6a_0
   - r-rlang=1.1.4=r41he75b88d_0
   - r-rmarkdown=2.22=r41hc72bb7e_0
