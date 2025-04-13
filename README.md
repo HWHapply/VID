@@ -272,7 +272,7 @@ __label_dir__: str, optional, default = None
    > Three valid labels should be included in the text file: 0 (true negative cell), 1 (true positive cell), and 2 (target cells).
    > If given, ignore the labeling step and apply user-defined label for model construction and prediction.
 
-__n_iter__: int, optional, default = 100
+__n_iter__: int, optional, default = 50
    > The number of iteration applied in hyperparameter tunning('n_iter' augment RamdomizedSearchCV).
 
 __batch_column__ : str, optional, default = None
@@ -314,7 +314,7 @@ __help__ : Flag
 ### Demo ###
 
 #### EBV-Cellline-Lymphocytes ####
-create a new work directory for demo:
+Create a new work directory for demo:
 ```bash
 mkdir ./demo
 ```
@@ -417,7 +417,7 @@ docker run \
 hwhapply/vid:latest \
 --clinical_column ebv_status 
 ```
-Run VID with `hwhapply/vid:latest` image on the second demo dataset (NPC-EBV-Epithelial), set `infection_probability > 0.7` as the threshold for final infection detection:
+Run VID with `hwhapply/vid:latest` image on the second demo dataset (NPC-EBV-Epithelial), perform 10 iterations in hyperparameter tuning, and apply `infection_probability > 0.7` as threshold to add a new infection status column:
 ```bash
 docker run \
 -v ./demo2/data/demo2.rds:/wkdir/input/data.rds \
@@ -426,7 +426,8 @@ docker run \
 -v ./demo2/data/important_genes.txt:/wkdir/input/features.txt \
 hwhapply/vid:latest \
 --clinical_column EBV_state \
---threshold 0.7
+--threshold 0.7 \
+--n_iter 10
 ```
 
 The outputs will be saved in the output directory you specified, in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the output of docker running follows the standard output structure. 
