@@ -313,7 +313,7 @@ __help__ : Flag
 
 ### Demo ###
 
-#### NPC-EBV-Lymphocytes ####
+#### EBV-Cellline-Lymphocytes ####
 create a new work directory for demo:
 ```bash
 mkdir ./demo
@@ -387,7 +387,7 @@ The optional arguments you can specify are listed below:
 [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
 ```
 #### Docker running for demo dataset ####
-Run VID with `hwhapply/vid:latest` image on demo dataset (NPC-EBV-Lymphocytes):
+Run VID with `hwhapply/vid:latest` image on demo dataset (EBV-Cellline-Lymphocytes):
 ```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
