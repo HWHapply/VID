@@ -386,7 +386,7 @@ The optional arguments you can specify are listed below:
 [--num_split NUM_SPLIT] [--threshold THRESHOLD] [--n_iter N_ITER]
 [--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
 ```
-#### Demo for docker running ####
+#### Docker running for demo dataset ####
 Run VID with `hwhapply/vid:latest` image on demo dataset (NPC-EBV-Lymphocytes):
 ```bash
 docker run \
