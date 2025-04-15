@@ -69,9 +69,9 @@ Change to the work directory:
 ```bash
 cd VID
 ```
-Make sure the `setup.sh` is excutable and run it from `VID` directory:
+Make sure the `VID` directory excutable and run `setup.sh`:
 ```bash
-chmod +x setup.sh
+chmod +x .
 ./setup.sh
 ```
 #### 3. Validate the environment setup:
