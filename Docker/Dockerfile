@@ -32,8 +32,14 @@ COPY entrypoint.sh /opt/VID/entrypoint.sh
 # Create the Conda environment from the env.yml file
 RUN conda env create -f ./env/vid_env_Linux.yml -n vid_env 
 
-RUN sudo apt install msttcorefonts -qq
-RUN rm ~/.cache/matplotlib -rf  
+# Install fonts (non-interactive)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends fontconfig && \
+    apt-get install -y --no-install-recommends ttf-mscorefonts-installer && \
+    fc-cache -f -v
+
+# Remove matplotlib font cache
+RUN rm -rf /root/.cache/matplotlib
 
 # Install SeuratDisk
 RUN git clone https://github.com/mojaveazure/seurat-disk /opt/seurat-disk
