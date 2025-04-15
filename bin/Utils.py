@@ -72,27 +72,27 @@ class Utils_Model:
             
 
         # Set tick label fonts and sizes
-        ax.set_xticklabels(disp.display_labels, fontsize=8, fontname='Arial', va='center')
-        ax.set_yticklabels(disp.display_labels, fontsize=8, fontname='Arial', rotation = 90, va='center')
+        ax.set_xticklabels(disp.display_labels, fontsize=8, va='center')
+        ax.set_yticklabels(disp.display_labels, fontsize=8, rotation = 90, va='center')
 
         # Keep the tick labels 
         ax.tick_params(axis='x', which='both', length=0, pad = 8)  # Removes x-axis ticks
         ax.tick_params(axis='y', which='both', length=0)  # Removes y-axis ticks
         
         # Set axis labels
-        ax.set_xlabel('Prediction', fontsize=8, fontname='Arial', loc='center')
-        ax.set_ylabel('Ground Truth', fontsize=8, fontname='Arial', loc='center')
+        ax.set_xlabel('Prediction', fontsize=8, loc='center')
+        ax.set_ylabel('Ground Truth', fontsize=8, loc='center')
 
         # Customize number annotations inside matrix
         for text in disp.text_.ravel():
             text.set_fontsize(8)
-            text.set_fontname('Arial')
+            # text.set_fontname('Arial')
 
         # Colorbar font customization
         cbar = disp.im_.colorbar
         cbar.ax.tick_params(labelsize=8)
-        for label in cbar.ax.get_yticklabels():
-            label.set_fontname('Arial')
+        # for label in cbar.ax.get_yticklabels():
+        #     label.set_fontname('Arial')
             
         # Remove the colorbar border
         for spine in cbar.ax.spines.values():
@@ -113,7 +113,7 @@ class Utils_Model:
             y_pred_proba : np.array, the list of predicted probabilities.
         """
         # Set global font
-        plt.rcParams['font.family'] = 'Arial'
+        # plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
 
         # Create figure with 2 subplots
@@ -129,21 +129,21 @@ class Utils_Model:
             plot_chance_level=True
         )
 
-        axes[0].set_xlabel("False Positive Rate", fontsize=8, fontname='Arial')
-        axes[0].set_ylabel("True Positive Rate", fontsize=8, fontname='Arial')
-        axes[0].set_title("ROC Curve", fontsize = 8, fontname = 'Arial')
+        axes[0].set_xlabel("False Positive Rate", fontsize=8)
+        axes[0].set_ylabel("True Positive Rate", fontsize=8)
+        axes[0].set_title("ROC Curve", fontsize = 8)
         axes[0].set_xlim(-0.05, 1.05)
         axes[0].set_ylim(-0.05, 1.05)
 
         for label in axes[0].get_xticklabels() + axes[0].get_yticklabels():
-            label.set_fontname('Arial')
+            # label.set_fontname('Arial')
             label.set_fontsize(8)
 
         roc_legend = axes[0].get_legend()
         if roc_legend:
             roc_legend.set_title(None)
             for text in roc_legend.get_texts():
-                text.set_fontname('Arial')
+                # text.set_fontname('Arial')
                 text.set_fontsize(8)
 
         # === PR Curve ===
@@ -159,20 +159,20 @@ class Utils_Model:
         axes[1].hlines(baseline, 0, 1, color='gray', linestyle='--', linewidth=1,
                     label=f'Chance level (AP = {baseline:.2f})')
 
-        axes[1].set_xlabel("Recall", fontsize=8, fontname='Arial')
-        axes[1].set_ylabel("Precision", fontsize=8, fontname='Arial')
-        axes[1].set_title("PR Curve", fontsize = 8, fontname = 'Arial')
+        axes[1].set_xlabel("Recall", fontsize=8)
+        axes[1].set_ylabel("Precision", fontsize=8)
+        axes[1].set_title("PR Curve", fontsize = 8)
         axes[1].set_xlim(-0.05, 1.05)
         axes[1].set_ylim(-0.05, 1.05)
 
         for label in axes[1].get_xticklabels() + axes[1].get_yticklabels():
-            label.set_fontname('Arial')
+            # label.set_fontname('Arial')
             label.set_fontsize(8)
 
         pr_legend = axes[1].legend(loc="lower left", frameon=True)
         pr_legend.set_title(None)
         for text in pr_legend.get_texts():
-            text.set_fontname('Arial')
+            # text.set_fontname('Arial')
             text.set_fontsize(8)
 
         # Final layout
@@ -191,7 +191,7 @@ class Utils_Model:
         Plotting the histogram for predicted probabilities on test and unseen datasets.
         """
         # Global font settings
-        plt.rcParams['font.family'] = 'Arial'
+        # plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
 
         # Create subplots: 1 row x 2 columns
@@ -227,7 +227,7 @@ class Utils_Model:
         Visualize the feature importance of XGBClassifier in a grid layout.
         '''
         # Set font
-        plt.rcParams['font.family'] = 'Arial'
+        # plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
 
         # Set up subplots: 1 row x 3 cols
@@ -350,7 +350,7 @@ class Utils_Model:
             df = self.ci_dict[key]
             df = df.round(2)
             # Set global font
-            plt.rcParams['font.family'] = 'Arial'
+            # plt.rcParams['font.family'] = 'Arial'
             plt.rcParams['font.size'] = 8
             
             # Create forest plot
@@ -437,7 +437,7 @@ class Utils_Model:
         """
         Draw the calibration file for all models
         """
-        plt.rcParams['font.family'] = 'Arial'
+        # plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
         fig = plt.figure(figsize=(12, 10))
         gs = GridSpec(5, 2)
