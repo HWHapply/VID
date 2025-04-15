@@ -36,6 +36,9 @@ if [[ -f "$container_label_path" ]]; then
     label_file="--label_dir $container_label_path"
 fi
 
+# remove matplotlib cache
+rm -rf ~/.cache/matplotlib
+
 # Run the main script with the provided arguments
 bash /opt/VID/bin/run_vid "$container_input_path" --output_dir "$container_output_dir"  $feature_file $args $marker_file $label_file
 
