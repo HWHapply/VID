@@ -71,7 +71,7 @@ cd VID
 ```
 Make sure the `VID` directory excutable and run `setup.sh`:
 ```bash
-chmod +x .
+chmod +x -R .
 ./setup.sh
 ```
 #### 3. Validate the environment setup:
