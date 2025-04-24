@@ -50,6 +50,7 @@ Development and testing were carried out on different machines:
 - seaborn v0.13.2 (https://seaborn.pydata.org/installing.html)
 - zEpid v0.9.1 (https://zepid.readthedocs.io/en/latest/)
 - Pillow v11.1.0 (https://pillow.readthedocs.io/en/stable/installation/basic-installation.html)
+- shap v0.47.1 (https://github.com/shap/shap)
   
 #### Docker image
 Above software list displays the minimal requirements for running the VID locally. Alternatively, to enabla users to skip the software installation and environment setup, an Docker image is provided [hwhapply/vid:latest](https://hub.docker.com/r/hwhapply/vid). 
