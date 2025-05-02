@@ -13,6 +13,10 @@ output_dir <- args[2]  # The output directory
 # Load the Seurat object
 seurat_obj <- readRDS(seurat_obj_dir)
 
+# normalize and select top 2000 variance genes
+seurat_obj <- NormalizeData(seurat_obj)
+seurat_obj <- FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = 2000)
+
 # Attempt to convert the Seurat object to h5ad and save it to the output directory
 h5seurat_dir <- file.path(output_dir, "data.h5seurat")
 h5ad_dir <- file.path(output_dir, "data.h5ad")

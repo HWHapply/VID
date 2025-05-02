@@ -2,13 +2,11 @@ import pandas as pd
 import numpy as np
 import time
 
-from sklearn.model_selection import train_test_split 
 from sklearn.preprocessing import StandardScaler
 import harmonypy as hm
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import make_scorer, confusion_matrix, f1_score, roc_auc_score, accuracy_score, balanced_accuracy_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, RandomizedSearchCV
-from sklearn.utils.validation import check_is_fitted
 from sklearn.ensemble import StackingClassifier
 
 import anndata
@@ -18,7 +16,6 @@ from joblib import parallel_backend
 
 
 from Utils import Utils_Model
-from sklearn.preprocessing import StandardScaler
 from Models import Model
 import os
 from args_dict import args_fs, model_init_kwargs,  param_grids
@@ -53,7 +50,11 @@ class VID(Utils_Model):
             # load h5ad file if anndata path provided
             if self.h5ad_dir:
                 self.anndata = anndata.read_h5ad(self.h5ad_dir)
-                self.data_df = pd.DataFrame(data=self.anndata.raw[:, self.anndata.var_names].X.toarray(), index = self.anndata.raw.obs_names, columns = self.anndata.var_names)
+                hvg = self.anndata.var.loc[self.anndata.var['vst.variable'] == 1].index
+                self.data_df = pd.DataFrame(data=self.anndata.raw.X.toarray(), 
+                                            index = self.anndata.raw.obs_names, 
+                                            columns = self.anndata.raw.var_names
+                                            ).loc[:, hvg]
                 self.meta_df = self.anndata.obs
             # load gene expression and metadata if anndata path not provided
             elif os.path.isfile(self.data_dir) and os.path.isfile(self.meta_dir):
