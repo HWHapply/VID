@@ -40,27 +40,19 @@ class Utils_Model:
     def boruta(self):
         '''
         Initialize and return a boruta feature selector 
-        Return:
-            boruta_selector: borutapy object, initialized boruta selector.
         '''
         args_fs['estimator']['random_state'] = self.random_state
         args_fs['boruta']['random_state'] = self.random_state
         self.fs_estimator = RandomForestClassifier(**args_fs['estimator'])
         args_fs['boruta']['estimator'] = self.fs_estimator
         args_fs['boruta']['verbose'] = self.verbose
+        args_fs['boruta']['max_iter'] = self.fs_iter
         boruta_selector = BorutaPy(**args_fs['boruta'])
         return boruta_selector
 
     def stratified_downsample(self, df, meta, target_size, random_state=42):
         """
         Stratified downsample based on class distribution.
-        Args:
-            df: pd.DataFrame, the target expression matrix for downsampling.
-            meta: pd.DataFrame, the meta data for expression matrix.
-            target_size: int, the target size of downsampling.
-            random_state: int, the seed for result reproduction.
-        Return:
-            pd.DataFrame, Stratified downsampled dataframe.
         """
         grouped = []
         for label in meta['infection_status'].unique():
@@ -85,11 +77,13 @@ class Utils_Model:
     def get_stratified_background(self):
         """
         Create a stratified SHAP background sample, using double the size of the minority class.
-        Args:
-            X: pd.DataFrame or np.ndarray, feature matrix
-            y: pd.Series or np.ndarray, target labels
-        Return:
-            background_X: pd.DataFrame, stratified background sample
+
+        Parameters:
+        - X: pd.DataFrame or np.ndarray, feature matrix
+        - y: pd.Series or np.ndarray, target labels
+
+        Returns:
+        - background_X: pd.DataFrame, stratified background sample
         """
         df = self.X_train_norm[self.features].copy()
         df['__label__'] = self.y_train
@@ -120,9 +114,9 @@ class Utils_Model:
     def shap_plot(self, X_target):
         """
         Draw the SHAP value beeswarm plot and heatmap for important genes in a 1x2 grid layout.
-        Args:
-            X_target: pandas.DataFrame, the expression matrix of instances applied for beeswarm plot and heatmap drawing.
         """
+        plt.rcParams['font.family'] = 'Arial'
+
         # Create SHAP explainer (for binary classification)
         background_df = self.get_stratified_background()
         masker = shap.maskers.Independent(background_df)
@@ -168,6 +162,8 @@ class Utils_Model:
         axes[0].set_ylabel(f'Top {num_feature} genes', fontsize=12)
         axes[0].tick_params(axis='x', colors='black', labelsize=10)
         axes[0].tick_params(axis='y', colors='black', labelsize=10)
+        for label in axes[0].get_xticklabels() + axes[0].get_yticklabels():
+            label.set_fontname('Arial')
 
         # Heatmap on the right
         shap.plots.heatmap(
@@ -179,12 +175,17 @@ class Utils_Model:
         )
         
         # customized setting for heatmap
+        # custom_labels = [str(value) for value in self.xticks]
+        # axes[1].set_xticks(self.xticks)
+        # axes[1].set_xticklabels(custom_labels, fontsize=10, ha='center', fontname = 'Arial')
         axes[1].set_xlabel('Instances', fontsize=12)
         axes[1].set_ylabel(f'Top {num_feature} genes', fontsize=12)
         axes[1].tick_params(axis='x', colors='black', labelsize=10)
         axes[1].tick_params(axis='y', colors='black', labelsize=10)
+        for label in axes[1].get_xticklabels() + axes[1].get_yticklabels():
+            label.set_fontname('Arial')
         heatmap_cbar = fig.axes[-1]
-        heatmap_cbar.set_ylabel("SHAP value", fontsize=12)
+        heatmap_cbar.set_ylabel("SHAP value", fontsize=12, fontname='Arial')
         
         # set the vertical line
         for edge, label in zip(self.xticks[1:-1], 
@@ -198,7 +199,8 @@ class Utils_Model:
                 label,
                 ha='center',
                 va='bottom',
-                fontsize=10
+                fontsize=10,
+                fontname='Arial'
             )
 
         # Save combined plot
@@ -210,9 +212,13 @@ class Utils_Model:
     def cm_plot(self, label, pred):
         """
         Draw the confusion matrix.
-        Args:
-            pred: list, numpy.array or pd.dataframe, predictions of model on testing set.
-            label: list, numpy.array or pd.dataframe, true class label of testing set.
+        
+        Parameters:
+        - pred: predictions of model on testing set
+        - label: true class label of testing set
+
+        Returns:
+        - A confusion matrix plot with larger values.
         """
         cm = confusion_matrix(label, pred)
 
@@ -230,24 +236,27 @@ class Utils_Model:
             
 
         # Set tick label fonts and sizes
-        ax.set_xticklabels(disp.display_labels, fontsize=8, va='center')
-        ax.set_yticklabels(disp.display_labels, fontsize=8, rotation = 90, va='center')
+        ax.set_xticklabels(disp.display_labels, fontsize=8, fontname='Arial', va='center')
+        ax.set_yticklabels(disp.display_labels, fontsize=8, fontname='Arial', rotation = 90, va='center')
 
         # Keep the tick labels 
         ax.tick_params(axis='x', which='both', length=0, pad = 8)  # Removes x-axis ticks
         ax.tick_params(axis='y', which='both', length=0)  # Removes y-axis ticks
         
         # Set axis labels
-        ax.set_xlabel('Prediction', fontsize=8, loc='center')
-        ax.set_ylabel('Ground Truth', fontsize=8, loc='center')
+        ax.set_xlabel('Prediction', fontsize=8, fontname='Arial', loc='center')
+        ax.set_ylabel('Ground Truth', fontsize=8, fontname='Arial', loc='center')
 
         # Customize number annotations inside matrix
         for text in disp.text_.ravel():
             text.set_fontsize(8)
+            text.set_fontname('Arial')
 
         # Colorbar font customization
         cbar = disp.im_.colorbar
         cbar.ax.tick_params(labelsize=8)
+        for label in cbar.ax.get_yticklabels():
+            label.set_fontname('Arial')
             
         # Remove the colorbar border
         for spine in cbar.ax.spines.values():
@@ -262,11 +271,13 @@ class Utils_Model:
     def roc_pr_plot(self, y_true, y_pred_proba):
         """
         Draw combined ROC and Precision-Recall (P-R) plots side by side.
+
         Args:
             y_true : np.array, the list of true labels.
             y_pred_proba : np.array, the list of predicted probabilities.
         """
         # Set global font
+        plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
 
         # Create figure with 2 subplots
@@ -282,19 +293,21 @@ class Utils_Model:
             plot_chance_level=True
         )
 
-        axes[0].set_xlabel("False Positive Rate", fontsize=8)
-        axes[0].set_ylabel("True Positive Rate", fontsize=8)
-        axes[0].set_title("ROC Curve", fontsize = 8)
+        axes[0].set_xlabel("False Positive Rate", fontsize=8, fontname='Arial')
+        axes[0].set_ylabel("True Positive Rate", fontsize=8, fontname='Arial')
+        axes[0].set_title("ROC Curve", fontsize = 8, fontname = 'Arial')
         axes[0].set_xlim(-0.05, 1.05)
         axes[0].set_ylim(-0.05, 1.05)
 
         for label in axes[0].get_xticklabels() + axes[0].get_yticklabels():
+            label.set_fontname('Arial')
             label.set_fontsize(8)
 
         roc_legend = axes[0].get_legend()
         if roc_legend:
             roc_legend.set_title(None)
             for text in roc_legend.get_texts():
+                text.set_fontname('Arial')
                 text.set_fontsize(8)
 
         # === PR Curve ===
@@ -310,18 +323,20 @@ class Utils_Model:
         axes[1].hlines(baseline, 0, 1, color='gray', linestyle='--', linewidth=1,
                     label=f'Chance level (AP = {baseline:.2f})')
 
-        axes[1].set_xlabel("Recall", fontsize=8)
-        axes[1].set_ylabel("Precision", fontsize=8)
-        axes[1].set_title("PR Curve", fontsize = 8)
+        axes[1].set_xlabel("Recall", fontsize=8, fontname='Arial')
+        axes[1].set_ylabel("Precision", fontsize=8, fontname='Arial')
+        axes[1].set_title("PR Curve", fontsize = 8, fontname = 'Arial')
         axes[1].set_xlim(-0.05, 1.05)
         axes[1].set_ylim(-0.05, 1.05)
 
         for label in axes[1].get_xticklabels() + axes[1].get_yticklabels():
+            label.set_fontname('Arial')
             label.set_fontsize(8)
 
         pr_legend = axes[1].legend(loc="lower left", frameon=True)
         pr_legend.set_title(None)
         for text in pr_legend.get_texts():
+            text.set_fontname('Arial')
             text.set_fontsize(8)
 
         # Final layout
@@ -340,6 +355,7 @@ class Utils_Model:
         Plotting the histogram for predicted probabilities on test and unseen datasets.
         """
         # Global font settings
+        plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
 
         # Create subplots: 1 row x 2 columns
@@ -375,6 +391,7 @@ class Utils_Model:
         Visualize the feature importance of XGBClassifier in a grid layout.
         '''
         # Set font
+        plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
 
         # Set up subplots: 1 row x 3 cols
@@ -427,10 +444,9 @@ class Utils_Model:
     def evaluate_models_with_bootstrap(self, n_bootstrap=1000):
         """
         Evaluate multiple models using bootstrap sampling for classification metrics.
+
         Args:
             n_bootstrap: int, the number iteration for bootstrap.
-        Return:
-            results_dict: dictinary, the bootstraped evaluation scores on test set.
         """
         # Define scoring functions
         metrics = {
@@ -498,6 +514,7 @@ class Utils_Model:
             df = self.ci_dict[key]
             df = df.round(2)
             # Set global font
+            plt.rcParams['font.family'] = 'Arial'
             plt.rcParams['font.size'] = 8
             
             # Create forest plot
@@ -584,6 +601,7 @@ class Utils_Model:
         """
         Draw the calibration file for all models
         """
+        plt.rcParams['font.family'] = 'Arial'
         plt.rcParams['font.size'] = 8
         fig = plt.figure(figsize=(12, 10))
         gs = GridSpec(5, 2)

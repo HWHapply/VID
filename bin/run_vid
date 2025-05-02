@@ -12,13 +12,14 @@ optional_args_list=(
     "data_dir" 
     "meta_dir"
     "output_dir"
-    "n_iter"
     "marker_dir"
     "feature_dir" 
     "label_dir"
     "clinical_column"
     "batch_column" 
     "sample_column"
+    "fs_iter"
+    "n_iter"
     "test_ratio"
     "num_split"
     "threshold"
@@ -32,25 +33,30 @@ optional_args=()
 
 # Function to display usage
 usage() {
-    echo "Usage: $0   
+    echo "Usage: 
+    run_vid seuratobj_dir --marker_dir MARKER_DIR --clinical_column CLINICAL_COLUMN [--optional_argument ...] 
+
+    Arguments:
     seuratobj_dir, required
                         The directory of input seurat object.
     --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
                         The markers stores in a txt file(one gene per row).
-    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
-                        The column indicates the infection status in clinical assessment.(Sample level)
     --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
                         The output directory.
     --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
                         The directory of txt file stores the important features(gene).
     --label_dir LABEL_DIR, -ld LABEL_DIR, optional
                         The directory of txt file stores the pre-defined labels.
-    --n_iter n_ITER, -nit N_ITER, optional
-                        The number of iteration applied in randomsearchcv.
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
+                        The column indicates the infection status in clinical assessment.(Sample level)
     --batch_column BATCH_COLUMN, -bc BATCH_COLUMN, optional
                         The column indicates the batch label that will be used for batch correction(harmony).
     --sample_column SAMPLE_COLUMN, -sc SAMPLE_COLUMN, optional
                         The column indicates the sample id.
+    --fs_iter FS_ITER, -fi FS_ITER, optional
+                        The number of iteration applied in feature selection.
+    --n_iter N_ITER, -ni N_ITER, optional
+                        The number of iteration applied in randomsearchcv.
     --test_ratio TEST_RATIO, -tr TEST_RATIO, optional
                         The ratio of validating set.
     --num_split NUM_SPLIT, -ns NUM_SPLIT, optional
