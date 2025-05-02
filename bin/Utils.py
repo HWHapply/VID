@@ -41,7 +41,7 @@ class Utils_Model:
         '''
         Initialize and return a boruta feature selector 
         Return:
-            Initialized boruta selector.
+            boruta_selector: borutapy object, initialized boruta selector.
         '''
         args_fs['estimator']['random_state'] = self.random_state
         args_fs['boruta']['random_state'] = self.random_state
@@ -55,12 +55,12 @@ class Utils_Model:
         """
         Stratified downsample based on class distribution.
         Args:
-            df: pandas.DataFrame, the target expression matrix for downsampling.
-            meta: pandas.DataFrame, the meta data for expression matrix.
+            df: pd.DataFrame, the target expression matrix for downsampling.
+            meta: pd.DataFrame, the meta data for expression matrix.
             target_size: int, the target size of downsampling.
             random_state: int, the seed for result reproduction.
         Return:
-            Pandas.DataFrame, Stratified downsampled dataframe.
+            pd.DataFrame, Stratified downsampled dataframe.
         """
         grouped = []
         for label in meta['infection_status'].unique():
@@ -86,10 +86,10 @@ class Utils_Model:
         """
         Create a stratified SHAP background sample, using double the size of the minority class.
         Args:
-            X: pandas.DataFrame or np.ndarray, feature matrix
-            y: pandas.Series or np.ndarray, target labels
+            X: pd.DataFrame or np.ndarray, feature matrix
+            y: pd.Series or np.ndarray, target labels
         Return:
-            background_X: pandas.DataFrame, stratified background sample
+            background_X: pd.DataFrame, stratified background sample
         """
         df = self.X_train_norm[self.features].copy()
         df['__label__'] = self.y_train
@@ -211,8 +211,8 @@ class Utils_Model:
         """
         Draw the confusion matrix.
         Args:
-            pred: list, numpy.array or pandas.dataframe, predictions of model on testing set.
-            label: list, numpy.array or pandas.dataframe, true class label of testing set.
+            pred: list, numpy.array or pd.dataframe, predictions of model on testing set.
+            label: list, numpy.array or pd.dataframe, true class label of testing set.
         """
         cm = confusion_matrix(label, pred)
 
