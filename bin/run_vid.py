@@ -26,7 +26,7 @@ def define_arguments():
 	parser.add_argument('--threshold', '-threds', default = None, type = float, help = 'The threshold for the decision function of final prediction.')
 	parser.add_argument('--random_state', '-rs', default = 42, type = int, help = 'The random state for the reproduction of result.')
 	parser.add_argument('--n_jobs', '-threads', default = -1, type = int, help = 'Number of threads applied for parallel excecution.')
-	parser.add_argument('--verbose', '-v', default = 1, type = int , help='The verbose mode.')
+	parser.add_argument('--verbose', '-v', default = 2, type = int , help='The verbose mode.')
 
 	# Parse the command-line arguments
 	args = parser.parse_args()

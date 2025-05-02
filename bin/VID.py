@@ -117,8 +117,8 @@ class VID(Utils_Model):
                     raise KeyError(f'Labeling failed, marker provided not included in the expression data.')
             
             # drop the markers
-            # if self.marker_dir:
-            #     self.data_df.drop(self.markers, axis = 1, inplace=True)
+            if self.marker_dir:
+                self.data_df.drop(self.markers, axis = 1, inplace=True)
             
             self.data_train = self.data_df[self.meta_df['label'] != 2]
             self.meta_train = self.meta_df.loc[self.data_train.index, :]
@@ -167,8 +167,6 @@ class VID(Utils_Model):
                 print('Important features loaded.')
             else:
                 print('Feature selecting...')
-                args_fs['estimator']['random_state'] = self.random_state
-                args_fs['boruta']['random_state'] = self.random_state
                 self.boruta_model = self.boruta()
                 self.boruta_model.fit(self.X_train_norm.to_numpy(), self.y_train.to_numpy())
                 self.features = list(self.X_train.columns[self.boruta_model.support_])
@@ -195,10 +193,10 @@ class VID(Utils_Model):
                     model_init_kwargs[key]['random_state'] = self.random_state
                 if 'n_jobs' in model_init_kwargs[key]:
                     model_init_kwargs[key]['n_jobs'] = self.n_jobs
-            
-            # set random state for xgb
-            model_init_kwargs['XGB']['seed'] = self.random_state
+                    
+            # set random state and verbosity of meta model
             model_init_kwargs['XGB']['verbosity'] = self.verbose
+            model_init_kwargs['XGB']['seed'] = self.random_state
             
             # set class weight for metal model:
             class_weights = compute_class_weight('balanced', classes=np.unique(self.y_train), y=self.y_train)
@@ -288,7 +286,7 @@ class VID(Utils_Model):
         self.pred_proba['VID'] = stack_pred_proba
         self.clf_list.append((self.grid_result.best_estimator_, 'VID'))
         
-        print('Drawing evaluation plots...')
+        print('Drawing evaluation plots...')        
         # draw and save the confusion matrix
         self.cm_plot(self.y_test, stack_pred)
         
@@ -343,6 +341,35 @@ class VID(Utils_Model):
 
         # draw histogram of the predicted probabilities
         self.histogram()
+        
+        # drawing the shap value plot
+        target_size = min(self.X_test_norm.shape[0], self.data_unknown_norm.shape[0])
+        if target_size > 100:
+            target_size = 100
+               
+        meta_test = self.meta_df.loc[self.X_test_norm.index]
+        data_test_down = self.stratified_downsample(self.X_test_norm, meta_test, target_size, self.random_state)
+        meta_test_down = meta_test.loc[data_test_down.index]
+        meta_test_down.sort_values(by='infection_probability', ascending=False, inplace=True)
+        data_test_down = data_test_down.loc[meta_test_down.index]
+        
+        data_unknown_down = self.stratified_downsample(self.data_unknown_norm, self.meta_unknown, target_size, self.random_state)
+        meta_unknown_down = self.meta_unknown.loc[data_unknown_down.index]
+        meta_unknown_down.sort_values(by='infection_probability', ascending=False, inplace=True)
+        data_unknown_down = data_unknown_down.loc[meta_unknown_down.index]
+        
+        df_true_pos = data_test_down.loc[meta_test_down['infection_status'] == 'true_positive', :]
+        df_true_neg = data_test_down.loc[meta_test_down['infection_status'] == 'true_negative', :]
+        df_pred_pos = data_unknown_down.loc[meta_unknown_down['infection_status'] == 'pred_positive', :]
+        df_pred_neg = data_unknown_down.loc[meta_unknown_down['infection_status'] == 'pred_negative', :]
+        self.xticks = [0, 
+                       df_true_pos.shape[0], 
+                       df_true_pos.shape[0] + df_pred_pos.shape[0], 
+                       df_true_pos.shape[0] + df_pred_pos.shape[0] + df_pred_neg.shape[0], 
+                       df_true_pos.shape[0] + df_pred_pos.shape[0] + df_pred_neg.shape[0] + df_true_neg.shape[0]]
+        self.line_label = [int(df_true_pos.shape[0] / data_test_down.shape[0] * 100),
+                           int(df_pred_pos.shape[0] / data_unknown_down.shape[0] * 100)]
+        self.shap_plot(pd.concat([df_true_pos, df_pred_pos, df_pred_neg, df_true_neg], axis = 0))
 
         
  

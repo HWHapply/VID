@@ -111,7 +111,7 @@ model_init_kwargs = {
 		'verbosity' : 0,
 		'n_jobs' : -1,
 		# booster parameters
-		'learning_rate': 0.3,
+		'learning_rate': 0.1,
 		'gamma' : 0,
 		'max_depth': 5,
 		'alpha': 0,
