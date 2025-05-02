@@ -149,56 +149,31 @@ All subsequent scripts and procedures should be executed within a Docker contain
 ### Usage ###
 Simply run VID in terminal with command below:
 ```bash
-run_vid seuratobj_dir/xxx.rds --marker_dir markers.txt 
+run_vid seuratobj_dir/xxx.rds \
+--marker_dir markers.txt  \
+--clinical_column your_clinical_colname 
 ```
 Please ensure that the input file conforms to the standard input format specified below. 
 ### __Input files__:  <br>
 There are two input files that are required for VID running: <br>
 #### 1. Seurat object (rds) ####
 To run VID, please convert your scRNA-seq data as seurat object first.
+A column indicates the patient-level viral infection status should be included in metadata of your seurat object, prepare this column and specify the column name with `--clinical_column` when running VID. 
 
-Below are the supported input formats and how to convert them as Seurat object in R:
-| Format	| Function to Load and convert in Seurat |
-|--------|--------------|
-|Matrix Market (.mtx) |	Read10X(), CreateSeuratObject() |
-| HDF5 (.h5)	| Read10X_h5(), CreateSeuratObject() |
-| CSV/TSV (.csv, .tsv) |	read.csv(), read.table(), CreateSeuratObject() |
-| SingleCellExperiment object(.rds) |	readRDS(), as.Seurat() |
-| Loom (.loom)	| Connect(), as.Seurat() |
-| AnnData (.h5ad) |	Convert(), LoadH5Seurat() |
+This column is not a built-in metadata column of seurat object. 'positive' and 'negative' are two valid string values for this column, **please manually generate and add it to metadata if doesn't exist**. 
 
-Then, apply log-transformation with `NormalizeData` function and high variance gene selection with `FindVariableFeatures` function, and finally save the seurat object as RDS file with `saveRDS` function.
-
-Here we present an example of input preparation for VID:
-``` R
-library(seurat)
-expression_matrix <- read.csv("path/to/expression_matrix.csv", row.names = 1) # input is expression matrix saved in csv format
-seurat_object <- CreateSeuratObject(counts = expression_matrix) # Create Seurat object
-seurat_object <- NormalizeData(seurat_object) # log-transformation on raw counts
-seurat_object <- FindVariableFeatures(seurat_object, selection.method = "vst", nfeatures = 2000) # top 2000 high-variance genes selection
-saveRDS(seurat_object, file = file.path(output_dir, "data.rds")) # save the seurat_object as output_dir/data.rds(VID input)
-```
-The VID training set consists of cells from both infected and uninfected cancer patients. A column indicates the patient-level infection status should be included in metadata of the seurat object, visualize the metadata with code below:
+Visualize the meta data of your seurat object:
 ```R
 # Visualize the metadata of seurat object:
 seurat_object@meta.data
 ```
-The ideal metadata looks like the table below:
+The expected metadata looks like the table below:
 | orig.ident | ... | clinical_column |
 |--------|-----|--------------|
 | cell1_uid | ... | positive | 
 | cell2_uid | ... |negative| 
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | 
-
-- `clinical_column` (str, 'clinical_column' by default): The patient-level infection status, only has two values: 'positive' and 'negative', please note that this column is not included in the metadata by default, **please manually add it if doesn't exist**.
-
-Specifying the column names in your dataset accordingly with optional arguments `clinical_column`:
-```bash
-run_vid seuratobj_dir/xxx.rds \
---marker_dir markers.txt  \
---clinical_column your_clinical_colname \
-```
 
 #### 2. Viral markers (txt) ####
 A text file contains the list of viral biomarkers, should be specified with parameter `marker_dir`, the content of marker file shows below:
