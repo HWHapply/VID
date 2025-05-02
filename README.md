@@ -86,25 +86,30 @@ run_vid --help
 ```
 You will get the help message below if the environment setup is successful:
 ```
-Usage: /Your/local/path/to/run_vid   
+Usage: 
+    run_vid seuratobj_dir --marker_dir MARKER_DIR --clinical_column CLINICAL_COLUMN [--optional_argument ...] 
+
+    Arguments:
     seuratobj_dir, required
                         The directory of input seurat object.
     --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
                         The markers stores in a txt file(one gene per row).
-    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, optional
-                        The column indicates the infection status in clinical assessment.(Patient level)
     --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
                         The output directory.
     --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
                         The directory of txt file stores the important features(gene).
     --label_dir LABEL_DIR, -ld LABEL_DIR, optional
                         The directory of txt file stores the pre-defined labels.
-    --n_iter n_ITER, -nit N_ITER, optional
-                        The number of iteration applied in randomsearchcv.
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
+                        The column indicates the infection status in clinical assessment.(Sample level)
     --batch_column BATCH_COLUMN, -bc BATCH_COLUMN, optional
                         The column indicates the batch label that will be used for batch correction(harmony).
     --sample_column SAMPLE_COLUMN, -sc SAMPLE_COLUMN, optional
                         The column indicates the sample id.
+    --fs_iter FS_ITER, -fi FS_ITER, optional
+                        The number of iteration applied in feature selection.
+    --n_iter N_ITER, -ni N_ITER, optional
+                        The number of iteration applied in randomsearchcv.
     --test_ratio TEST_RATIO, -tr TEST_RATIO, optional
                         The ratio of validating set.
     --num_split NUM_SPLIT, -ns NUM_SPLIT, optional
@@ -198,6 +203,7 @@ YYYYmmdd_HHMMSS
     ├── Infection_probability_histogram.png
     ├── ROC_PR_curve_test.png
     ├── XGB_feature_importance.png
+    ├── SHAP_plot_unseen.png
     ├── important_genes.txt
     └── log.txt
 
@@ -217,6 +223,7 @@ YYYYmmdd_HHMMSS
     - ***ROC_PR_curve_test.png***: An image showing the Receiver Operating Characteristic (ROC) curve and precision-recall curve on the test set.
     - ***XGB_feature_importance.png***: Grid of bar plots showing the contribution of base model in the prediction.
     - ***important_genes.txt***: A text file listing the important genes identified by the boruta.
+    - ***SHAP_plot_unseen.png***: The beeswarm plot and heatmap generated based on shap value on unseen set(test and unknown).
     - ***log.txt***: The log message for VID running.
 
 ### Parameters ###
@@ -229,7 +236,7 @@ __marker_dir__ : str, **required**, default = None
    > while the cells from infected sample with any marker expressed will be considered truely infected.
    > The markers will also be ***excluded*** from modeling.
 
-__clinical_column__ : str, **optional**, default = clinical_column
+__clinical_column__ : str, **required**, default = clinical_column
    > The column indicates the sample-level clinical diagnosis of infection, the column should
    > included in the metadata of the input seurat object. 'positive' and 'negative' are two valid values in
    > this column. This column will be applied for training set defination together with 'marker_dir'.
@@ -248,15 +255,18 @@ __label_dir__: str, optional, default = None
    > Three valid labels should be included in the text file: 0 (true negative cell), 1 (true positive cell), and 2 (target cells).
    > If given, ignore the labeling step and apply user-defined label for model construction and prediction.
 
-__n_iter__: int, optional, default = 50
-   > The number of iteration applied in hyperparameter tunning('n_iter' augment RamdomizedSearchCV).
-
 __batch_column__ : str, optional, default = None
    > The column indicates the batch label which will be applied in batch correction with harmony.
 
 __sample_column__ : str, optional, default = orig.ident
    > The column indicates the sample id. The column will be applied for training set defination.
    > Only the cell from uninfected sample without any virus markers expressed are considered to be truely uninfected.
+ 
+__fs_iter__ : int, optional, default = 100
+   > The number of iteration applied in boruta feature selection('max_iter' argument of BorutaPy) 
+
+__n_iter__: int, optional, default = 50
+   > The number of iteration applied in hyperparameter tunning('n_iter' argument of RamdomizedSearchCV).
 
 __test_ratio__ : float, optional, default = 0.3
    > The ratio of test set. The testing set is splitted from the training data (infection status confirmed cells) before
