@@ -84,7 +84,7 @@ while [[ "$#" -gt 0 ]]; do
         -*)
             arg_name="${1#--}"
             if [[ " ${optional_args_list[@]} " =~ " ${arg_name} " ]]; then
-                if [[ -n "$2" && ! "$2" =~ ^- ]]; then
+                if [[ -n "$2" && ! "$2" =~ ^-[a-zA-Z] ]]; then
                     optional_args+=("$1 $2")
                     if [[ "$1" == "--output_dir" ]]; then
                         output_dir="$2"
