@@ -6,7 +6,17 @@ set -e
 echo "Starting VID setup..."
 
 # Clone github repository 
-git clone https://github.com/mojaveazure/seurat-disk
+# Directory name for the repo
+REPO_DIR="seurat-disk"
+REPO_URL="https://github.com/mojaveazure/seurat-disk"
+
+# Check if the directory exists
+if [ ! -d "$REPO_DIR" ]; then
+    echo "Cloning $REPO_URL..."
+    git clone "$REPO_URL"
+else
+    echo "Repository '$REPO_DIR' already exists."
+fi
 
 # Detect the operating system
 OS_TYPE=$(uname)
