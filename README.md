@@ -320,12 +320,12 @@ run_vid ./demo/data/demo.rds \
 --output_dir ./demo \
 --marker_dir ./demo/data/EBV_markers.txt \
 --clinical_column ebv_status \
---n_iter 10 \ # 10 iterations of randomsearchcv
---test_ratio 0.3 \ # apply 30% ground truth as test set
---num_split 5 \ # 5-fold cv for model training 
---random_state 42 \ # random seed for reproduction
---n_jobs -1 \ # apply all threads for training
---verbose 2 # display the progress
+--n_iter 10 \ 
+--test_ratio 0.3 \ 
+--num_split 5 \
+--random_state 42 \ 
+--n_jobs -1 \
+--verbose 2 
 ```
 
 #### NPC-EBV-Epithelial ####
@@ -349,9 +349,9 @@ run_vid ./demo2/data/demo2.rds \
 --output_dir ./demo2 \ 
 --marker_dir ./demo2/data/EBV_markers.txt \
 --clinical_column EBV_state \
---fs_iter 150 \ # maximum 150 iterations for boruta
---feature_dir ./demo2/data/important_genes.txt \ # provide the important gene to skip the feature selection
---batch_column batch # specify the batch column for correction
+--fs_iter 150 \ 
+--feature_dir ./demo2/data/important_genes.txt \ 
+--batch_column batch 
 ```
 
 ### Docker Run ###
