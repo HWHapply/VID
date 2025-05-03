@@ -41,14 +41,14 @@ usage() {
                         The directory of input seurat object.
     --marker_dir MARKER_DIR, -mkd MARKER_DIR, required
                         The markers stores in a txt file(one gene per row).
+    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
+                        The column indicates the infection status in clinical assessment.(Sample level)
     --output_dir OUTPUT_DIR, -od OUTPUT_DIR, optional
                         The output directory.
     --feature_dir FEATURE_DIR, -fd FEATURE_DIR, optional
                         The directory of txt file stores the important features(gene).
     --label_dir LABEL_DIR, -ld LABEL_DIR, optional
                         The directory of txt file stores the pre-defined labels.
-    --clinical_column CLINICAL_COLUMN, -cc CLINICAL_COLUMN, required
-                        The column indicates the infection status in clinical assessment.(Sample level)
     --batch_column BATCH_COLUMN, -bc BATCH_COLUMN, optional
                         The column indicates the batch label that will be used for batch correction(harmony).
     --sample_column SAMPLE_COLUMN, -sc SAMPLE_COLUMN, optional
