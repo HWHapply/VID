@@ -285,6 +285,7 @@ dependencies:
     - pytz==2025.2
     - scikit-learn==1.6.1
     - scipy==1.15.2
+    - seaborn==0.13.2
     - shap==0.47.2
     - six==1.17.0
     - slicer==0.0.8
