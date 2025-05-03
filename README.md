@@ -147,7 +147,7 @@ REPOSITORY     TAG       IMAGE ID       CREATED       SIZE
 hwhapply/vid   latest    73f3f353748c   2 weeks ago   15.5GB
 ```
 - Execute Scripts within the Docker Container:
-All subsequent scripts and procedures should be executed within a Docker container created from the 'hwhapply/vid' image. The tutorial is in the next section.
+All subsequent scripts and procedures should be executed within a Docker container created from the 'hwhapply/vid' image. The tutorial is in the last section.
 
 
 ## User tutorial
@@ -298,8 +298,11 @@ __help__ : Flag
    >  Show the help message and exit.
 
 ### Demo ###
+We provided two subsets of data analyzed in the paper as demos.
 
-#### EBV-Cellline-Lymphocytes ####
+#### EBV-Cellline-B ####
+The scRNA-seq dataset of primary B lymphocyte cell lines from [Sorelle et al., (2022)](https://github.com/user-attachments/assets/850042ba-d1a0-4824-9265-c803b228db23).
+
 Create a new work directory for demo:
 ```bash
 mkdir ./demo
@@ -316,10 +319,19 @@ Running VID:
 run_vid ./demo/data/demo.rds \
 --output_dir ./demo \
 --marker_dir ./demo/data/EBV_markers.txt \
---clinical_column ebv_status 
+--clinical_column ebv_status \
+--n_iter 10 \ # 10 iterations of randomsearchcv
+--test_ratio 0.3 \ # apply 30% ground truth as test set
+--num_split 5 \ # 5-fold cv for model training 
+--random_state 42 \ # random seed for reproduction
+--n_jobs -1 \ # apply all threads for training
+--verbose 2 # display the progress
 ```
 
 #### NPC-EBV-Epithelial ####
+Raw scRNA-seq datasets for nasopharyngeal carcinoma (NPC) from NCBI GEO under the accession numbers GSE162025, GSE150825, GSE150430, and the Genome Sequence Archive of the BIG Data Center at the Beijing Institute of Genomics under accession number HRA000087.
+
+
 Create a new work directory for demo2:
 ```bash
 mkdir ./demo2
@@ -336,44 +348,41 @@ Running VID:
 run_vid ./demo2/data/demo2.rds \
 --output_dir ./demo2 \ 
 --marker_dir ./demo2/data/EBV_markers.txt \
---clinical_column EBV_state 
+--clinical_column EBV_state \
+--fs_iter 150 \ # maximum 150 iterations for boruta
+--feature_dir ./demo2/data/important_genes.txt \ # provide the important gene to skip the feature selection
+--batch_column batch # specify the batch column for correction
 ```
 
 ### Docker Run ###
-Below is the `example` code for docker running(please don't run this):
+Below is the `example` code for docker running, modify the arguments in the brackets based on your requirement:
 ```bash
 docker run \
--v /path/to/data.rds:/wkdir/input/data.rds \
--v /path/to/output/dir:/wkdir/output \
--v /path/to/marker.txt:/wkdir/input/markers.txt \
--v /path/to/import_genes.txt:/wkdir/input/features.txt \
+-v [/path/to/data.rds]:/wkdir/input/data.rds \
+-v [/path/to/output/dir]:/wkdir/output \
+-v [/path/to/marker.txt]:/wkdir/input/markers.txt \
+-v [/path/to/import_genes.txt]:/wkdir/input/features.txt \
+-v [/path/to/labels.txt]:/wkdir/input/labels.txt \
 hwhapply/vid:latest \
---clinical_column clinical_colname \
---optional_argument argument_value \
-...
+--clinical_column [clinical colname] \
+--batch_column [batch colname] \
+--sample_column [sample colname] \
+--fs_iter [max boruta iteration] \
+--n_iter [number of randomsearchcv iteration] \
+--test_ratio [test ratio] \
+--num_split [number of CV fold] \
+--threshold [threshold of final labeling] \ 
+--random_state [random seed] \
+--n_jobs [number of threads] \
+--verbose [verbose level] 
 ```
 Parameter '-v' is applied to map the local directory to container working directory. The usage of '-v' shown below:
 ```
--v /your/local/dir(file):/container/dir(file)
+-v /your/local/dir:/container/dir
 ```
-When you execute VID image, you can replace `/your/local/dir(file)` with your local directory, please don't change the `/container/dir(file)`. Modify the container directory will lead to execution failure. 
 
-Specify `clinical_column` after `hwhapply/vid:latest`:
-```
-docker run
-...
-hwhapply/vid:latest \
---clinical_column clinical_colname \
-...
-```
-The optional arguments you can specify are listed below:
-```bash
-[--batch_column BATCH_COLUMN] [--sample_column SAMPLE_COLUMN] [--test_ratio TEST_RATIO]
-[--num_split NUM_SPLIT] [--threshold THRESHOLD] [--n_iter N_ITER]
-[--random_state RANDOM_STATE] [--n_jobs N_JOBS] [--verbose VERBOSE]
-```
 #### Docker running for demo dataset ####
-Run VID with `hwhapply/vid:latest` image on demo dataset (EBV-Cellline-Lymphocytes):
+Run VID with `hwhapply/vid:latest` image on demo dataset (EBV-Cellline-B):
 ```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -382,17 +391,8 @@ docker run \
 hwhapply/vid:latest \
 --clinical_column ebv_status 
 ```
-You can also provide the important feature list to skip feature selection:
-```bash
-docker run \
--v ./demo/data/demo.rds:/wkdir/input/data.rds \
--v ./demo:/wkdir/output \
--v ./demo/data/EBV_markers.txt:/wkdir/input/markers.txt \
--v ./demo/data/important_features.txt:/wkdir/input/features.txt \
-hwhapply/vid:latest \
---clinical_column ebv_status 
-```
-Provide self-defined labels to skip the automatical labeling:
+
+You can also provide the self-defined labels and important feature list to skip labeling and feature selection:
 ```bash
 docker run \
 -v ./demo/data/demo.rds:/wkdir/input/data.rds \
@@ -403,6 +403,7 @@ docker run \
 hwhapply/vid:latest \
 --clinical_column ebv_status 
 ```
+
 Run VID with `hwhapply/vid:latest` image on the second demo dataset (NPC-EBV-Epithelial), perform 10 iterations in hyperparameter tuning, and apply `infection_probability > 0.7` as threshold to add a new infection status column:
 ```bash
 docker run \
