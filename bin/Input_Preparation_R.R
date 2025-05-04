@@ -13,13 +13,21 @@ output_dir <- args[2]  # The output directory
 # Load the Seurat object
 seurat_obj <- readRDS(seurat_obj_dir)
 
-# normalize and select top 2000 variance genes
-if (length(VariableFeatures(seurat_obj)) == 0) {
-    # Run FindVariableFeatures if it hasn't been run yet
-    cat("Performing high variance genes selection ...\n")
-    seurat_obj <- FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = 2000)
+# apply log-normalization 
+if (sum(GetAssayData(seurat_obj, layer = "data", assay = "RNA")) == 0) {
+  message("\nLog-normalization has not been run. Running it now...")
+  seurat_obj <- NormalizeData(seurat_obj)
 } else {
-    cat("High variance genes already selected.\n")
+  message("\nLog-normalization has already been run.")
+}
+
+# select top 2000 variance genes
+if (length(VariableFeatures(seurat_obj)) == 0) {
+  # Run FindVariableFeatures if it hasn't been run yet
+  message("Performing high variance genes selection ...\n")
+  seurat_obj <- FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = 2000)
+} else {
+  message("High variance genes already selected.\n")
 }
 
 # Attempt to convert the Seurat object to h5ad and save it to the output directory
