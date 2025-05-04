@@ -371,7 +371,7 @@ hwhapply/vid:latest \
 --n_iter [number of randomsearchcv iteration] \
 --test_ratio [test ratio] \
 --num_split [number of CV fold] \
---threshold [threshold of final labeling] \ 
+--threshold [threshold of final labeling] \
 --random_state [random seed] \
 --n_jobs [number of threads] \
 --verbose [verbose level] 
