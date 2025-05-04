@@ -320,10 +320,10 @@ run_vid ./demo/data/demo.rds \
 --output_dir ./demo \
 --marker_dir ./demo/data/EBV_markers.txt \
 --clinical_column ebv_status \
---n_iter 10 \ 
---test_ratio 0.3 \ 
+--n_iter 10 \
+--test_ratio 0.3 \
 --num_split 5 \
---random_state 42 \ 
+--random_state 42 \
 --n_jobs -1 \
 --verbose 2 
 ```
@@ -346,11 +346,11 @@ You can also download from [demo2](https://www.dropbox.com/scl/fo/1qfrs4izmdxr6p
 Running VID:
 ```bash
 run_vid ./demo2/data/demo2.rds \
---output_dir ./demo2 \ 
+--output_dir ./demo2 \
 --marker_dir ./demo2/data/EBV_markers.txt \
 --clinical_column EBV_state \
---fs_iter 150 \ 
---feature_dir ./demo2/data/important_genes.txt \ 
+--fs_iter 150 \
+--feature_dir ./demo2/data/important_genes.txt \
 --batch_column batch 
 ```
 
