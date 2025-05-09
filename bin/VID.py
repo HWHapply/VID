@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import time
+import gc
 
 from sklearn.preprocessing import StandardScaler
 import harmonypy as hm
@@ -13,7 +14,9 @@ import anndata
 import warnings
 warnings.filterwarnings('ignore')  
 from joblib import parallel_backend
-
+import subprocess
+from pathlib import Path
+from scipy.io import mmread
 
 from Utils import Utils_Model
 from Models import Model
@@ -50,21 +53,25 @@ class VID(Utils_Model):
             # load h5ad file if anndata path provided
             if self.h5ad_dir:
                 self.anndata = anndata.read_h5ad(self.h5ad_dir)
-                hvg = self.anndata.var.loc[self.anndata.var['vst.variable'] == 1].index
                 self.data_df = pd.DataFrame(data=self.anndata.raw.X.toarray(), 
                                             index = self.anndata.raw.obs_names, 
                                             columns = self.anndata.raw.var_names
-                                            ).loc[:, hvg]
+                                            )
                 self.meta_df = self.anndata.obs
+                
             # load gene expression and metadata if anndata path not provided
             elif os.path.isfile(self.data_dir) and os.path.isfile(self.meta_dir):
-                self.data_df = pd.read_csv(self.data_dir, index_col=0)
+                # Load the expression matrix
+                matrix = mmread(self.data_dir).tocsr()
+                # Load genes and barcodes
+                genes = pd.read_csv(self.data_dir.replace('expression.mtx', 'genes.tsv'), header=None, sep='\t')[0].tolist()
+                barcodes = pd.read_csv(self.data_dir.replace('expression.mtx', 'barcodes.tsv'), header=None, sep='\t')[0].tolist()
+                self.data_df = pd.DataFrame(matrix.toarray(), index=genes, columns=barcodes).transpose()
                 self.meta_df = pd.read_csv(self.meta_dir, index_col=0)
-                if self.data_df.shape[0] != self.meta_df.shape[0]:
-                    if self.data_df.transpose().shape[0] == self.meta_df.shape[0]:
-                        self.data_df = self.data_df.transpose()
-                    else:
-                        raise ImportError("The gene expression dosen't match meta data.")
+                # remove the temporary file
+                os.remove(self.data_dir)
+                os.remove(self.data_dir.replace('expression.mtx', 'genes.tsv'))
+                os.remove(self.data_dir.replace('expression.mtx', 'barcodes.tsv'))
             print('Dataset loading finished.')
             
             # load the marker list of the virus
@@ -114,18 +121,23 @@ class VID(Utils_Model):
                                     (self.data_df[self.markers] != 0).any(axis=1), 'label'] = 1
                     self.meta_df.loc[self.meta_df[self.sample_column].isin(neg_samples), 'label'] = 0
                     self.meta_df['label'].fillna(2, inplace=True)
+                    print('Dataset labeling finished.')
                 else:
                     raise KeyError(f'Labeling failed, marker provided not included in the expression data.')
             
-            # drop the markers
-            if self.marker_dir:
-                self.data_df.drop(self.markers, axis = 1, inplace=True)
             
+            # prepare training and unknown sets
             self.data_train = self.data_df[self.meta_df['label'] != 2]
             self.meta_train = self.meta_df.loc[self.data_train.index, :]
             self.data_unknown = self.data_df[self.meta_df['label'] == 2]
             self.meta_unknown = self.meta_df.loc[self.data_unknown.index, :]
-            print('Dataset labeling finished.')
+            
+            # free the memory
+            if self.data_dir:
+                del self.data_df
+            if self.h5ad_dir:
+                del self.anndata
+            gc.collect()
             
             # perform stratified spliting on training set
             self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -140,6 +152,18 @@ class VID(Utils_Model):
             print(self.y_train.value_counts())
             print(f'Class distribution among {self.X_test.shape[0]} testing samples:')
             print(self.y_test.value_counts())
+            
+            # perform DEG analysis if important feature not provided
+            if not self.feature_dir:
+                print('\nPerforming DEG analysis ...')
+                self.X_train.T.to_csv(os.path.join(self.output_dir, 'dmatrix.csv'))
+                self.meta_train.loc[self.X_train.index, :].to_csv(os.path.join(self.output_dir, 'metadata.csv'))
+                subprocess.run(['Rscript', os.path.join(Path(__file__).resolve().parent,'DEG.R'), self.output_dir, str(self.random_state)])
+                os.remove(os.path.join(self.output_dir, 'dmatrix.csv'))
+                os.remove(os.path.join(self.output_dir, 'metadata.csv'))
+                self.deg_df = pd.read_csv(os.path.join(self.output_dir, 'DEGs.csv'), delimiter=' ', index_col=0)
+                deg_list = [gene for gene in self.deg_df.index if gene not in self.markers]
+                print('DEG analysis done.\n')
 
             # perform normalization
             scaler = StandardScaler()
@@ -169,8 +193,8 @@ class VID(Utils_Model):
             else:
                 print('Feature selecting...')
                 self.boruta_model = self.boruta()
-                self.boruta_model.fit(self.X_train_norm.to_numpy(), self.y_train.to_numpy())
-                self.features = list(self.X_train.columns[self.boruta_model.support_])
+                self.boruta_model.fit(self.X_train_norm.loc[:, deg_list].to_numpy(), self.y_train.to_numpy())
+                self.features = list(self.X_train_norm.loc[:, deg_list].columns[self.boruta_model.support_])
                 print(f'Feature selection finished, {len(self.features)} important gene selected.')
             with open(os.path.join(self.output_dir, 'important_genes.txt'), "w") as file:
                 for item in self.features:
@@ -331,8 +355,10 @@ class VID(Utils_Model):
         
         # save the metadata table
         output_data_dir = os.path.join(os.path.dirname(self.output_dir), 'data')
-        if os.path.isfile(os.path.join(output_data_dir, 'dmatrix.csv')):
-            os.remove(os.path.join(output_data_dir, 'dmatrix.csv'))
+        if os.path.isfile(os.path.join(output_data_dir, 'expression.mtx')):
+            os.remove(os.path.join(output_data_dir, 'expression.mtx'))
+            os.remove(os.path.join(output_data_dir, 'genes.tsv'))
+            os.remove(os.path.join(output_data_dir, 'barcodes.tsv'))
         if os.path.isfile(os.path.join(output_data_dir, 'data.h5ad')):
             os.remove(os.path.join(output_data_dir, 'data.h5ad'))
         if not self.meta_dir:

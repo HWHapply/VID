@@ -160,7 +160,7 @@ Rscript "$PREPARE_DATASET" "$seuratobj_dir" "$rawdata_dir"
 
 # Determine file types in raw data directory
 h5ad_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "data.h5ad")
-dmatrix_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "dmatrix.csv")
+dmatrix_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "expression.mtx")
 metadata_file=$(find "$rawdata_dir" -maxdepth 1 -type f -name "metadata.csv")
 
 if [[ -n "$h5ad_file" && -z "$dmatrix_file" && -z "$metadata_file" ]]; then
