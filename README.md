@@ -205,6 +205,7 @@ YYYYmmdd_HHMMSS
     ├── XGB_feature_importance.png
     ├── SHAP_plot_unseen.png
     ├── important_genes.txt
+    ├── DEGs.csv
     └── log.txt
 
 ```
@@ -224,6 +225,7 @@ YYYYmmdd_HHMMSS
     - ***XGB_feature_importance.png***: Grid of bar plots showing the contribution of base model in the prediction.
     - ***important_genes.txt***: A text file listing the important genes identified by the boruta.
     - ***SHAP_plot_unseen.png***: The beeswarm plot and heatmap generated based on shap value on unseen set(test and unknown).
+    - ***DEGs.csv***: The table saved the result of DEG analysis.
     - ***log.txt***: The log message for VID running.
 
 ### Parameters ###
