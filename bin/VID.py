@@ -269,14 +269,14 @@ class VID(Utils_Model):
         # Train the model and apply hyperparameter tunning
         with parallel_backend("threading"):    
             grid = RandomizedSearchCV(estimator=stack,
-                                        param_distributions=param_grids,
-                                        cv=self.skf,
-                                        refit='roc_auc',
-                                        verbose=self.verbose,
-                                        n_jobs=self.n_jobs,
-                                        n_iter=self.n_iter,
-                                        random_state=self.random_state
-                                        )
+                                      param_distributions=param_grids,
+                                      cv=self.skf,
+                                      refit='roc_auc',
+                                      verbose=self.verbose,
+                                      n_jobs=self.n_jobs,
+                                      n_iter=self.n_iter,
+                                      random_state=self.random_state
+                                      )
 
             self.grid_result = grid.fit(self.X_train_norm[self.features], self.y_train)   
                 
