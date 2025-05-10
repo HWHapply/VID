@@ -273,7 +273,7 @@ class VID(Utils_Model):
                                       cv=self.skf,
                                       refit='roc_auc',
                                       verbose=self.verbose,
-                                      n_jobs=self.n_jobs,
+                                      n_jobs=1,
                                       n_iter=self.n_iter,
                                       random_state=self.random_state
                                       )
