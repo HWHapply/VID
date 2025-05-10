@@ -143,8 +143,8 @@ docker images
 ```
 The 'hwhapply/vid:latest' repository has listed under the REPOSITORY column.
 ```bash
-REPOSITORY     TAG       IMAGE ID       CREATED       SIZE
-hwhapply/vid   latest    73f3f353748c   2 weeks ago   15.5GB
+REPOSITORY               TAG       IMAGE ID       CREATED          SIZE
+hwhapply/vid             latest    30a16195f94b   41 minutes ago   7.08GB
 ```
 - Execute Scripts within the Docker Container:
 All subsequent scripts and procedures should be executed within a Docker container created from the 'hwhapply/vid' image. The tutorial is in the last section.
