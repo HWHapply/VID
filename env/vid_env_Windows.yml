@@ -264,6 +264,6 @@ dependencies:
       - tqdm==4.67.1
       - typing-extensions==4.13.2
       - tzdata==2025.2
-      - xgboost==3.0.0
+      - xgboost-cpu==3.0.0
       - zepid==0.9.1
 prefix: D:\conda\envs\vid_env
