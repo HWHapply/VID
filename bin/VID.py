@@ -12,6 +12,7 @@ from sklearn.ensemble import StackingClassifier
 
 import anndata
 import warnings
+from joblib import parallel_backend
 warnings.filterwarnings('ignore')  
 import subprocess
 from pathlib import Path
@@ -266,17 +267,18 @@ class VID(Utils_Model):
         )
 
         # Train the model and apply hyperparameter tunning
-        grid = RandomizedSearchCV(estimator=stack,
-                                  param_distributions=param_grids,
-                                  cv=self.skf,
-                                  refit='roc_auc',
-                                  verbose=self.verbose,
-                                  n_jobs=self.n_jobs,
-                                  n_iter=self.n_iter,
-                                  random_state=self.random_state
-                                  )
-
-        self.grid_result = grid.fit(self.X_train_norm[self.features], self.y_train)   
+        with parallel_backend("threading"):
+            grid = RandomizedSearchCV(estimator=stack,
+                                      param_distributions=param_grids,
+                                      cv=self.skf,
+                                      refit='roc_auc',
+                                      verbose=self.verbose,
+                                      n_jobs=self.n_jobs,
+                                      n_iter=self.n_iter,
+                                      random_state=self.random_state
+                                      )
+    
+            self.grid_result = grid.fit(self.X_train_norm[self.features], self.y_train)   
                 
         # show the feature importance of xgb 
         self.xgb_feature_importance()
