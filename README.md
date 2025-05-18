@@ -1,6 +1,6 @@
 # Viral Infection Detector: Ensemble Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers
 
-![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green) ![ ](https://img.shields.io/badge/R-4.4.1-blue) ![ ](https://img.shields.io/badge/conda-24.7.1-green)  ![ ](https://img.shields.io/badge/docker-27.1.1-blue)  
+![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green) ![ ](https://img.shields.io/badge/R-4.4.3-blue) ![ ](https://img.shields.io/badge/conda-24.7.1-green)  ![ ](https://img.shields.io/badge/docker-27.1.1-blue)  
 
 ## Table of Contents
 * [Installation](#installation)
@@ -219,7 +219,7 @@ YYYYmmdd_HHMMSS
 
   - **output**: Contains the results and outputs from the machine learning tasks.
     - ***Confusion_matrix_test.png***: An image showing the confusion matrix on the test set.
-    - ***Forest_plot_test.png***: Grid of forest plots showing the evaluation scores of base model and VID with confidence interval on the test set.
+    - ***Forest_plot_test.png***: Grid of forest plots showing the evaluation scores of tuned base estimator and final estimator with confidence interval on the test set.
     - ***Infection_probability_histogram.png***: A histogram showing the distribution of predicted probabilities on the test and unknown dataset.
     - ***ROC_PR_curve_test.png***: An image showing the Receiver Operating Characteristic (ROC) curve and precision-recall curve on the test set.
     - ***XGB_feature_importance.png***: Grid of bar plots showing the contribution of base model in the prediction.
