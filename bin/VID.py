@@ -297,8 +297,8 @@ class VID(Utils_Model):
     
         # Train and evaluate each model
         for name, model in tqdm(self.base_estimators, desc="Evaluating base estimators"):
-            model.fit(self.X_train_norm[self.features], self.y_train)
-            y_prob = model.predict_proba(self.X_test_norm[self.features])[:, 1]      
+            model.fit(self.X_train_norm, self.y_train)
+            y_prob = model.predict_proba(self.X_test_norm)[:, 1]      
             # save the predicted probabilities of base models
             self.pred_proba[name] = y_prob
             self.clf_list.append((model, name))
