@@ -294,24 +294,22 @@ class VID(Utils_Model):
         # Initialize lists to store evaluation scores
         self.pred_proba = {}
         self.clf_list = []
-    
-        # Train and evaluate each model
-        for name, model in tqdm(self.base_estimators, desc="Evaluating base estimators"):
-            model.fit(self.X_train_norm, self.y_train)
-            y_prob = model.predict_proba(self.X_test_norm)[:, 1]      
-            # save the predicted probabilities of base models
+        
+        # evaluate the tuned base models
+        for name, model in tqdm(self.grid_result.best_estimator_.named_estimators_.items(), desc="Evaluating base estimators"):
+            y_prob = model.predict_proba(self.X_test_norm[self.features])[:, 1]      
             self.pred_proba[name] = y_prob
             self.clf_list.append((model, name))
         
         # *********************************** VID evaluation on test set  **********************************
+        print('Evaluating final estimator...')
         stack_pred_proba = self.grid_result.best_estimator_.predict_proba(self.X_test_norm[self.features])[:, 1]
         stack_pred = self.grid_result.best_estimator_.predict(self.X_test_norm[self.features])
         
         # save the predicted probability of meta model
         self.pred_proba['VID'] = stack_pred_proba
         self.clf_list.append((self.grid_result.best_estimator_, 'VID'))
-        
-        print('Drawing evaluation plots...')        
+                
         # draw and save the confusion matrix
         self.cm_plot(self.y_test, stack_pred)
         
