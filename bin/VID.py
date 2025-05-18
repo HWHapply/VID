@@ -16,6 +16,8 @@ warnings.filterwarnings('ignore')
 import subprocess
 from pathlib import Path
 from scipy.io import mmread
+from tqdm import tqdm
+
 
 from Utils import Utils_Model
 from Models import Model
@@ -294,7 +296,7 @@ class VID(Utils_Model):
         self.clf_list = []
     
         # Train and evaluate each model
-        for name, model in self.base_estimators:
+        for name, model in tqdm(self.base_estimators, desc="Evaluating base estimators"):
             model.fit(self.X_train_norm[self.features], self.y_train)
             y_prob = model.predict_proba(self.X_test_norm[self.features])[:, 1]      
             # save the predicted probabilities of base models
