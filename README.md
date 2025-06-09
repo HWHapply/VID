@@ -2,7 +2,7 @@
 
 ![ ](https://img.shields.io/badge/python-3.10-blue) ![ ](https://img.shields.io/badge/license-MIT-green) ![ ](https://img.shields.io/badge/R-4.4.3-blue) ![ ](https://img.shields.io/badge/conda-24.7.1-green)  ![ ](https://img.shields.io/badge/docker-27.1.1-blue)  
 
-## Table of Contents
+## Table of Contents ##
 * [Installation](#installation)
   * [Hardware](#hardware)
   * [Software](#software)
@@ -150,7 +150,8 @@ hwhapply/vid             latest    30a16195f94b   41 minutes ago   7.08GB
 All subsequent scripts and procedures should be executed within a Docker container created from the 'hwhapply/vid' image. The tutorial is in the last section.
 
 
-## User tutorial
+## User tutorial ##
+
 ### Usage ###
 Simply run VID in terminal with command below:
 ```bash
@@ -421,7 +422,8 @@ hwhapply/vid:latest \
 
 The outputs will be saved in the output directory you specified, in this example the result will be save in `./demo/YYmmdd_HHMMSS` , the output of docker running follows the standard output structure. 
 
-## Citation
+## Citation ##
+
 Please cite: Viral Infection Detector: Ensemble Learning for Predicting Viral Infection in Single-cell Transcriptomics of Virus-Induced Cancers
 Wenhao Han, Jiahui Hu, Qin Kane Toh, Ming Ni, Roy Tan, Liang Wu, Xin Jin, Min Jian, Miao Xu, Hui Chen
 bioRxiv 2025.02.27.639934; doi: https://doi.org/10.1101/2025.02.27.639934
