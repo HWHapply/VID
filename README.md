@@ -12,7 +12,7 @@
   * [Demo](#demo)
   * [Docker Run](#docker-run)
 
-## Installation
+## Installation ##
 
 
 ### Hardware
