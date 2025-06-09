@@ -231,7 +231,7 @@ YYYYmmdd_HHMMSS
     - ***DEGs.csv***: The table saved the result of DEG analysis.
     - ***log.txt***: The log message for VID running.
 
-### Parameters ###
+#### Parameters ####
 __seuratobj_dir__ : str, **requied**
    > The directory of the input rds file (seurat object).
 
@@ -303,6 +303,7 @@ __help__ : Flag
    >  Show the help message and exit.
 
 ### Demo ###
+
 We provided two subsets of data analyzed in the paper as demos.
 
 #### EBV-Cellline-B ####
@@ -360,6 +361,7 @@ run_vid ./demo2/data/demo2.rds \
 ```
 
 ### Docker Run ###
+
 Below is the `example` code for docker running, modify the arguments in the brackets based on your requirement:
 ```bash
 docker run \
