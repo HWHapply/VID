@@ -154,7 +154,8 @@ All subsequent scripts and procedures should be executed within a Docker contain
 
 ## User tutorial ##
 
-### Usage ###
+#### Usage ####
+
 Simply run VID in terminal with command below:
 ```bash
 run_vid seuratobj_dir/xxx.rds \
@@ -162,9 +163,11 @@ run_vid seuratobj_dir/xxx.rds \
 --clinical_column your_clinical_colname 
 ```
 Please ensure that the input file conforms to the standard input format specified below. 
-### __Input files__:  <br>
+
+#### __Input files__:  ####
+
 There are two input files that are required for VID running: <br>
-#### 1. Seurat object (rds) ####
+##### 1. Seurat object (rds) #####
 To run VID, please convert your scRNA-seq data as seurat object first.
 A column indicates the patient-level viral infection status should be included in metadata of your seurat object, prepare this column and specify the column name with `--clinical_column` when running VID. 
 
@@ -183,7 +186,7 @@ The expected metadata looks like the table below:
 | ... | ... | ... | ... |
 | celln_uid |  ... | negative | 
 
-#### 2. Viral markers (txt) ####
+##### 2. Viral markers (txt) #####
 A text file contains the list of viral biomarkers, should be specified with parameter `marker_dir`, the content of marker file shows below:
 ```bash
 viralmarker1
@@ -193,7 +196,8 @@ viralmarker3
 ```
 If the label file is not specified with parameter `label_dir` by user, the markers will also be applied for labeling.
 
-### __Output files__: <br>
+#### __Output files__: ####
+
 The code will automatically create output directory in current working directory named with the starting timestamp:
 ```bash
 YYYYmmdd_HHMMSS 
@@ -231,7 +235,7 @@ YYYYmmdd_HHMMSS
     - ***DEGs.csv***: The table saved the result of DEG analysis.
     - ***log.txt***: The log message for VID running.
 
-#### Parameters ####
+#### Parameters： ####
 __seuratobj_dir__ : str, **requied**
    > The directory of the input rds file (seurat object).
 
