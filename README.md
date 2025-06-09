@@ -15,7 +15,8 @@
 ## Installation ##
 
 
-### Hardware
+### Hardware ###
+
 This model is designed to be executed on standard computational hardware. While the process is feasible on commonly available systems, utilizing more robust computational resources can significantly enhance execution speed and efficiency.
 
 Development and testing were carried out on different machines:
@@ -28,7 +29,8 @@ Development and testing were carried out on different machines:
 
 
 
-### Software
+### Software ###
+
 - R v4.4.1 or newer (https://www.r-project.org)
 - Python3 v3.10.14 (https://www.python.org)
 - Conda v14.7.1 (https://github.com/conda)
