@@ -162,7 +162,7 @@ class VID(Utils_Model):
                 subprocess.run(['Rscript', os.path.join(Path(__file__).resolve().parent,'DEG.R'), self.output_dir, str(self.random_state)])
                 os.remove(os.path.join(self.output_dir, 'dmatrix.csv'))
                 os.remove(os.path.join(self.output_dir, 'metadata.csv'))
-                self.deg_df = pd.read_csv(os.path.join(self.output_dir, 'DEGs.csv'), delimiter=' ', index_col=0)
+                self.deg_df = pd.read_csv(os.path.join(self.output_dir, 'DEGs.csv'), delimiter=',', index_col=0)
                 deg_list = [gene for gene in self.deg_df.index if gene not in self.markers]
                 print('DEG analysis done.\n')
 
