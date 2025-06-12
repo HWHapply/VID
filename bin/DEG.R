@@ -41,7 +41,7 @@ deg <- FindMarkers(
 deg_sig <- deg[deg$p_val_adj < 0.05, ]
 
 # Save the significant gene names to a text file (one gene per line)
-write.table(
+write.csv(
   deg_sig,
-  file = file.path(input_dir, "DEGs.csv")
+  file = file.path(input_dir, "DEGs.csv"),
 )
