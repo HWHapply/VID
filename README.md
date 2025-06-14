@@ -206,13 +206,13 @@ YYYYmmdd_HHMMSS
 │   └── metadata.csv
 └── output
     ├── Confusion_matrix_test.png
-    ├── Forest_plot_test.png
-    ├── Infection_probability_histogram.png
+    ├── CV_bar.png
     ├── ROC_PR_curve_test.png
     ├── XGB_feature_importance.png
     ├── SHAP_plot_unseen.png
     ├── important_genes.txt
     ├── DEGs.csv
+    ├── model.pkl
     └── log.txt
 
 ```
@@ -226,13 +226,13 @@ YYYYmmdd_HHMMSS
 
   - **output**: Contains the results and outputs from the machine learning tasks.
     - ***Confusion_matrix_test.png***: An image showing the confusion matrix on the test set.
-    - ***Forest_plot_test.png***: Grid of forest plots showing the evaluation scores of tuned base estimator and final estimator with confidence interval on the test set.
-    - ***Infection_probability_histogram.png***: A histogram showing the distribution of predicted probabilities on the test and unknown dataset.
+    - ***CV_bar.png***: A bar chart showing the cross-validation scores of the optimal model.
     - ***ROC_PR_curve_test.png***: An image showing the Receiver Operating Characteristic (ROC) curve and precision-recall curve on the test set.
     - ***XGB_feature_importance.png***: Grid of bar plots showing the contribution of base model in the prediction.
     - ***important_genes.txt***: A text file listing the important genes identified by the boruta.
     - ***SHAP_plot_unseen.png***: The beeswarm plot and heatmap generated based on shap value on unseen set(test and unknown).
     - ***DEGs.csv***: The table saved the result of DEG analysis.
+    - ***model.pkl***: A pickle file saves the optimal model (fitted).
     - ***log.txt***: The log message for VID running.
 
 #### Parameters： ####
