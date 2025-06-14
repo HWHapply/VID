@@ -50,8 +50,6 @@ Development and testing were carried out on different machines:
 - anndata v0.11.4 (https://anndata.readthedocs.io/en/latest/)
 - Matplotlib v3.10.1 (https://matplotlib.org/stable/)
 - seaborn v0.13.2 (https://seaborn.pydata.org/installing.html)
-- zEpid v0.9.1 (https://zepid.readthedocs.io/en/latest/)
-- Pillow v11.1.0 (https://pillow.readthedocs.io/en/stable/installation/basic-installation.html)
 - shap v0.47.1 (https://github.com/shap/shap)
   
 #### Docker image
