@@ -358,9 +358,7 @@ class VID(Utils_Model):
             self.meta_dir = os.path.join(output_data_dir, 'metadata.csv')
         self.meta_df.to_csv(self.meta_dir)
         print('Metatable saved!')
-
-        # draw histogram of the predicted probabilities
-        self.histogram()
+        
         
         # drawing the shap value plot
         target_size = min(self.X_test_norm.shape[0], self.data_unknown_norm.shape[0])
