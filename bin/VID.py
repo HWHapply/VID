@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import time
 import gc
+import pickle
 
 from sklearn.preprocessing import StandardScaler
 import harmonypy as hm
@@ -256,7 +257,8 @@ class VID(Utils_Model):
             ('GNB', self.base_models[3]),
             ('LGR', self.base_models[4])
         ]
-        
+
+        # initiate stack classifier
         stack = StackingClassifier(
             estimators=self.base_estimators,
             final_estimator=self.meta_model,
@@ -267,16 +269,32 @@ class VID(Utils_Model):
             verbose=self.verbose,
         )
 
+        # define the scores for cross validation
+        precision_scorer = make_scorer(precision_score, zero_division = 0)
+        recall_scorer = make_scorer(recall_score, pos_label = 1, zero_division = 0)
+        specificity_scorer = make_scorer(recall_score, pos_label = 0, zero_division = 0)
+        f1_scorer = make_scorer(f1_score, zero_division = 0)
+        self.scoring = {
+            'balanced_accuracy': 'balanced_accuracy',
+            'precision': precision_scorer,
+            'recall': recall_scorer,
+            'specificity': specificity_scorer,
+            'f1': f1_scorer,
+            'roc_auc': 'roc_auc'  
+        }
+        
         # Train the model and apply hyperparameter tunning
         grid = RandomizedSearchCV(estimator=stack,
-                                  param_distributions=param_grids,
-                                  cv=self.skf,
-                                  refit='roc_auc',
-                                  verbose=self.verbose,
-                                  n_jobs=self.n_jobs,
-                                  n_iter=self.n_iter,
-                                  random_state=self.random_state
-                                  )
+                                param_distributions=param_grids,
+                                scoring=self.scoring,
+                                cv=self.skf,
+                                refit='roc_auc',
+                                return_train_score=True,
+                                verbose=self.verbose,
+                                n_jobs=self.n_jobs,
+                                n_iter=self.n_iter,
+                                random_state=self.random_state
+                                )
 
         self.grid_result = grid.fit(self.X_train_norm[self.features], self.y_train)   
                 
@@ -288,42 +306,19 @@ class VID(Utils_Model):
         '''
         Evaluate the model on validation set and test set.
         '''
-        # check the model fitting status
+        # visualize the cross validation score with bar chart
+        self.cv_bar_plot()
         
-        # *********************************** Base model Evaluation on test set  **********************************
-        # Initialize lists to store evaluation scores
-        self.pred_proba = {}
-        self.clf_list = []
-        
-        # evaluate the tuned base models
-        for name, model in tqdm(self.grid_result.best_estimator_.named_estimators_.items(), desc="Evaluating base estimators"):
-            y_prob = model.predict_proba(self.X_test_norm[self.features])[:, 1]      
-            self.pred_proba[name] = y_prob
-            self.clf_list.append((model, name))
-        
-        # *********************************** VID evaluation on test set  **********************************
-        print('Evaluating final estimator...')
+        # evaluate the model on the testing set
+        print('Evaluating final estimator...') 
         stack_pred_proba = self.grid_result.best_estimator_.predict_proba(self.X_test_norm[self.features])[:, 1]
         stack_pred = self.grid_result.best_estimator_.predict(self.X_test_norm[self.features])
         
-        # save the predicted probability of meta model
-        self.pred_proba['VID'] = stack_pred_proba
-        self.clf_list.append((self.grid_result.best_estimator_, 'VID'))
-                
         # draw and save the confusion matrix
         self.cm_plot(self.y_test, stack_pred)
         
         # draw ROC and precision-recall curve of the predicted probabilities
         self.roc_pr_plot(self.y_test, stack_pred_proba)
-        
-        # draw the forest plot
-        self.ci_dict = self.evaluate_models_with_bootstrap()
-        self.forest_plot()
-        self.combine_images_pillow()
-        
-        # draw the calibration plot
-        #self.calibration_plot()
-        
         
         
     def predict_unknown(self):
@@ -396,7 +391,10 @@ class VID(Utils_Model):
                            int(df_pred_pos.shape[0] / data_unknown_down.shape[0] * 100)]
         self.shap_plot(pd.concat([df_true_pos, df_pred_pos, df_pred_neg, df_true_neg], axis = 0))
 
-        
+        # save the best model
+        print("Saving the best model ...")
+        with open(os.path.join(self.output_dir, 'model.pkl'), 'wb') as f:
+            pickle.dump(self.grid_result.best_estimator_, f)
  
 
      
