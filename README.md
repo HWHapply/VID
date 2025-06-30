@@ -286,7 +286,7 @@ __threshold__ : float, optional {recommended range: 0.6 ~ 0.9}, default = None
    > The threshold for the decision function of final prediction. It can be understand as confidence of prediction: with higher threshold, 
    > the detected infection will be more reliable, but it may leads to misdetection of potential infected cells if the threshold is too high.
    > With this parameter specified, additional column with predicted infection status defined by this threshold will be added in meta data.
-   > The default 'infection_status' in final meta data is defined with threshold = 0.5, the additional colunm defined by this threshold 
+   > The default 'infection_status' in final meta data is defined with threshold = 0.5, the additional column defined by this threshold 
    > will be named as 'infection_status_{threshold}' which won't overwrite the the default. 
 
 __random_state__ : int, optional , default = 42
